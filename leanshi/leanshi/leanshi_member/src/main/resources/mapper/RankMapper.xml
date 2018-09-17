@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RankMapper">
+
+    <resultMap id="RankResultMap" type="cn.leanshi.model.Rank">
+        <result column="RANK_ID" property="rankId" />
+        <result column="RANK_NAME" property="rankName" />
+        <result column="RANK_SHORT_NAME" property="rankShortName" />
+        <result column="RANK_ORDER" property="rankOrder" />
+        <result column="RANK_CLASS" property="rankClass" />
+        <result column="STATIC_YN" property="staticYn" />
+        <result column="R_PRE_RANK" property="rPreRank" />
+        <result column="ACTIVE_PV" property="activePv" />
+        <result column="RANK_KEEP_MONTHS" property="rankKeepMonths" />
+    </resultMap>
+
+    <select id="findRankAll" resultMap="RankResultMap">
+        SELECT * FROM rd_ranks
+    </select>
+
+    <select id="findRank" parameterType="int" resultMap="string">
+        SELECT RANK_NAME FROM rd_ranks WHERE RANK_ID =#{rankId}
+    </select>
+
+    <select id="findRankByRankName" parameterType="string" resultMap="Integer">
+        SELECT RANK_ID FROM rd_ranks WHERE RANK_NAME =#{rankName}
+    </select>
+</mapper>

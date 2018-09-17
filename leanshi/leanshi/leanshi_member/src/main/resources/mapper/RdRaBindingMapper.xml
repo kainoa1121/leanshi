@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdRaBindingMapper">
+
+    <resultMap id="RaBindingResultMap" type="cn.leanshi.model.RdRaBinding">
+        <result column="RA_CODE" property="raCode" />
+        <result column="RA_NAME" property="raName" />
+        <result column="RA_NICK_NAME" property="raNickName" />
+        <result column="RA_STATUS" property="raStatus" />
+        <result column="RA_ID_TYPE" property="raIdType" />
+        <result column="RA_ID_CODE" property="raIdCode" />
+        <result column="RA_SPONSOR_CODE"  property="raSponsorCode" />
+        <result column="RA_SPONSOR_NAME" property="raSponsorName" />
+        <result column="BINDING_STATUS" property="bindingStatus" />
+        <result column="RD_CODE" property="rdCode" />
+        <result column="BINDING_DATE" property="bindingDate" />
+        <result column="BINDING_BY" property="bindingBy" />
+
+    </resultMap>
+
+    <!--根据会员编号查找绑定老会员信息-->
+    <select id="findBindingByMCode" parameterType="string" resultMap="RaBindingResultMap">
+        select * from rd_ra_binding
+        where RD_CODE = #{rdCode}
+    </select>
+
+    <!--根据身份证和姓名查找会员资格表信息-->
+    <select id="findBindingByMNameAndIdCode" parameterType="map" resultMap="RaBindingResultMap">
+        select * from rd_ra_binding
+        where RA_NAME = #{raName} AND RA_ID_CODE = #{raIdCode}
+    </select>
+
+    <!--根据编号修改绑定老账户-->
+    <update id="updateRaByMCode" parameterType="cn.leanshi.model.RdRaBinding">
+        UPDATE rd_ra_binding
+        SET
+          RA_CODE = #{raCode},
+          RA_NAME = #{raName},
+          RA_ID_TYPE = #{raIdType},
+          RA_ID_CODE = #{raIdCode}
+        WHERE
+        RD_CODE = #{rdCode}
+    </update>
+
+    <!--添加绑定老会员-->
+    <insert id="addBinding" parameterType="cn.leanshi.model.RdRaBinding">
+        INSERT INTO rd_ra_binding(RA_CODE,RA_NAME,RA_ID_TYPE,RA_ID_CODE,RA_SPONSOR_CODE,RA_SPONSOR_NAME,RD_CODE,BINDING_DATE,BINDING_BY)
+        values(#{raCode},#{raName},#{raIdType},#{raIdCode},#{raSponsorCode},#{raSponsorName},#{rdCode},#{bindingDate},#{bindingBy})
+    </insert>
+
+
+</mapper>

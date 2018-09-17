@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.MemberMapper">
+    <resultMap id="BaseResultMap" type="cn.leanshi.model.Member_basic">
+        <id column="MM_ID" jdbcType="INTEGER" property="mId" />
+        <result column="MM_CODE" property="mCode" />
+        <result column="MM_NAME" property="mName" />
+        <result column="MM_NICK_NAME" property="mNickname" />
+        <result column="ID_TYPE" property="idType" />
+        <result column="ID_CODE" property="idCode" />
+        <result column="GENDER" property="gender" />
+        <result column="BIRTHDATE" property="birthdate" />
+        <result column="EMAIL" property="email" />
+        <result column="NATION_ID" property="nationId" />
+        <result column="ADD_PROVINCE_ID" property="province" />
+        <result column="ADD_CITY_ID" property="city" />
+        <result column="ADD_COUNTRY_ID" property="country" />
+        <result column="ADD_TOWN_ID"  property="town" />
+        <result column="ADD_DETIAL" property="detial" />
+        <result column="ADD_POST" property="addPost" />
+        <result column="MOBILE" property="mobile" />
+        <result column="WECHAT_CODE" property="weChat" />
+        <result column="QQ_CODE" property="qq" />
+        <result column="FACEBOOK_CODE" property="facebook" />
+        <result column="PHONE" property="phone" />
+        <result column="CREATION_SOURCE" property="creationSource" />
+        <result column="CREATION_IP" property="creationIp" />
+        <result column="CREATION_DATE" property="creationData" />
+        <result column="CREATION_BY" property="creationer" />
+        <result column="CREATION_PERIOD" property="creationPeriod" />
+        <result column="UPDATE_SOURCE" property="updateSource" />
+        <result column="UPDATE_IP" property="updateIp" />
+        <result column="UPDATE_DATE" property="updateDate" />
+        <result column="UPDATE_BY" property="updateBy" />
+        <result column="UPDATE_PERIOD" property="updatePeriod" />
+    </resultMap>
+
+    <!--条件模糊查询-->
+    <select id="selectBySearchMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info
+        where 1=1
+          <if test="mCode !=null and mCode != ''">
+              and MM_CODE LIKE "%"#{mCode}"%"
+          </if>
+          <if test="mName !=null and mName != ''">
+              and MM_NAME LIKE "%"#{mName}"%"
+          </if>
+          <if test="mNickname !=null and mNickname != ''">
+              and MM_NICK_NAME LIKE "%"#{mNickname}"%"
+          </if>
+          <if test="mobile !=null and mobile != ''">
+              and MOBILE LIKE "%"#{mobile}"%"
+          </if>
+        ORDER BY MM_CODE DESC
+    </select>
+
+    <!--根据编号查找会员-->
+    <select id="selectByMCode" parameterType="string" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info
+        where MM_CODE = #{mCode}
+    </select>
+
+    <!--根据编号和姓名修改会员基本信息-->
+    <update id="updateByMCodeAndMName" parameterType="cn.leanshi.model.Member_basic" >
+        UPDATE rd_mem_basic_info
+        SET
+         MM_NICK_NAME = #{mNickname},
+        GENDER = #{gender},
+        EMAIL = #{email},
+        ADD_PROVINCE_ID = #{province},
+        ADD_CITY_ID = #{city},
+        ADD_COUNTRY_ID = #{country},
+        ADD_DETIAL = #{detial},
+        ADD_POST = #{addPost}
+        WHERE
+        MM_CODE = #{mCode} AND MM_NAME = #{mName}
+    </update>
+
+    <!--根据编号修改会员姓名和证件信息-->
+    <update id="updateNameByMCode" parameterType="cn.leanshi.model.Member_basic" >
+        UPDATE rd_mem_basic_info
+        SET
+          MM_NAME = #{mName},
+          ID_TYPE = #{idType},
+          ID_CODE = #{idCode}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
+    <!--查找是否有相同昵称的会员-->
+    <select id="findMemByMNickName" parameterType="map" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info
+        where MM_NICK_NAME = #{mNickname} AND MM_CODE != #{mCode}
+    </select>
+
+
+    <!--查找是否已绑定该手机的会员-->
+    <select id="findMemByMobile" parameterType="map" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info
+        where MOBILE = #{mobile} AND MM_CODE != #{mCode}
+    </select>
+
+
+    <update id="updateMobAndNickByMCode" parameterType="cn.leanshi.model.Member_basic" >
+        UPDATE rd_mem_basic_info
+        SET
+        MOBILE = #{mobile},
+        MM_NICK_NAME = #{mNickname}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+</mapper>

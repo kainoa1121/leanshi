@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.SysPeriodMapper">
+
+    <resultMap id="SysPeriodResultMap" type="cn.leanshi.model.SysPeriod">
+        <result column="PERIOD_CODE" property="periodCode" />
+        <result column="PRE_PERIOD" property="prePeriod" />
+        <result column="NEXT_PERIOD" property="nextPeriod" />
+        <result column="SALES_STATUS" property="salesStatus" />
+        <result column="CAL_STATUS" property="calStatus" />
+        <result column="BEGIN_DATE" property="beginDate" />
+        <result column="END_DATE" property="endDate" />
+        <result column="CAL_TIMES" property="calTimes" />
+        <result column="BONUS_STATUS" property="bonusStatus" />
+    </resultMap>
+
+    <select id="findPeriodByDate" parameterType="string" resultMap="SysPeriodResultMap">
+        SELECT * FROM rd_sys_period WHERE PERIOD_CODE=#{periodCode}
+    </select>
+
+    <insert id="addPeriod" parameterType="cn.leanshi.model.SysPeriod">
+        INSERT INTO rd_sys_period(PERIOD_CODE,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,BONUS_STATUS) values(#{periodCode},#{salesStatus},#{calStatus},#{beginDate},#{endDate},#{calTimes},#{bonusStatus})
+    </insert>
+
+</mapper>

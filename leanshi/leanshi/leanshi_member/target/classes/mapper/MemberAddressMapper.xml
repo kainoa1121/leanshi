@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.MemberAddressMapper">
+
+    <resultMap id="AddResultMap" type="cn.leanshi.model.MemberAddress">
+        <result column="AID" property="aId" />
+        <result column="MM_CODE" property="mCode" />
+        <result column="CONSIGNEE_NAME" property="consigneeName" />
+        <result column="MOBILE" property="mobile" />
+        <result column="PHONE" property="phone" />
+        <result column="DEFAULTADD" property="defaultAdd" />
+        <result column="VALID" property="valid" />
+        <result column="ADD_PROVINCE_CODE" property="addProvinceCode" />
+        <result column="ADD_CITY_CODE" property="addCityCode" />
+        <result column="ADD_COUNTRY_CODE" property="addCountryCode" />
+        <result column="ADD_TOWN_CODE" property="addTownCode" />
+        <result column="ADD_DETIAL" property="addDetial" />
+        <result column="ADD_POST" property="addPost" />
+    </resultMap>
+
+    <!--//根据编号查找该会员的所有收货地址-->
+    <select id="findAddByMCode" parameterType="string" resultMap="AddResultMap">
+        SELECT * FROM rd_mm_add_info WHERE MM_CODE = #{mCode} AND VALID=1
+    </select>
+
+    <!--把相同编号的其他收货地址的默认方式设为0-->
+    <update id="updateAddDefaultByMCode" parameterType="string">
+        UPDATE rd_mm_add_info SET DEFAULTADD = 0 WHERE MM_CODE = #{mCode}
+    </update>
+
+    <!--查询该会员有多少个收货地址-->
+    <select id="selectCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM rd_mm_add_info WHERE MM_CODE = #{mCode}
+    </select>
+
+    <!--添加收货地址-->
+    <insert id="addMemAdd" useGeneratedKeys="true" keyProperty="aId" parameterType="cn.leanshi.model.MemberAddress">
+        INSERT INTO rd_mm_add_info(MM_CODE,CONSIGNEE_NAME,MOBILE,PHONE,DEFAULTADD,VALID,ADD_PROVINCE_CODE,ADD_CITY_CODE,
+                          ADD_COUNTRY_CODE,ADD_DETIAL,ADD_POST)
+                VALUES(#{mCode},#{consigneeName},#{mobile},#{phone},#{defaultAdd},1,
+                          #{addProvinceCode},#{addCityCode},#{addCountryCode},#{addDetial},#{addPost})
+    </insert>
+
+    <!--根据aid和mCode查询收货地址-->
+    <select id="findMemAddByMCode" parameterType="map" resultMap="AddResultMap">
+        SELECT * FROM rd_mm_add_info WHERE MM_CODE = #{mCode} AND AID = #{aId}
+    </select>
+
+    <!--修改收货地址-->
+    <update id="editMemAdd" parameterType="cn.leanshi.model.MemberAddress">
+        UPDATE rd_mm_add_info SET
+        CONSIGNEE_NAME = #{consigneeName},
+        MOBILE = #{mobile},
+        PHONE = #{phone},
+        DEFAULTADD = #{defaultAdd},
+        ADD_PROVINCE_CODE = #{addProvinceCode},
+        ADD_CITY_CODE = #{addCityCode},
+        ADD_COUNTRY_CODE = #{addCountryCode},
+        ADD_DETIAL = #{addDetial},
+        ADD_POST = #{addPost}
+        WHERE MM_CODE = #{mCode} AND AID = #{aId}
+    </update>
+
+
+    <!--根据aid和mcode删除收货地址-->
+    <delete id="delMemAddByAId" parameterType="map">
+        DELETE FROM rd_mm_add_info WHERE AID = #{aId} AND MM_CODE = #{mCode}
+    </delete>
+
+    <!--设置默认地址-->
+    <update id="defAddByAIdAndMCode" parameterType="map">
+        UPDATE rd_mm_add_info SET DEFAULTADD = #{defaultAdd} WHERE AID = #{aId} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--删除所有收货地址-->
+    <delete id="outAllAddByMCode" parameterType="string">
+        DELETE FROM rd_mm_add_info WHERE MM_CODE = #{mCode}
+    </delete>
+</mapper>

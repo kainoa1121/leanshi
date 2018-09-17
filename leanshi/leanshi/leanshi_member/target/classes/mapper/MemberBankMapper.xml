@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.MemberBankMapper">
+    <resultMap id="BankResultMap" type="cn.leanshi.model.MemberBank">
+        <id column="OID" jdbcType="INTEGER" property="oId" />
+        <result column="MM_CODE" jdbcType="VARCHAR" property="mCode" />
+        <result column="ACC_TYPE" jdbcType="VARCHAR" property="accType" />
+        <result column="CURRENCY" jdbcType="VARCHAR" property="currency" />
+        <result column="ACC_CODE" jdbcType="VARCHAR" property="accCode" />
+        <result column="ACC_NAME" jdbcType="VARCHAR" property="accName" />
+        <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
+        <result column="BANK_DETAIL" jdbcType="VARCHAR" property="bankDetail" />
+        <result column="VALID_THRU" jdbcType="VARCHAR" property="validThru" />
+        <result column="CVV2" jdbcType="VARCHAR" property="cvv2" />
+        <result column="PAYMENT_DEFAULT" jdbcType="VARCHAR" property="paymentDefault" />
+        <result column="WITHDRAW_DEFAULT" jdbcType="VARCHAR" property="withdrawDefault" />
+        <result column="RECHARGE_DEFAULT" jdbcType="VARCHAR" property="rechargeDefault" />
+    </resultMap>
+
+    <!--根据编号查找所有会员银行信息-->
+    <select id="findMBankByMCode" parameterType="string" resultMap="BankResultMap">
+        select * from rd_mm_bank
+        where MM_CODE = #{mCode}
+    </select>
+
+    <!--根据编号和姓名修改银行卡信息-->
+    <update id="updateByMBank" parameterType="map" >
+        UPDATE rd_mm_bank
+        SET
+        WITHDRAW_DEFAULT = #{withdrawDefault}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
+    <!--根据oId和mcode删除银行卡信息-->
+    <delete id="delBankByOid" parameterType="map">
+        DELETE FROM rd_mm_bank WHERE OID = #{oId} AND MM_CODE = #{mCode}
+    </delete>
+
+    <!--根据mcode删除所有银行卡信息-->
+    <delete id="outAllBankByMCode" parameterType="string">
+        DELETE FROM rd_mm_bank WHERE MM_CODE = #{mCode}
+    </delete>
+
+    <!--根据mcode查询该会员有多少个银行信息-->
+    <select id="countMBankByMCode" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM rd_mm_bank WHERE MM_CODE = #{mCode}
+    </select>
+
+
+    <!--根据编号添加银行卡-->
+    <insert id="addBankByMCode" parameterType="cn.leanshi.model.MemberBank">
+        INSERT INTO rd_mm_bank(MM_CODE,ACC_TYPE,BANK_CODE,ACC_NAME,ACC_CODE) values(#{mCode},#{accType},#{bankCode},#{accName},#{accCode})
+    </insert>
+
+</mapper>

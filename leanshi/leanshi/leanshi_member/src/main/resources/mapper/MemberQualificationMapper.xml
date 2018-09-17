@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.MemberQualificationMapper">
+    <resultMap id="QualificationResultMap" type="cn.leanshi.model.MemberQualification">
+        <result column="PERIOD_CODE" property="periodCode" />
+        <result column="MM_CODE" property="mCode" />
+        <result column="MM_NAME" property="mName" />
+        <result column="SPONSOR_CODE" property="sponsorCode" />
+        <result column="SPONSOR_NAME" property="sponsorName" />
+        <result column="MM_STATUS" property="mStatus" />
+        <result column="RA_STATUS" property="raStatus" />
+        <result column="RA_SHOP_YN"  property="raShopYn" />
+        <result column="PPV" property="ppv" />
+        <result column="PPV_RETAIL" property="ppvRetail" />
+        <result column="APPV_INIT" property="appvInit" />
+        <result column="APPV_FINAL" property="appvFinal" />
+        <result column="A_RETAIL_INIT" property="retailInit" />
+        <result column="A_RETAIL" property="retail" />
+        <result column="A_RETAIL_FINAL" property="retailFinal" />
+        <result column="RANK_INIT" property="rankInit" />
+        <result column="RANK" property="rank" />
+        <result column="RANK_RECORD_HIGH" property="rankRecordHigh" />
+        <result column="LEAF_YN" property="leafYn" />
+        <result column="ORPHAN" property="orphan" />
+        <result column="LAYER" property="layer" />
+        <result column="G7PV" property="g7pv" />
+        <result column="NPV" property="npv" />
+        <result column="GPV_FLAGSHIP" property="gpvFlagship" />
+        <result column="GROUP_RANK_MAX" property="groupRankMax" />
+        <result column="DD_RANK2_NUMBER" property="ddRank2Number" />
+        <result column="DL_RANK6_NUMBER" property="dlRank6Number" />
+        <result column="DL_RANK7_NUMBER" property="dlRank7Number" />
+        <result column="DL_RANK8_NUMBER" property="dlRank8Number" />
+        <result column="PPV_QUALIFIED" property="ppvqualified" />
+        <result column="TOURISM_QUALIFIED" property="tourismQualified" />
+        <result column="CAR_QUALIFIED" property="carQualified" />
+        <result column="DIVIDEND_QUALIFIED" property="dividendQualified" />
+
+    </resultMap>
+
+    <!--根据编号查找会员资格信息-->
+    <select id="findQualificationByMCode" parameterType="string" resultMap="QualificationResultMap">
+        select * from rd_dis_qualification
+        where MM_CODE = #{mCode}
+    </select>
+
+
+    <!--根据编号修改会员推荐人-->
+    <update id="updateSponsorByMCode" parameterType="cn.leanshi.model.MemberQualification">
+      UPDATE rd_dis_qualification
+        SET
+          SPONSOR_CODE = #{sponsorCode},
+          SPONSOR_NAME = #{sponsorName}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
+    <!--根据编号修改会员姓名-->
+    <update id="updateNameByMCode" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        MM_NAME = #{mName}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
+    <!--根据业务周期查找会员资格信息-->
+    <select id="findQualificationByPeriod" parameterType="string" resultMap="QualificationResultMap">
+        select * from rd_dis_qualification
+        where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <!--根据业务周期和会员编号查找会员资格信息-->
+    <select id="findQualificationByPeriodAndMCode" parameterType="java.util.Map" resultMap="QualificationResultMap">
+        select * from rd_dis_qualification
+        where PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </select>
+
+</mapper>

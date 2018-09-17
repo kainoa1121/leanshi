@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.MemberRelationMapper">
+    <resultMap id="RelationResultMap" type="cn.leanshi.model.MemberRelation">
+        <result column="MM_CODE" property="mCode" />
+        <result column="RANK" property="rank" />
+        <result column="RANK_PERIOD" property="rankPeriod" />
+        <result column="A_RETAIL" property="reTail" />
+        <result column="LOGIN_PWD" property="loginPwd" />
+        <result column="PWD_INIT_YN" property="pwdInitYn" />
+        <result column="MM_STATUS" property="mStatus" />
+        <result column="STATUS_PERIOD"  property="statusPeriod" />
+        <result column="SPONSOR_CODE" property="sponsorCode" />
+        <result column="SPONSOR_NAME" property="sponsorName" />
+        <result column="PLACEMENT_CODE" property="placementCode" />
+        <result column="RA_SPONSOR_STATUS" property="raSponsorStatus" />
+        <result column="RA_STATUS" property="raStatus" />
+        <result column="RA_SHOP_YN" property="raShopYn" />
+        <result column="RA_CODE" property="raCode" />
+        <result column="RA_NICK_NAME" property="raNickName" />
+        <result column="RA_BINDING_DATE" property="raBindingDate" />
+
+    </resultMap>
+
+    <!--根据编号查找会员资格信息-->
+    <select id="findRelationByMCode" parameterType="string" resultMap="RelationResultMap">
+        SELECT * FROM rd_mm_relation
+        WHERE MM_CODE = #{mCode}
+    </select>
+
+    <!--根据编号修改会员等级-->
+    <update id="updateRankByMCode" parameterType="cn.leanshi.model.MemberRelation">
+        UPDATE rd_mm_relation
+        SET
+        RANK = #{rank}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
+
+    <!--根据编号修改会员推荐人姓名-->
+    <update id="updateRelaSponNameByMCode" parameterType="string">
+        UPDATE rd_mm_relation
+        SET
+        SPONSOR_NAME = #{sponsorName}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
+
+    <!--更改推荐人编号和姓名-->
+    <update id="updateSponsorByMCode" parameterType="cn.leanshi.model.MemberRelation">
+        UPDATE rd_mm_relation
+        SET
+        SPONSOR_CODE = #{sponsorCode},
+        SPONSOR_NAME = #{sponsorName}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
+</mapper>

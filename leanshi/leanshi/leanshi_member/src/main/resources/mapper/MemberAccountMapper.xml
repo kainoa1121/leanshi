@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.MemberAccountMapper">
+
+    <resultMap id="AccountResultMap" type="cn.leanshi.model.MemberAccount">
+        <result column="MM_CODE" property="mCode" />
+        <result column="BONUS_STATUS" property="bonusStatus" />
+        <result column="BONUS_CURRENCY" property="bonusCurrency" />
+        <result column="BONUS_BLANCE" property="bonusBlance" />
+        <result column="WALLET_STATUS" property="walletStatus" />
+        <result column="WALLET_CURRENCY" property="walletCurrency" />
+        <result column="WALLET_BLANCE" property="walletBlance" />
+        <result column="REDEMPTION_STATUS" property="redemptionStatus" />
+        <result column="REDEMPTION_CURRENCY" property="redemptionCurrency" />
+        <result column="REDEMPTION_BLANCE" property="redemptionBlance" />
+        <result column="WECHAT_ACC" property="weChatAcc" />
+        <result column="ALIPAY_ACC" property="alipayAcc" />
+        <result column="PAYMENT_PHONE" property="paymentPhone" />
+        <result column="PAYMENT_PWD" property="paymentPWD" />
+    </resultMap>
+
+    <select id="findMemAccountByMCode" resultMap="AccountResultMap">
+        SELECT * FROM rd_mm_account_info WHERE MM_CODE = #{mCode}
+    </select>
+
+</mapper>

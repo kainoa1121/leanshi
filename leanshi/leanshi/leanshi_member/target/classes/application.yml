@@ -1,0 +1,22 @@
+#指定端口
+server:
+  port: 8090
+
+spring:
+  #数据库
+  datasource:
+    url: jdbc:mysql://localhost:3306/leanshi
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cn.leanshi.model
+
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
