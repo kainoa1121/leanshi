@@ -886,12 +886,12 @@ public class MemberController {
 
 			map.put("raSponsorName",binding.getRaSponsorName());
 			map.put("raSponsorCode",binding.getRaSponsorCode());
-			Member_basic raSponsor = memberService.findByMCode(binding.getRaSponsorCode());
+			/*Member_basic raSponsor = memberService.findByMCode(binding.getRaSponsorCode());
 			if (raSponsor==null){
 				return ResultMsg.newInstance(false,"mCode会员绑定的老会员推荐人不存在，查找失败！");
-			}
-			map.put("rasponsorIdType",raSponsor.getIdType());
-			map.put("raSponsorIdCode",raSponsor.getIdCode());
+			}*/
+			map.put("rasponsorIdType","");
+			map.put("raSponsorIdCode","");
 		}
 
 		resultMsg.setData(map);
