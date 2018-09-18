@@ -1048,12 +1048,24 @@ public class MemberController {
 	 * 根据条件查找所有待审修改信息
 	 * */
 	@RequestMapping(value = "/findEditStatus",method = RequestMethod.POST)
-	public ResultMsg findEditStatus(@RequestParam String mCode, @RequestParam String mName,@RequestParam String updateTimeS){
-		ResultMsg<List<MemberEditReview>> resultMsg = new ResultMsg<List<MemberEditReview>>();
+	public ResultMsg findEditStatus(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+									@RequestParam(required = false,defaultValue = "5",value = "pageSize") int pageSize,
+									@RequestParam String mCode,
+									@RequestParam String mName,@RequestParam String updateTimeS){
+
+		int size=pageSize;
+
+		PageHelper.startPage(currentPage,size);
+
+		ResultMsg<PageInfo<MemberEditReview>> resultMsg = new ResultMsg<PageInfo<MemberEditReview>>();
 		DateConverter dateConverter = new DateConverter();
 		Date updateTime = dateConverter.convert(updateTimeS);
 		List<MemberEditReview> list = memberService.findEditStatus(mCode,mName,updateTime);
-		resultMsg.setData(list);
+
+		PageInfo<MemberEditReview> pageInfo = new PageInfo<MemberEditReview>(list);
+
+		resultMsg.setData(pageInfo);
+		resultMsg.setCode(true);
 
 		return resultMsg;
 	}
