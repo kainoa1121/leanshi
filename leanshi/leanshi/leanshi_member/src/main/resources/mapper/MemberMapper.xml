@@ -51,7 +51,7 @@
           <if test="mobile !=null and mobile != ''">
               and MOBILE LIKE "%"#{mobile}"%"
           </if>
-        ORDER BY MM_CODE DESC
+        ORDER BY MM_CODE ASC 
     </select>
 
     <!--根据编号查找会员-->
