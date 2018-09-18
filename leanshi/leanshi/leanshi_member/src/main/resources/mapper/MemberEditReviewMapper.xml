@@ -142,8 +142,8 @@
         <if test="reviewStatus !=null">
             AND REVIEW_STATUS = #{reviewStatus}
         </if>
-        <if test="updateTime !=null">
-            AND UPDATE_TIME = #{updateTime}
+        <if test="timeStar !=null and timeEnd !=null">
+            AND UPDATE_TIME BETWEEN #{timeStar} AND #{timeEnd}
         </if>
         ORDER BY REVIEW_STATUS,UPDATE_TIME ASC
     </select>
@@ -169,13 +169,13 @@
         WHERE
         REVIEW_STATUS = 0
         <if test="mCode !=null and mCode != ''">
-            and MM_CODE LIKE "%"#{mCode}"%"
+            AND MM_CODE LIKE "%"#{mCode}"%"
         </if>
         <if test="mName !=null and mName != ''">
-            and MM_NAME_AFTER  LIKE "%"#{mName}"%"
+            AND MM_NAME_AFTER  LIKE "%"#{mName}"%"
         </if>
-        <if test="updateTime !=null and updateTime != ''">
-            and UPDATE_TIME = #{updateTime}
+        <if test="timeStar !=null and timeEnd !=null">
+            AND UPDATE_TIME BETWEEN #{timeStar} AND #{timeEnd}
         </if>
         ORDER BY UPDATE_TIME ASC
     </select>

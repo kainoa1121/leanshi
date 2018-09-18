@@ -764,13 +764,14 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<MemberEditReview> findEditAll(String mCode, String mName, Integer updateType, Integer reviewStatus, Date updateTime) {
+	public List<MemberEditReview> findEditAll(String mCode, String mName, Integer updateType, Integer reviewStatus, Date timeStar,Date timeEnd) {
 		Map<String,Object> map = new HashMap<>();
 		map.put("mCode",mCode);
 		map.put("mName",mName);
 		map.put("updateType",updateType);
 		map.put("reviewStatus",reviewStatus);
-		map.put("updateTime",updateTime);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
 		return editReviewMapper.findEditAll(map);
 	}
 
@@ -895,11 +896,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<MemberEditReview> findEditStatus(String mCode, String mName, Date updateTime) {
+	public List<MemberEditReview> findEditStatus(String mCode, String mName, Date timeStar,Date timeEnd) {
 		Map<String,Object> map = new HashMap<>();
 		map.put("mCode",mCode);
 		map.put("mName",mName);
-		map.put("updateTime",updateTime);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
 		return editReviewMapper.findEditStatus(map);
 	}
 

@@ -975,7 +975,7 @@ public class MemberController {
 								 @RequestParam(required = false,defaultValue = "5",value = "pageSize") int pageSize,
 								 @RequestParam String mCode, @RequestParam String mName,
 								 @RequestParam Integer updateType, @RequestParam Integer reviewStatus,
-								 @RequestParam String updateTimeS){
+								 @RequestParam String updateTimeStar, @RequestParam String updateTimeEnd){
 
 		int size=pageSize;
 
@@ -985,8 +985,10 @@ public class MemberController {
 		ResultMsg<PageInfo<MemberEditReview>> resultMsg = new ResultMsg<PageInfo<MemberEditReview>>();
 
 		DateConverter dateConverter = new DateConverter();
-		Date updateTime = dateConverter.convert(updateTimeS);
-		List<MemberEditReview> list = memberService.findEditAll(mCode,mName,updateType,reviewStatus,updateTime);
+		Date timeStar = dateConverter.convert(updateTimeStar);
+		Date timeEnd = dateConverter.convert(updateTimeEnd);
+
+		List<MemberEditReview> list = memberService.findEditAll(mCode,mName,updateType,reviewStatus,timeStar,timeEnd);
 
 		PageInfo<MemberEditReview> pageInfo = new PageInfo<MemberEditReview>(list);
 
@@ -1051,7 +1053,8 @@ public class MemberController {
 	public ResultMsg findEditStatus(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
 									@RequestParam(required = false,defaultValue = "5",value = "pageSize") int pageSize,
 									@RequestParam String mCode,
-									@RequestParam String mName,@RequestParam String updateTimeS){
+									@RequestParam String mName,
+									@RequestParam String updateTimeStar, @RequestParam String updateTimeEnd){
 
 		int size=pageSize;
 
@@ -1059,8 +1062,9 @@ public class MemberController {
 
 		ResultMsg<PageInfo<MemberEditReview>> resultMsg = new ResultMsg<PageInfo<MemberEditReview>>();
 		DateConverter dateConverter = new DateConverter();
-		Date updateTime = dateConverter.convert(updateTimeS);
-		List<MemberEditReview> list = memberService.findEditStatus(mCode,mName,updateTime);
+		Date timeStar = dateConverter.convert(updateTimeStar);
+		Date timeEnd = dateConverter.convert(updateTimeEnd);
+		List<MemberEditReview> list = memberService.findEditStatus(mCode,mName,timeStar,timeEnd);
 
 		PageInfo<MemberEditReview> pageInfo = new PageInfo<MemberEditReview>(list);
 

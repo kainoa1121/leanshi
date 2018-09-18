@@ -44,13 +44,13 @@ public interface MemberService {
 
 	int updateBindingByMCode(String mCode, String mName, String raCode, String raName, String raCodeNew, String raNameNew, Integer raIdType, String raIdCode, String mDesc);
 
-	List<MemberEditReview> findEditAll(String mCode, String mName, Integer updateType, Integer reviewStatus, Date updateTime);
+	List<MemberEditReview> findEditAll(String mCode, String mName, Integer updateType, Integer reviewStatus, Date timeStar,Date timeEnd);
 
 	MemberEditReview findEditById(Integer rId);
 
 	int updateEditById(Integer rId,Integer reviewStatus);
 
-	List<MemberEditReview> findEditStatus(String mCode, String mName, Date updateTime);
+	List<MemberEditReview> findEditStatus(String mCode, String mName, Date timeStar,Date timeEnd);
 
 	SysPeriod findPeriod(String date);
 
