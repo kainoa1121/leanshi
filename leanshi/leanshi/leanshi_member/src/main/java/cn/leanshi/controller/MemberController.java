@@ -852,6 +852,7 @@ public class MemberController {
 		ResultMsg<Map<String,Object>> resultMsg = new ResultMsg<Map<String,Object>>();
 		Map<String,Object> map = new HashMap<String,Object>();
 
+
 		Member_basic byMCode = memberService.findByMCode(mCode);
 		if (byMCode==null){
 			return ResultMsg.newInstance(false,"mCode会员编号不存在，查找失败！");
@@ -859,6 +860,7 @@ public class MemberController {
 		map.put("mName",byMCode.getMName());
 		map.put("idType",byMCode.getIdType());
 		map.put("idCode",byMCode.getIdCode());
+
 
 		MemberRelation relation = memberService.findRelationByMCode(mCode);
 		if (relation==null){
@@ -897,6 +899,7 @@ public class MemberController {
 
 		return resultMsg;
 	}
+
 
 
 	/*
