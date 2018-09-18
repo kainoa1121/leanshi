@@ -128,24 +128,24 @@
     <!--根据编号姓名修改类型修改状态修改时间条件搜索-->
     <select id="findEditAll" parameterType="java.util.Map" resultMap="EditResultMap">
         SELECT * FROM rd_mm_edit
-          WHERE
-            REVIEW_STATUS >= 0
-            <if test="mCode !=null and mCode != ''">
-                AND MM_CODE = #{mCode}
-            </if>
-            <if test="mName !=null and mName != ''">
-                AND MM_NAME_AFTER = #{mName}
-            </if>
-            <if test="updateType !=null">
-                AND UPDATE_TYPE = #{updateType}
-            </if>
-            <if test="reviewStatus !=null">
-                AND REVIEW_STATUS = #{reviewStatus}
-            </if>
-            <if test="updateTime !=null">
-                AND UPDATE_TIME = #{updateTime}
-            </if>
-             ORDER BY REVIEW_STATUS,UPDATE_TIME ASC
+        WHERE
+        REVIEW_STATUS >= 0
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE = #{mCode}
+        </if>
+        <if test="mName !=null and mName != ''">
+            AND MM_NAME_AFTER = #{mName}
+        </if>
+        <if test="updateType !=null">
+            AND UPDATE_TYPE = #{updateType}
+        </if>
+        <if test="reviewStatus !=null">
+            AND REVIEW_STATUS = #{reviewStatus}
+        </if>
+        <if test="updateTime !=null">
+            AND UPDATE_TIME = #{updateTime}
+        </if>
+        ORDER BY REVIEW_STATUS,UPDATE_TIME ASC
     </select>
 
     <!--根据id查找会员修改信息-->
@@ -180,10 +180,11 @@
         ORDER BY UPDATE_TIME ASC
     </select>
 
+
     <select id="findEditByMCode" parameterType="map" resultMap="EditResultMap">
         SELECT * FROM rd_mm_edit
         WHERE
-        MM_CODE = #{mCode} AND REVIEW_STATUS = #{reviewStatus}
+        MM_CODE = #{mCode} AND UPDATE_TYPE = #{updateType} AND REVIEW_STATUS = 0
     </select>
 
 </mapper>

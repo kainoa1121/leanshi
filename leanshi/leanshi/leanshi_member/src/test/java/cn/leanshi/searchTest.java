@@ -1,5 +1,11 @@
 package cn.leanshi;
 
+import cn.leanshi.model.util.DateConverter;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -12,21 +18,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class searchTest {
 
-	/*private MemberService memberService;
-
-	*//*
-	 *条件模糊查询
-	 * *//*
 	@Test
-	@RequestMapping(value = "/stest")
-	public void search(){
-		Map<String,String> searchMap = new HashMap<String, String>();
-		searchMap.put("mCode","00001");
-		searchMap.put("mName","");
-		searchMap.put("mobile","");
-		searchMap.put("mNickName","");
-		Map<String, Object> search = memberService.search(searchMap);
-		System.out.println(search);
-	}*/
-
+	public void fun01(){
+		DateConverter dateConverter = new DateConverter();
+		Date date = dateConverter.convert("201812");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH,1);
+		System.out.println(calendar.get(Calendar.MONTH+1));
+	}
 }

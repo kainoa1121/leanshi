@@ -599,6 +599,14 @@ public class MemberServiceImpl implements MemberService {
 		return rankMapper.findRankByRankName(rankName);
 	}
 
+	/*
+	* 根据这一周期查找是否有上一期周期
+	* */
+	@Override
+	public SysPeriod findPrePeriod(String periodCode) {
+		return sysPeriodMapper.findPrePeriod(periodCode);
+	}
+
 
 	/*
 	 * 修改会员状态、级别及关系信息（更改会员级别）
@@ -921,10 +929,16 @@ public class MemberServiceImpl implements MemberService {
 		return rankMapper.fingRankAll();
 	}
 
+
+	/*
+	*添加周期
+	* */
 	@Override
-	public int addPeriod(String periodCode, Date beginDate, Date endDate) {
+	public int addPeriod(String periodCode,String prePeriod,String nextPeriod, Date beginDate, Date endDate) {
 		SysPeriod period = new SysPeriod();
 		period.setPeriodCode(periodCode);
+		period.setPrePeriod(prePeriod);
+		period.setNextPeriod(nextPeriod);
 		period.setBeginDate(beginDate);
 		period.setEndDate(endDate);
 		period.setSalesStatus(0);//业绩状态 0：未开始

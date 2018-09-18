@@ -60,7 +60,7 @@ public interface MemberService {
 
 	List<Rank> fingRankAll();
 
-	int addPeriod(String periodCode, Date beginDate, Date endDate);
+	int addPeriod(String periodCode,String prePeriod,String nextPeriod, Date beginDate, Date endDate);
 
 	List<MemberAddress> findAddByMCode(String mCode);
 
@@ -99,4 +99,6 @@ public interface MemberService {
 	String findRank(int rank);
 
 	int findRankByRankName(String rankName);
+
+	SysPeriod findPrePeriod(String periodCode);
 }

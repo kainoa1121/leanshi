@@ -18,4 +18,11 @@
         SELECT * FROM rd_ranks
     </select>
 
+    <select id="findRank" parameterType="int" resultType="string">
+        SELECT RANK_NAME FROM rd_ranks WHERE RANK_ID =#{rankId}
+    </select>
+
+    <select id="findRankByRankName" parameterType="string" resultType="Integer">
+        SELECT RANK_ID FROM rd_ranks WHERE RANK_NAME =#{rankName}
+    </select>
 </mapper>
