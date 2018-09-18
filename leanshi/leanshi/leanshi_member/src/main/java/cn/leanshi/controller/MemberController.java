@@ -745,14 +745,16 @@ public class MemberController {
 			//未绑定
 			//查找会员推荐人资料
 			MemberRelation relation = memberService.findRelationByMCode(mCode);
-			String sponsorCode = relation.getSponsorCode();
-			map.put("sponsorCode",sponsorCode);
-			//根据推荐人编号查找推荐人基本信息
-			Member_basic sponsor = memberService.findByMCode(sponsorCode);
-			String sponsorName = sponsor.getMName();
-			String sponsorIdCode = sponsor.getIdCode();
-			map.put("sponsorName",sponsorName);
-			map.put("sponsorIdCode",sponsorIdCode);
+			if (relation!=null){
+				String sponsorCode = relation.getSponsorCode();
+				map.put("sponsorCode",sponsorCode);
+				//根据推荐人编号查找推荐人基本信息
+				Member_basic sponsor = memberService.findByMCode(sponsorCode);
+				String sponsorName = sponsor.getMName();
+				String sponsorIdCode = sponsor.getIdCode();
+				map.put("sponsorName",sponsorName);
+				map.put("sponsorIdCode",sponsorIdCode);
+			}
 
 			resultMsg.setCode(false);
 			resultMsg.setMsg("该会员没有绑定老会员");
@@ -1194,8 +1196,10 @@ public class MemberController {
 	 * 添加周期
 	 * */
 	@RequestMapping(value = "/addPeriod")
-	public ResultMsg addPeriod(@RequestParam(value = "periodCode",required = false) String periodCode,@RequestParam(value = "beginDateS",required = false) String beginDateS,
+	public ResultMsg addPeriod(@RequestParam(value = "periodCode",required = false) String periodCode,
+							   @RequestParam(value = "beginDateS",required = false) String beginDateS,
 							   @RequestParam(value = "endDateS",required = false) String endDateS){
+
 		DateConverter dateConverter = new DateConverter();
 		if (beginDateS==null&&"".equals(beginDateS.toString().trim())&&endDateS==null&&"".equals(endDateS.toString().trim())){
 
