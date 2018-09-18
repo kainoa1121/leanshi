@@ -23,7 +23,7 @@ public class searchTest {
 		DateConverter dateConverter = new DateConverter();
 		Date date = dateConverter.convert("201812");
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
+		calendar.setTime(new Date());
 		calendar.add(Calendar.MONTH,1);
 		System.out.println(calendar.get(Calendar.MONTH+1));
 	}

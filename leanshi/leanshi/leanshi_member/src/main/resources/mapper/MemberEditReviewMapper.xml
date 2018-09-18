@@ -131,10 +131,10 @@
         WHERE
         REVIEW_STATUS >= 0
         <if test="mCode !=null and mCode != ''">
-            AND MM_CODE = #{mCode}
+            AND MM_CODE LIKE "%"#{mCode}"%"
         </if>
         <if test="mName !=null and mName != ''">
-            AND MM_NAME_AFTER = #{mName}
+            AND MM_NAME_AFTER LIKE "%"#{mName}"%"
         </if>
         <if test="updateType !=null">
             AND UPDATE_TYPE = #{updateType}
@@ -169,10 +169,10 @@
         WHERE
         REVIEW_STATUS = 0
         <if test="mCode !=null and mCode != ''">
-            and MM_CODE = #{mCode}
+            and MM_CODE LIKE "%"#{mCode}"%"
         </if>
         <if test="mName !=null and mName != ''">
-            and MM_NAME_AFTER = #{mName}
+            and MM_NAME_AFTER  LIKE "%"#{mName}"%"
         </if>
         <if test="updateTime !=null and updateTime != ''">
             and UPDATE_TIME = #{updateTime}
