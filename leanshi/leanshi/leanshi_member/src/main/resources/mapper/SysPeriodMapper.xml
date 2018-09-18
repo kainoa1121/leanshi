@@ -19,7 +19,12 @@
     </select>
 
     <insert id="addPeriod" parameterType="cn.leanshi.model.SysPeriod">
-        INSERT INTO rd_sys_period(PERIOD_CODE,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,BONUS_STATUS) values(#{periodCode},#{salesStatus},#{calStatus},#{beginDate},#{endDate},#{calTimes},#{bonusStatus})
+        INSERT INTO rd_sys_period(PERIOD_CODE,PRE_PERIOD,NEXT_PERIOD,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,BONUS_STATUS) values(#{periodCode},#{prePeriod},#{nextPeriod},#{salesStatus},#{calStatus},#{beginDate},#{endDate},#{calTimes},#{bonusStatus})
     </insert>
+
+
+    <select id="findPrePeriod" parameterType="string" resultMap="SysPeriodResultMap">
+        SELECT * FROM rd_sys_period WHERE PERIOD_CODE=#{periodCode}
+    </select>
 
 </mapper>

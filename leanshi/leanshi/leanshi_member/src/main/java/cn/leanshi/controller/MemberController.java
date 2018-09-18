@@ -14,6 +14,7 @@ import cn.leanshi.model.util.DateConverter;
 import cn.leanshi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -840,6 +841,47 @@ public class MemberController {
 		}
 	}
 
+	/*
+	*查找批量绑定数据
+	 */
+	@RequestMapping(value = "/findBindingAll",method = RequestMethod.GET)
+	public ResultMsg findBindingAll(@RequestParam(value = "mCode",required = false) String mCode){
+		if (mCode==null){
+			return ResultMsg.newInstance(false,"mCode会员编号为空，查找失败！");
+		}
+		ResultMsg<Map<String,Object>> resultMsg = new ResultMsg<Map<String,Object>>();
+		Map<String,Object> map = new HashMap<String,Object>();
+
+		Member_basic byMCode = memberService.findByMCode(mCode);
+		if (byMCode==null){
+			return ResultMsg.newInstance(false,"mCode会员编号不存在，查找失败！");
+		}
+		map.put("member",byMCode);
+
+		MemberRelation relation = memberService.findRelationByMCode(mCode);
+		if (relation==null){
+			return ResultMsg.newInstance(false,"mCode会员编号状态表不存在，查找失败！");
+		}
+		map.put("relation",relation);
+
+		Member_basic sponsor = memberService.findByMCode(relation.getSponsorCode());
+		if (sponsor==null){
+			return ResultMsg.newInstance(false,"mCode会员编号的推荐人不存在，查找失败！");
+		}
+		map.put("sponsor",sponsor);
+
+		RdRaBinding binding = memberService.findBindingByMCode(mCode);
+		if (binding==null){
+			map.put("binding","未绑定老会员");
+		}else{
+			map.put("binding",binding);
+		}
+
+		resultMsg.setData(map);
+		resultMsg.setCode(true);
+
+		return resultMsg;
+	}
 
 
 	/*
@@ -1206,11 +1248,33 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"添加周期失败，请输入正确的日期！");
 
 		}
+		//根据这一周期查找是否有上一期周期
+		SysPeriod period = memberService.findPrePeriod(periodCode);
+		//定义上一周期
+		String prePeriod ="";
+		if (period==null){
+			//说明前面没有周期  上一周期 = 本周期
+			prePeriod = periodCode;
+		}
+
+		//当前周期月份
+		prePeriod = period.getPeriodCode();
+		Date date = dateConverter.convert(periodCode);
+
+		//1.获取Calendar对象
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH,1);
+
+		String nextPeriod = "";
+
 		Date beginDate = dateConverter.convert(beginDateS);
 		Date endDate = dateConverter.convert(endDateS);
-		int i = memberService.addPeriod(periodCode,beginDate,endDate);
+		int i = memberService.addPeriod(periodCode,prePeriod,nextPeriod,beginDate,endDate);
 
 		return null;
 	}
+
+
 
 }

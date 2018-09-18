@@ -11,4 +11,6 @@ public interface SysPeriodMapper {
 	SysPeriod findPeriodByDate(String periodCode);
 
 	int addPeriod(SysPeriod period);
+
+	SysPeriod findPrePeriod(String nextPeriod);
 }
