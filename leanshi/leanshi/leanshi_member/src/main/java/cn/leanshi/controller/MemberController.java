@@ -1020,7 +1020,7 @@ public class MemberController {
 	 * 根据id修改会员修改信息
 	 * */
 	@RequestMapping(value = "/updateEditById",method = RequestMethod.POST)
-	public ResultMsg updateEditById(@RequestParam Integer rId,@RequestParam Integer reviewStatus){
+	public ResultMsg updateEditById(@RequestParam Integer rId,@RequestParam Integer reviewStatus,@RequestParam String reviewMemo){
 
 		if (rId==null||"".equals(rId.toString().trim())||rId==0){
 			return ResultMsg.newInstance(false,"审核失败！");
@@ -1035,7 +1035,7 @@ public class MemberController {
 		}
 
 		try {
-			int i = memberService.updateEditById(rId,reviewStatus);
+			int i = memberService.updateEditById(rId,reviewStatus,reviewMemo);
 			if (i==1){
 				return ResultMsg.newInstance(true,"审核成功！");
 			}
@@ -1291,22 +1291,34 @@ public class MemberController {
 			prePeriod = periodCode;
 		}
 
-		//当前周期月份
+		//上一周期的当前周期月份
 		prePeriod = period.getPeriodCode();
+
 		Date date = dateConverter.convert(periodCode);
 
 		//1.获取Calendar对象
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH,1);
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH)+1;
+		String monthS ="";
+		if (month + 1 < 10){
+			monthS = 0+""+month;
+		}else{
+			monthS = month+"";
+		}
 
-		String nextPeriod = "";
+		String nextPeriod = year+""+monthS;
 
 		Date beginDate = dateConverter.convert(beginDateS);
 		Date endDate = dateConverter.convert(endDateS);
 		int i = memberService.addPeriod(periodCode,prePeriod,nextPeriod,beginDate,endDate);
-
-		return null;
+		if (i==1){
+			return ResultMsg.newInstance(true,"添加成功！");
+		}else {
+			return ResultMsg.newInstance(false,"添加失败！");
+		}
 	}
 
 

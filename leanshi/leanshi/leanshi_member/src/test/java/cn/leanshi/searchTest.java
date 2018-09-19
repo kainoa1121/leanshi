@@ -21,10 +21,20 @@ public class searchTest {
 	@Test
 	public void fun01(){
 		DateConverter dateConverter = new DateConverter();
-		Date date = dateConverter.convert("201812");
+		Date date = dateConverter.convert("201811");
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
+		calendar.setTime(date);
 		calendar.add(Calendar.MONTH,1);
-		System.out.println(calendar.get(Calendar.MONTH+1));
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH)+1;
+        String monthS ="";
+		if (month + 1 < 10){
+			monthS = 0+""+month;
+		}else{
+			monthS = month+"";
+		}
+
+		System.out.println(year+""+monthS);
+
 	}
 }

@@ -226,7 +226,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setUpdateMemo(mDesc);
 				editReview.setUpdateType(1);
 				editReview.setUpdateTime(new Date());
-				editReview.setReviewMemo("未提供材料");
+				editReview.setReviewMemo("");
 				editReview.setReviewStatus(0); //审核
 			}
 			return editReviewMapper.saveEdit(editReview);
@@ -341,7 +341,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setUpdateMemo(mDesc);
 				editReview.setUpdateType(2);
 				editReview.setUpdateTime(new Date());
-				editReview.setReviewMemo("未提供材料");
+				editReview.setReviewMemo("");
 				editReview.setReviewStatus(0); //审核
 			}
 
@@ -526,7 +526,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setUpdateMemo(mDesc);
 				editReview.setUpdateType(3);
 				editReview.setUpdateTime(new Date());
-				editReview.setReviewMemo("未提供材料");
+				editReview.setReviewMemo("");
 				editReview.setReviewStatus(0); //审核
 			}
 			return editReviewMapper.saveEdit(editReview);
@@ -673,7 +673,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setUpdateMemo(mDesc);
 				editReview.setUpdateType(4);
 				editReview.setUpdateTime(new Date());
-				editReview.setReviewMemo("未提供材料");
+				editReview.setReviewMemo("");
 				editReview.setReviewStatus(0); //审核
 			}
 			return editReviewMapper.saveEdit(editReview);
@@ -754,7 +754,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setUpdateMemo(mDesc);
 				editReview.setUpdateType(5);
 				editReview.setUpdateTime(new Date());
-				editReview.setReviewMemo("未提供材料");
+				editReview.setReviewMemo("");
 				editReview.setReviewStatus(0); //审核
 			}
 			return editReviewMapper.saveEdit(editReview);
@@ -784,7 +784,7 @@ public class MemberServiceImpl implements MemberService {
 	 * 审核
 	 * */
 	@Override
-	public int updateEditById(Integer rId,Integer reviewStatus) {
+	public int updateEditById(Integer rId,Integer reviewStatus,String reviewMemo) {
 
 		//审核通过
 		if (reviewStatus==2){
@@ -892,6 +892,7 @@ public class MemberServiceImpl implements MemberService {
 		Map<String,Object> map = new HashMap<>();
 		map.put("rId",rId);
 		map.put("reviewStatus",reviewStatus);
+		map.put("reviewMemo",reviewMemo);
 		return editReviewMapper.updateEditById(map);
 	}
 

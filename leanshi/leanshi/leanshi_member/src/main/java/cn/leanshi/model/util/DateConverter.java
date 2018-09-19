@@ -19,7 +19,7 @@ public class DateConverter implements Converter<String, Date> {
 	@Override
 	public Date convert(String event) {
 
-		String[] patterns = new String[]{"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd", "yyyyMMdd", "yyyy年MM月dd日 HH:mm"};
+		String[] patterns = new String[]{"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd", "yyyyMMdd", "yyyyMM", "yyyy年MM月dd日 HH:mm"};
 
 		Date date = null;
 		for (String pattern : patterns) {

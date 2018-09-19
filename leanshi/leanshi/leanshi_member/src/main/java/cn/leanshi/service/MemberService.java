@@ -48,7 +48,7 @@ public interface MemberService {
 
 	MemberEditReview findEditById(Integer rId);
 
-	int updateEditById(Integer rId,Integer reviewStatus);
+	int updateEditById(Integer rId,Integer reviewStatus,String reviewMemo);
 
 	List<MemberEditReview> findEditStatus(String mCode, String mName, Date timeStar,Date timeEnd);
 
