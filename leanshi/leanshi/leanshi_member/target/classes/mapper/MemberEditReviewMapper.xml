@@ -159,7 +159,8 @@
     <update id="updateEditById" parameterType="java.util.Map" >
         UPDATE rd_mm_edit
           SET
-          REVIEW_STATUS = #{reviewStatus}
+          REVIEW_STATUS = #{reviewStatus},
+          REVIEW_MEMO = #{reviewMemo}
           WHERE EID = #{rId}
     </update>
 

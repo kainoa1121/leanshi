@@ -1275,44 +1275,56 @@ public class MemberController {
 	public ResultMsg addPeriod(@RequestParam(value = "periodCode",required = false) String periodCode,
 							   @RequestParam(value = "beginDateS",required = false) String beginDateS,
 							   @RequestParam(value = "endDateS",required = false) String endDateS){
-
+		if (periodCode==null||"".equals(periodCode)){
+			return ResultMsg.newInstance(false,"添加周期失败，请输入正确的周期！");
+		}
 		DateConverter dateConverter = new DateConverter();
 		if (beginDateS==null&&"".equals(beginDateS.toString().trim())&&endDateS==null&&"".equals(endDateS.toString().trim())){
 
 			return ResultMsg.newInstance(false,"添加周期失败，请输入正确的日期！");
 
 		}
+
+		Date beginDate = dateConverter.convert(beginDateS);
+		Date endDate = dateConverter.convert(endDateS);
+
 		//根据这一周期查找是否有上一期周期
 		SysPeriod period = memberService.findPrePeriod(periodCode);
-		//定义上一周期
+		//定义上一周期  没有上一周期的时候为空字符串
 		String prePeriod ="";
-		if (period==null){
-			//说明前面没有周期  上一周期 = 本周期
-			prePeriod = periodCode;
+		//上一期结束时间
+		String nextPeriodBefore = "";
+		if (period!=null){
+			prePeriod = period.getPeriodCode();
+
+			nextPeriodBefore = period.getNextPeriod();
+
 		}
 
-		//上一周期的当前周期月份
-		prePeriod = period.getPeriodCode();
+		if (!"".equals(nextPeriodBefore)){
+			Date endDateBefore = dateConverter.convert(nextPeriodBefore);
+			if (beginDate.getTime()<endDateBefore.getTime()){
+				return ResultMsg.newInstance(false,"开始时间不能超过上一周期结束是时间，添加周期失败！");
+			}
+		}
 
-		Date date = dateConverter.convert(periodCode);
 
 		//1.获取Calendar对象
+		Date date = dateConverter.convert(periodCode);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH,1);
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH)+1;
 		String monthS ="";
-		if (month + 1 < 10){
+		if (month< 10){
 			monthS = 0+""+month;
 		}else{
 			monthS = month+"";
 		}
-
+		//下一周期
 		String nextPeriod = year+""+monthS;
 
-		Date beginDate = dateConverter.convert(beginDateS);
-		Date endDate = dateConverter.convert(endDateS);
 		int i = memberService.addPeriod(periodCode,prePeriod,nextPeriod,beginDate,endDate);
 		if (i==1){
 			return ResultMsg.newInstance(true,"添加成功！");
@@ -1321,6 +1333,140 @@ public class MemberController {
 		}
 	}
 
+	/*
+	 * 切换周期状态
+	 * */
+	@RequestMapping(value = "/editPeriodStatu")
+	public ResultMsg editPeriodStatu(@RequestParam(value = "periodCode",required = false) String periodCode,
+									 @RequestParam(value = "updateMemo",required = false) String updateMemo){
+
+		if (periodCode==null||"".equals(periodCode)){
+			return ResultMsg.newInstance(false,"切换周期状态失败，请输入正确的周期！");
+		}
+
+		if (updateMemo==null){
+			return ResultMsg.newInstance(false,"修改备注不能为null！");
+		}
+
+		SysPeriod period = memberService.findPeriod(periodCode);
+		if (period==null){
+			return ResultMsg.newInstance(false,"切换周期状态失败，请输入正确的周期！");
+		}
+
+		int salesStatus = period.getSalesStatus();
+		int calStatus = period.getCalStatus();
+		int bonusStatus = period.getBonusStatus();
+
+		String actionCode ="";//影响字段
+		int valBefoer = 0;//修改前值
+		String valBefoerDesc ="";//修改前值描述
+		int valAfter = 0;//修改后值
+		String valAfterDesc = "";//修改后值描述
+
+
+
+		if (salesStatus<3){//业绩状态
+			//影响字段 SALES_STATUS
+			actionCode = "SALES_STATUS";
+
+			if (salesStatus==0){//0：未开始
+
+				valBefoer=salesStatus;
+				valBefoerDesc="未开始";
+
+				salesStatus = 1;//1：已开始
+
+				valAfter =salesStatus;
+				valAfterDesc ="已开始";
+
+			}else if (salesStatus==1){//1：已开始
+
+				valBefoer=salesStatus;
+				valBefoerDesc="已开始";
+
+				salesStatus = 2;//2：外部关闭补录中
+
+				valAfter =salesStatus;
+				valAfterDesc ="外部关闭补录中";
+
+			}else{//2：外部关闭补录中
+				valBefoer=salesStatus;
+				valBefoerDesc="外部关闭补录中";
+
+				salesStatus = 3;//3.已关闭
+
+				valAfter =salesStatus;
+				valAfterDesc ="已关闭";
+			}
+
+		}else{//业绩状态 3.已关闭
+
+			if(calStatus<3){//奖金状态
+				//影响字段 CAL_STATUS
+				actionCode = "CAL_STATUS";
+				if (calStatus==0){
+
+					valBefoer=calStatus;
+					valBefoerDesc="未开始";
+
+					calStatus = 1;//1：已开始
+
+					valAfter =calStatus;
+					valAfterDesc ="计算中";
+
+				}else if (calStatus==1){//1：计算中
+
+					valBefoer=calStatus;
+					valBefoerDesc="计算中";
+
+					calStatus = 2;//2：临时发布核对中
+
+					valAfter =calStatus;
+					valAfterDesc ="临时发布核对中";
+
+				}else{//2：临时发布核对中
+					valBefoer=calStatus;
+					valBefoerDesc="临时发布核对中";
+
+					calStatus = 3;//3.已关闭
+
+					valAfter =calStatus;
+					valAfterDesc ="正式发布";
+				}
+
+			}else{//奖金状态 3：正式发布'
+				//影响字段 BONUS_STATUS
+				actionCode = "BONUS_STATUS";
+				if (bonusStatus==0){//发放状态
+
+					valBefoer=bonusStatus;
+					valBefoerDesc="未发出";
+
+					bonusStatus = 1;//1.已发出
+
+					valAfter =bonusStatus;
+					valAfterDesc ="已发出";
+
+				}else{//发放状态 1.已发出
+					return ResultMsg.newInstance(false,"切换周期状态失败，本周期已完成！");
+				}
+			}
+		}
+
+
+
+		//修改周期表状态
+		int i = memberService.editPeriodStatu(periodCode,salesStatus,calStatus,bonusStatus);
+
+		//记录周期变更日志
+		int j = memberService.addPeriodLog(periodCode,actionCode,valBefoer,valBefoerDesc,valAfter,valAfterDesc,updateMemo);
+
+		if (i==1&&i==j){
+			return ResultMsg.newInstance(true,"切换周期成功！");
+		}else {
+			return ResultMsg.newInstance(false,"切换周期失败！");
+		}
+	}
 
 
 }

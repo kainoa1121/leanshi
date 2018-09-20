@@ -14,7 +14,7 @@ import java.util.Date;
 public class SysPeriodLog {
 
 	private int lId; //'动作序号（自动生成)'
-	private int periodCode;//'业务周期'
+	private String periodCode;//'业务周期'
 	private String actionCode;//'影响字段 SALES_STATUS BONUS_STATUS SALARY_STATUS'
 	private int valBefoer;//修改前值'
 	private String valBefoerDesc;//'修改前值描述'

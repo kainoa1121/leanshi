@@ -101,4 +101,8 @@ public interface MemberService {
 	int findRankByRankName(String rankName);
 
 	SysPeriod findPrePeriod(String periodCode);
+
+	int editPeriodStatu(String periodCode,int salesStatus, int calStatus, int bonusStatus);
+
+	int addPeriodLog(String periodCode, String actionCode, int valBefoer, String valBefoerDesc, int valAfter, String valAfterDesc, String updateMemo);
 }

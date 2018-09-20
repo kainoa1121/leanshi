@@ -9,6 +9,7 @@ import cn.leanshi.mapper.MemberQualificationMapper;
 import cn.leanshi.mapper.MemberRelationMapper;
 import cn.leanshi.mapper.RankMapper;
 import cn.leanshi.mapper.RdRaBindingMapper;
+import cn.leanshi.mapper.SysPeriodLogMapper;
 import cn.leanshi.mapper.SysPeriodMapper;
 import cn.leanshi.model.MemberAccount;
 import cn.leanshi.model.MemberAddress;
@@ -20,6 +21,7 @@ import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.SysPeriod;
+import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -49,6 +51,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRelationMapper relationMapper;
 	private final RdRaBindingMapper rdRaBindingMapper;
 	private final SysPeriodMapper sysPeriodMapper;
+	private final SysPeriodLogMapper sysPeriodLogMapper;
 	private final RankMapper rankMapper;
 	private final MemberAddressMapper addressMapper;
 	private final MemberAccountMapper accountMapper;
@@ -1129,7 +1132,29 @@ public class MemberServiceImpl implements MemberService {
 		return false;
 	}
 
+	@Override
+	public int editPeriodStatu(String periodCode,int salesStatus, int calStatus, int bonusStatus) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("salesStatus",salesStatus);
+		map.put("calStatus",calStatus);
+		map.put("bonusStatus",bonusStatus);
+		return sysPeriodMapper.editPeriodStatu(map);
+	}
 
-
+	@Override
+	public int addPeriodLog(String periodCode, String actionCode, int valBefoer, String valBefoerDesc, int valAfter, String valAfterDesc, String updateMemo) {
+		SysPeriodLog sysPeriodLog = new SysPeriodLog();
+		sysPeriodLog.setPeriodCode(periodCode);
+		sysPeriodLog.setActionCode(actionCode);
+		sysPeriodLog.setValBefoer(valBefoer);
+		sysPeriodLog.setValBefoerDesc(valBefoerDesc);
+		sysPeriodLog.setValAfter(valAfter);
+		sysPeriodLog.setValAfterDesc(valAfterDesc);
+		sysPeriodLog.setUpdateTime(new Date());
+		sysPeriodLog.setUpdateBy("无名");
+		sysPeriodLog.setUpdateMemo(updateMemo);
+		return sysPeriodLogMapper.addPeriodLog(sysPeriodLog);
+	}
 
 }
