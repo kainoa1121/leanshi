@@ -1485,7 +1485,7 @@ public class MemberController {
 
 		ResultMsg<String> resultMsg = new ResultMsg<String>();
 		resultMsg.setCode(true);
-		resultMsg.setData(path);
+		resultMsg.setData("/img/"+UUIDFileName);
 		return resultMsg;
 	}
 
