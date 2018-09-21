@@ -87,6 +87,7 @@
         <result column="UPDATE_MEMO" property="updateMemo" />
         <result column="UPDATE_TYPE" property="updateType" />
         <result column="UPDATE_TIME" property="updateTime" />
+        <result column="UPLOAD_PATH" property="uploadPath" />
         <result column="REVIEW_MEMO" property="reviewMemo" />
         <result column="REVIEW_STATUS" property="reviewStatus" />
 
@@ -113,7 +114,7 @@
                               SPONSOR_NAME_BEFORE,SPONSOR_NAME_AFTER,RANK_BEFORE,RANK_AFTER,
                               RA_CODE_BEFORE,RA_CODE_AFTER,RA_NAME_BEFORE,RA_NAME_AFTER,
                               RA_ID_TYPE_BEFORE,RA_ID_TYPE_AFTER,RA_ID_CODE_BEFORE,RA_ID_CODE_AFTER,
-                              UPDATE_BY,UPDATE_MEMO,UPDATE_TYPE,UPDATE_TIME,REVIEW_MEMO,REVIEW_STATUS)
+                              UPDATE_BY,UPDATE_MEMO,UPDATE_TYPE,UPDATE_TIME,UPLOAD_PATH,REVIEW_MEMO,REVIEW_STATUS)
         VALUES(#{mCode},#{mNameBefore},#{mName},#{idTypeBefore},#{idType},#{idCodeBefore},#{idCode},
               #{mNicknameBefore},#{mNickname},#{genderBefore},#{gender},#{mobileBefore},#{mobile},
               #{weChatBefore},#{weChat},#{emailBefore},#{email},#{addPostBefore},#{addPost},#{provinceBefore},
@@ -122,7 +123,7 @@
               #{withdrawDefaultBefore},#{withdrawDefault},#{sponsorCodeBefore},#{sponsorCode},#{sponsorNameBefore},
               #{sponsorName},#{rankBefore},#{rank},#{raCodeBefore},#{raCode},#{raNameBefore},#{raName},
               #{raIdTypeBefore},#{raIdType},#{raIdCodeBefore},#{raIdCode},
-              #{updateBy},#{updateMemo},#{updateType},#{updateTime},#{reviewMemo},#{reviewStatus})
+              #{updateBy},#{updateMemo},#{updateType},#{updateTime},#{uploadPath},#{reviewMemo},#{reviewStatus})
     </insert>
 
     <!--根据编号姓名修改类型修改状态修改时间条件搜索-->
@@ -145,7 +146,7 @@
         <if test="timeStar !=null and timeEnd !=null">
             AND UPDATE_TIME BETWEEN #{timeStar} AND #{timeEnd}
         </if>
-        ORDER BY REVIEW_STATUS,UPDATE_TIME ASC
+        ORDER BY REVIEW_STATUS,UPDATE_TIME DESC
     </select>
 
     <!--根据id查找会员修改信息-->

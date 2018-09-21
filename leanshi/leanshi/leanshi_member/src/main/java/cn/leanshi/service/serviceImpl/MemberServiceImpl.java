@@ -245,7 +245,7 @@ public class MemberServiceImpl implements MemberService {
 	 * 根据编和姓名修改会员证件信息（会员更名）
 	 * */
 	@Override
-	public int updateIdByMCodeAndMName(String mCode,String mName,String newMName,Integer idType,String idCode,String mNickname,String mobile,String mDesc) {
+	public int updateIdByMCodeAndMName(String mCode,String mName,String newMName,Integer idType,String idCode,String mNickname,String mobile,String uploadPath,String mDesc) {
 		MemberEditReview last = editReviewMapper.selectLastByMCode(mCode);
 
 		MemberEditReview editReview = new MemberEditReview();
@@ -337,6 +337,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setUpdateMemo(mDesc);
 				editReview.setUpdateType(2);
 				editReview.setUpdateTime(new Date());
+				editReview.setUploadPath(uploadPath);
 				editReview.setReviewMemo("");
 				editReview.setReviewStatus(0); //审核
 			}
