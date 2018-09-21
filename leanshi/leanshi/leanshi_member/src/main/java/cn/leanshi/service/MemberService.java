@@ -30,7 +30,7 @@ public interface MemberService {
 
 	int updateByMBank(String mCode,String mName,String mobile,String mNickname,String withdrawDefault,String mDesc);
 
-	int updateIdByMCodeAndMName(String mCode,String mName,String newMName,Integer idType,String idCode,String mNickname,String mobile,String mDesc);
+	int updateIdByMCodeAndMName(String mCode,String mName,String newMName,Integer idType,String idCode,String mNickname,String mobile,String uploadPath,String mDesc);
 
 	MemberQualification findQualificationByMCode(String mCode);
 

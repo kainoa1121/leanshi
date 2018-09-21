@@ -66,6 +66,7 @@ public class MemberEditReview {
 	private String updateMemo;//'修改备注'
 	private Integer updateType;//'修改类型 0.修改基本信息 1.修改敏感信息 2.会员更名 3.更改推荐人 4.更改会员级别 5.与老会员绑定'
 	private Date updateTime;//'修改时间'
+	private String uploadPath; //图片路径
 	private String reviewMemo;//'审核备注'
 	private Integer reviewStatus;//'审核状态 0:待审 1:驳回 2：审核通过 3：无需审核'
 

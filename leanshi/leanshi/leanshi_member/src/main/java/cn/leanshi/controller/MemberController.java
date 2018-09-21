@@ -11,9 +11,12 @@ import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.http.ResultMsg;
 import cn.leanshi.model.util.DateConverter;
+import cn.leanshi.model.util.FileUtil;
 import cn.leanshi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,11 +26,13 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -504,8 +509,8 @@ public class MemberController {
 											 @RequestParam(value = "idCode",required = false) String idCode,
 											 @RequestParam(value = "mNickname",required = true) String mNickname,
 											 @RequestParam(value = "mobile",required = true) String mobile,
+											 @RequestParam(value = "uploadPath",required = false) String uploadPath,
 											 @RequestParam(value = "mDesc",required = false) String mDesc){
-
 
 		if (mCode==null&&"".equals(mCode.toString().trim())){
 			return ResultMsg.newInstance(false,"会员编号未知，修改失败！");
@@ -519,6 +524,9 @@ public class MemberController {
 		}
 		if (idCode==null&&"".equals(idCode.toString().trim())){
 			return ResultMsg.newInstance(false,"证件号码未填写！");
+		}
+		if (uploadPath==null&&"".equals(uploadPath.toString().trim())){
+			return ResultMsg.newInstance(false,"没上传图片！");
 		}
 
 		Member_basic mem1 = memberService.findByMCode(mCode);
@@ -542,7 +550,7 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"已有在待审信息，请等待待审通过后才能再次修改！");
 		}
 
-		int i =memberService.updateIdByMCodeAndMName(mCode,mName,newMName,idType,idCode,mNickname,mobile,mDesc);
+		int i =memberService.updateIdByMCodeAndMName(mCode,mName,newMName,idType,idCode,mNickname,mobile,uploadPath,mDesc);
 		if (i==1){
 			return ResultMsg.newInstance(true,"修改成功,等待审核！");
 		}
@@ -1443,6 +1451,42 @@ public class MemberController {
 		}else {
 			return ResultMsg.newInstance(false,"切换周期失败！");
 		}
+	}
+
+
+	@Value("${upload.path}")
+	private String uploadPath;
+
+	//图片上传
+	@RequestMapping(value = "/uploadFile",method = RequestMethod.POST)
+	public ResultMsg uploadFile(@RequestParam("file") MultipartFile file) {
+
+		// 获取文件名
+		String fileName = file.getOriginalFilename();
+
+		// 设置文件存储路径
+		String filePath = uploadPath + "//" +"img//";
+
+		//设置随机文件名
+		String UUIDFileName = FileUtil.getFileName(fileName);
+		String path = filePath + UUIDFileName;
+
+		File dest = new File(path);
+		// 检测是否存在目录
+		if (!dest.getParentFile().exists()) {
+			dest.getParentFile().mkdirs();// 新建文件夹
+		}
+
+		try {
+			file.transferTo(dest);// 文件写入
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		ResultMsg<String> resultMsg = new ResultMsg<String>();
+		resultMsg.setCode(true);
+		resultMsg.setData(path);
+		return resultMsg;
 	}
 
 
