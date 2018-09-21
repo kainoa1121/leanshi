@@ -82,7 +82,9 @@
         SET
           MM_NAME = #{mName},
           ID_TYPE = #{idType},
-          ID_CODE = #{idCode}
+          ID_CODE = #{idCode},
+          MM_NICK_NAME = #{mNickname},
+          MOBILE = #{mobile}
         WHERE
         MM_CODE = #{mCode}
     </update>

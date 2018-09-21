@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.SysPeriodLogMapper">
+
+    <resultMap id="LogResultMap" type="cn.leanshi.model.SysPeriodLog">
+        <id column="LOG_ID" property="lId" />
+        <result column="PERIOD_CODE" property="periodCode" />
+        <result column="ACTION_CODE" property="actionCode" />
+        <result column="VAL_BEFORE" property="valBefoer" />
+        <result column="VAL_BEFORE_DESC" property="valBefoerDesc" />
+        <result column="VAL_AFTER" property="valAfter" />
+        <result column="VAL_AFTER_DESC" property="valAfterDesc" />
+        <result column="UPDATE_TIME" property="updateTime" />
+        <result column="UPDATE_BY" property="updateBy" />
+        <result column="UPDATE_MEMO" property="updateMemo" />
+    </resultMap>
+
+
+    <insert id="addPeriodLog" parameterType="cn.leanshi.model.SysPeriodLog">
+        INSERT INTO rd_sys_period_log(PERIOD_CODE,ACTION_CODE,VAL_BEFORE,VAL_BEFORE_DESC,VAL_AFTER,VAL_AFTER_DESC,UPDATE_TIME,UPDATE_BY,UPDATE_MEMO)
+              values(#{periodCode},#{actionCode},#{valBefoer},#{valBefoerDesc},#{valAfter},#{valAfterDesc},#{updateTime},#{updateBy},#{updateMemo})
+    </insert>
+
+
+</mapper>

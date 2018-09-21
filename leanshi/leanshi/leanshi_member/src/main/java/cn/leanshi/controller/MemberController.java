@@ -460,7 +460,7 @@ public class MemberController {
 		int updateType =1 ;
 		//根据mCode和修改类型查找是否有正在审核的数据
 		List<MemberEditReview> editReviewList = memberService.findEditByMCode(mCode,updateType);
-		if (editReviewList!=null||!editReviewList.isEmpty()){
+		if (!editReviewList.isEmpty()||editReviewList.size()!=0){
 			return ResultMsg.newInstance(false,"已有在待审信息，请等待待审通过后才能再次修改！");
 		}
 
@@ -499,15 +499,11 @@ public class MemberController {
 	@RequestMapping(value = "/updateIdByMCodeAndMName",method = RequestMethod.POST)
 	public ResultMsg updateIdByMCodeAndMName(@RequestParam(value = "mCode",required = false) String mCode,
 											 @RequestParam(value = "mName",required = false) String mName,
-											 @RequestParam(value = "newMName",required = true) String newMName,
-											 @RequestParam(value = "idType",required = true) Integer idType,
-											 @RequestParam(value = "idCode",required = true) String idCode,
-											 @RequestParam(value = "mNickname",required = false) String mNickname,
-											 @RequestParam(value = "mobile",required = false) String mobile,
-											 @RequestParam(value = "province",required = false) String province,
-											 @RequestParam(value = "city",required = false) String city,
-											 @RequestParam(value = "country",required = false) String country,
-											 @RequestParam(value = "detial",required = false) String detial,
+											 @RequestParam(value = "newMName",required = false) String newMName,
+											 @RequestParam(value = "idType",required = false) Integer idType,
+											 @RequestParam(value = "idCode",required = false) String idCode,
+											 @RequestParam(value = "mNickname",required = true) String mNickname,
+											 @RequestParam(value = "mobile",required = true) String mobile,
 											 @RequestParam(value = "mDesc",required = false) String mDesc){
 
 
@@ -524,25 +520,6 @@ public class MemberController {
 		if (idCode==null&&"".equals(idCode.toString().trim())){
 			return ResultMsg.newInstance(false,"证件号码未填写！");
 		}
-		if (mNickname==null&&"".equals(mNickname.toString().trim())){
-			return ResultMsg.newInstance(false,"昵称未填写！");
-		}
-		if (mobile==null&&"".equals(mobile.toString().trim())){
-			return ResultMsg.newInstance(false,"手机号码未填写！");
-		}
-		if (province==null&&"".equals(province.toString().trim())){
-			return ResultMsg.newInstance(false,"省份未填写！");
-		}
-		if (city==null&&"".equals(city.toString().trim())){
-			return ResultMsg.newInstance(false,"市未填写！");
-		}
-		if (country==null&&"".equals(country.toString().trim())){
-			return ResultMsg.newInstance(false,"区未填写！");
-		}
-		if (detial==null&&"".equals(detial.toString().trim())){
-			return ResultMsg.newInstance(false,"详细地址未填写！");
-		}
-
 
 		Member_basic mem1 = memberService.findByMCode(mCode);
 		if (mem1.getMobile()!=mobile){
@@ -561,11 +538,11 @@ public class MemberController {
 		int updateType =2 ;
 		//根据mCode和修改类型查找是否有正在审核的数据
 		List<MemberEditReview> editReviewList = memberService.findEditByMCode(mCode,updateType);
-		if (editReviewList!=null||!editReviewList.isEmpty()){
+		if (!editReviewList.isEmpty()||editReviewList.size()!=0){
 			return ResultMsg.newInstance(false,"已有在待审信息，请等待待审通过后才能再次修改！");
 		}
 
-		int i =memberService.updateIdByMCodeAndMName(mCode,mName,newMName,idType,idCode,mNickname,mobile,province,city,country,detial,mDesc);
+		int i =memberService.updateIdByMCodeAndMName(mCode,mName,newMName,idType,idCode,mNickname,mobile,mDesc);
 		if (i==1){
 			return ResultMsg.newInstance(true,"修改成功,等待审核！");
 		}
@@ -684,7 +661,7 @@ public class MemberController {
 		int updateType =3 ;
 		//根据mCode和修改类型查找是否有正在审核的数据
 		List<MemberEditReview> editReviewList = memberService.findEditByMCode(mCode,updateType);
-		if (editReviewList!=null||!editReviewList.isEmpty()){
+		if (!editReviewList.isEmpty()||editReviewList.size()!=0){
 			return ResultMsg.newInstance(false,"已有在待审信息，请等待待审通过后才能再次修改！");
 		}
 
@@ -708,7 +685,7 @@ public class MemberController {
 		int updateType =4 ;
 		//根据mCode和修改类型查找是否有正在审核的数据
 		List<MemberEditReview> editReviewList = memberService.findEditByMCode(mCode,updateType);
-		if (editReviewList!=null||!editReviewList.isEmpty()){
+		if (!editReviewList.isEmpty()||editReviewList.size()!=0){
 			return ResultMsg.newInstance(false,"已有在待审信息，请等待待审通过后才能再次修改！");
 		}
 
@@ -802,7 +779,7 @@ public class MemberController {
 		int updateType =5 ;
 		//根据mCode和修改类型查找是否有正在审核的数据
 		List<MemberEditReview> editReviewList = memberService.findEditByMCode(mCode,updateType);
-		if (editReviewList!=null||!editReviewList.isEmpty()){
+		if (!editReviewList.isEmpty()||editReviewList.size()!=0){
 			return ResultMsg.newInstance(false,"已有在待审信息，请等待待审通过后才能再次修改！");
 		}
 
