@@ -178,7 +178,7 @@
         <if test="timeStar !=null and timeEnd !=null">
             AND UPDATE_TIME BETWEEN #{timeStar} AND #{timeEnd}
         </if>
-        ORDER BY UPDATE_TIME ASC
+        ORDER BY UPDATE_TIME DESC
     </select>
 
 

@@ -245,7 +245,7 @@ public class MemberServiceImpl implements MemberService {
 	 * 根据编和姓名修改会员证件信息（会员更名）
 	 * */
 	@Override
-	public int updateIdByMCodeAndMName(String mCode,String mName,String newMName,Integer idType,String idCode,String mNickname,String mobile,String province,String city,String country,String detial,String mDesc) {
+	public int updateIdByMCodeAndMName(String mCode,String mName,String newMName,Integer idType,String idCode,String mNickname,String mobile,String mDesc) {
 		MemberEditReview last = editReviewMapper.selectLastByMCode(mCode);
 
 		MemberEditReview editReview = new MemberEditReview();
@@ -254,7 +254,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setMCode(last.getMCode());
 
 				editReview.setMNameBefore(last.getMName());
-				if (newMName==null&&"".equals(newMName.toString().trim())){
+				if (newMName==null||"".equals(newMName.toString().trim())){
 					editReview.setMName(last.getMName());
 				}else{
 					editReview.setMName(newMName);
@@ -262,21 +262,21 @@ public class MemberServiceImpl implements MemberService {
 				}
 
 				editReview.setIdTypeBefore(last.getIdType());
-				if (idType==null&&"".equals(idType.toString().trim())){
+				if (idType==null||"".equals(idType.toString().trim())){
 					editReview.setIdType(last.getIdType());
 				}else{
 					editReview.setIdType(idType);
 				}
 
 				editReview.setIdCodeBefore(last.getIdCode());
-				if (idCode==null&&"".equals(idCode.toString().trim())){
+				if (idCode==null||"".equals(idCode.toString().trim())){
 					editReview.setIdCode(last.getIdCode());
 				}else{
 					editReview.setIdCode(idCode);
 				}
 
 				editReview.setMNicknameBefore(last.getMNickname());
-				if (mNickname==null&&"".equals(mNickname.toString().trim())){
+				if (mNickname==null||"".equals(mNickname.toString().trim())){
 					editReview.setMNickname(last.getMNickname());
 
 				}else{
@@ -287,7 +287,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setGender(last.getGender());
 
 				editReview.setMobileBefore(last.getMobile());
-				if (mNickname==null&&"".equals(mNickname.toString().trim())){
+				if (mobile==null||"".equals(mobile.toString().trim())){
 					editReview.setMobile(last.getMobile());
 				}else {
 					editReview.setMobile(mobile);
@@ -300,23 +300,16 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setAddPost(last.getAddPost());
 
 				editReview.setProvinceBefore(last.getProvince());
+				editReview.setProvince(last.getProvince());
+
 				editReview.setCityBefore(last.getCity());
+				editReview.setCity(last.getCity());
+
 				editReview.setCountryBefore(last.getCountry());
+				editReview.setCountry(last.getCountry());
+
 				editReview.setDetialBefore(last.getDetial());
-				if (province==null&&"".equals(province.toString().trim())
-						&&city==null&&"".equals(city.toString().trim())
-						&&country==null&&"".equals(country.toString().trim())
-						&&detial==null&&"".equals(detial.toString().trim())){
-					editReview.setProvince(last.getProvince());
-					editReview.setCity(last.getCity());
-					editReview.setCountry(last.getCountry());
-					editReview.setDetial(last.getDetial());
-				}else{
-					editReview.setProvince(province);
-					editReview.setCity(city);
-					editReview.setCountry(country);
-					editReview.setDetial(detial);
-				}
+				editReview.setDetial(last.getDetial());
 
 				editReview.setBankdetailBefore(last.getBankdetail());
 				editReview.setBankdetail(last.getBankdetail());
@@ -832,10 +825,7 @@ public class MemberServiceImpl implements MemberService {
 					memberBasic.setIdCode(memberEditReview.getIdCode());
 					memberBasic.setMNickname(memberEditReview.getMNickname());
 					memberBasic.setMobile(memberEditReview.getMobile());
-					memberBasic.setProvince(memberEditReview.getProvince());
-					memberBasic.setCity(memberEditReview.getCity());
-					memberBasic.setCountry(memberEditReview.getCountry());
-					memberBasic.setDetial(memberEditReview.getDetial());
+
 
 					int i = mapper.updateNameByMCode(memberBasic);
 					if (i!=1){
