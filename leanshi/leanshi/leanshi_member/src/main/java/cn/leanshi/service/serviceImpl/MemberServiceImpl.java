@@ -143,7 +143,7 @@ public class MemberServiceImpl implements MemberService {
 				editReview.setUpdateMemo(mDesc);
 				editReview.setUpdateType(0);
 				editReview.setUpdateTime(new Date());
-				editReview.setReviewMemo("会员基本信息修改，不需提交材料");
+				editReview.setReviewMemo("");
 				editReview.setReviewStatus(3); //无需审核
 
 				int i = editReviewMapper.saveEdit(editReview);
@@ -1146,6 +1146,21 @@ public class MemberServiceImpl implements MemberService {
 		sysPeriodLog.setUpdateBy("无名");
 		sysPeriodLog.setUpdateMemo(updateMemo);
 		return sysPeriodLogMapper.addPeriodLog(sysPeriodLog);
+	}
+
+	@Override
+	public int ClosePeriodSales(String periodCode) {
+
+		int salesStatus = 3;
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("salesStatus",salesStatus);
+		return sysPeriodMapper.ClosePeriodSales(map);
+	}
+
+	@Override
+	public List<SysPeriod> findPeriodAll() {
+		return sysPeriodMapper.findPeriodAll();
 	}
 
 }

@@ -2,6 +2,7 @@ package cn.leanshi.mapper;
 
 import cn.leanshi.model.SysPeriod;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,4 +18,8 @@ public interface SysPeriodMapper {
 	SysPeriod findPrePeriod(String nextPeriod);
 
 	int editPeriodStatu(Map<String, Object> map);
+
+	int ClosePeriodSales(Map<String, Object> map);
+
+	List<SysPeriod> findPeriodAll();
 }
