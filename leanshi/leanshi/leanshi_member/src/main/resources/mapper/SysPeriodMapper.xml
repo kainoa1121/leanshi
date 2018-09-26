@@ -16,8 +16,7 @@
 
     <!--查看所有业务周期-->
     <select id="findPeriodAll" resultMap="SysPeriodResultMap">
-        SELECT PERIOD_CODE,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,CAL_TIMES
-            FROM rd_sys_period
+        SELECT * FROM rd_sys_period ORDER BY PERIOD_CODE ASC
     </select>
 
     <select id="findPeriodByDate" parameterType="string" resultMap="SysPeriodResultMap">

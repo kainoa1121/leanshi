@@ -1099,8 +1099,13 @@ public class MemberController {
 
 		}
 
-		Date beginDate = dateConverter.convert(beginDateS);
-		Date endDate = dateConverter.convert(endDateS);
+		SysPeriod period1 = memberService.findPeriod(periodCode);
+		if (period1!=null){
+			return ResultMsg.newInstance(false,"已有该月周期,添加周期失败");
+		}
+
+		Date beginDate = dateConverter.convert(beginDateS+" "+"00:00:00");
+		Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
 
 		//根据这一周期查找是否有上一期周期
 		SysPeriod period = memberService.findPrePeriod(periodCode);
