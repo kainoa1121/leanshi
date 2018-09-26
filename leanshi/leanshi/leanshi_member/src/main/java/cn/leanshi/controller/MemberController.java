@@ -1099,6 +1099,11 @@ public class MemberController {
 
 		}
 
+		SysPeriod period1 = memberService.findPeriod(periodCode);
+		if (period1!=null){
+			return ResultMsg.newInstance(false,"已有该月周期,添加周期失败");
+		}
+
 		Date beginDate = dateConverter.convert(beginDateS);
 		Date endDate = dateConverter.convert(endDateS);
 
