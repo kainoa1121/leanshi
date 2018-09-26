@@ -11,8 +11,14 @@
         <result column="BEGIN_DATE" property="beginDate" />
         <result column="END_DATE" property="endDate" />
         <result column="CAL_TIMES" property="calTimes" />
-        <result column="BONUS_STATUS" property="bonusStatus" />
+        <result column="CAL_TIMES" property="bonusStatus" />
     </resultMap>
+
+    <!--查看所有业务周期-->
+    <select id="findPeriodAll" resultMap="SysPeriodResultMap">
+        SELECT PERIOD_CODE,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,CAL_TIMES
+            FROM rd_sys_period
+    </select>
 
     <select id="findPeriodByDate" parameterType="string" resultMap="SysPeriodResultMap">
         SELECT * FROM rd_sys_period WHERE PERIOD_CODE=#{periodCode}
@@ -38,4 +44,12 @@
         PERIOD_CODE = #{periodCode}
     </update>
 
+    <!--关闭业绩周期-->
+    <update id="ClosePeriodSales" parameterType="map" >
+        UPDATE rd_sys_period
+        SET
+        SALES_STATUS = #{salesStatus}
+        WHERE
+        PERIOD_CODE = #{periodCode}
+    </update>
 </mapper>

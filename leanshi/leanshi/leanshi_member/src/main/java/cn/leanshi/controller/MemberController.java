@@ -1063,7 +1063,7 @@ public class MemberController {
 	/*
 	 * 查看所有业务周期
 	 * */
-	@RequestMapping(value = "/findPeriodAll",method = RequestMethod.GET)
+		@RequestMapping(value = "/findPeriodAll",method = RequestMethod.GET)
 	public ResultMsg findPeriodAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
 									@RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize){
 
@@ -1076,7 +1076,8 @@ public class MemberController {
 		List<SysPeriod> list = memberService.findPeriodAll();
 
 		PageInfo<SysPeriod> pageInfo = new PageInfo<SysPeriod>(list);
-
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
 		return resultMsg;
 	}
 
