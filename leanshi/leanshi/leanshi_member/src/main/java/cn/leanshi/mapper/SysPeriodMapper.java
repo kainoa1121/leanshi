@@ -22,4 +22,6 @@ public interface SysPeriodMapper {
 	int ClosePeriodSales(Map<String, Object> map);
 
 	List<SysPeriod> findPeriodAll();
+
+	int editPeriod(Map<String, Object> map);
 }

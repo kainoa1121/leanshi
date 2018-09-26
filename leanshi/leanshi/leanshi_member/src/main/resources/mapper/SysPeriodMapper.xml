@@ -16,9 +16,10 @@
 
     <!--查看所有业务周期-->
     <select id="findPeriodAll" resultMap="SysPeriodResultMap">
-        SELECT * FROM rd_sys_period ORDER BY PERIOD_CODE ASC
+        SELECT * FROM rd_sys_period ORDER BY PERIOD_CODE DESC
     </select>
 
+    <!--根据业务周期查找周期-->
     <select id="findPeriodByDate" parameterType="string" resultMap="SysPeriodResultMap">
         SELECT * FROM rd_sys_period WHERE PERIOD_CODE=#{periodCode}
     </select>
@@ -27,10 +28,19 @@
         INSERT INTO rd_sys_period(PERIOD_CODE,PRE_PERIOD,NEXT_PERIOD,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,BONUS_STATUS) values(#{periodCode},#{prePeriod},#{nextPeriod},#{salesStatus},#{calStatus},#{beginDate},#{endDate},#{calTimes},#{bonusStatus})
     </insert>
 
-
+    <!--根据这一周期查找是否有上一期周期-->
     <select id="findPrePeriod" parameterType="string" resultMap="SysPeriodResultMap">
         SELECT * FROM rd_sys_period WHERE NEXT_PERIOD=#{nextPeriod}
     </select>
+
+    <!--修改周期-->
+    <update id="editPeriod" parameterType="map" >
+        UPDATE rd_sys_period
+        SET
+        END_DATE = #{endDate}
+        WHERE
+        PERIOD_CODE = #{periodCode}
+    </update>
 
     <!--切换周期-->
     <update id="editPeriodStatu" parameterType="map" >

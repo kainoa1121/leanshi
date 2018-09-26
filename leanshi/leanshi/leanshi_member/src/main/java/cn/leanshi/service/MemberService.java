@@ -109,4 +109,6 @@ public interface MemberService {
 	int ClosePeriodSales(String periodCode);
 
 	List<SysPeriod> findPeriodAll();
+
+	int editPeriod(String periodCode, Date endDate);
 }

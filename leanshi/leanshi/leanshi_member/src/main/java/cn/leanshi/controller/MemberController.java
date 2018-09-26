@@ -1128,7 +1128,6 @@ public class MemberController {
 			}
 		}
 
-
 		//1.获取Calendar对象
 		Date date = dateConverter.convert(periodCode);
 		Calendar calendar = Calendar.getInstance();
@@ -1152,6 +1151,43 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"添加失败！");
 		}
 	}
+
+
+	/*
+	 * 修改周期
+	 * */
+	@RequestMapping(value = "/editPeriod",method = RequestMethod.POST)
+	public ResultMsg editPeriod(@RequestParam(value = "periodCode",required = false) String periodCode,
+								@RequestParam(value = "endDateS",required = false) String endDateS){
+
+		if (periodCode==null||"".equals(periodCode)){
+			return ResultMsg.newInstance(false,"修改周期失败，请输入正确的周期！");
+		}
+		if (endDateS==null&&"".equals(endDateS.toString().trim())){
+			return ResultMsg.newInstance(false,"修改周期失败，请输入正确的结束日期！");
+		}
+
+		SysPeriod period = memberService.findPeriod(periodCode);
+		if (period==null){
+			return ResultMsg.newInstance(false,"没有找到该月周期");
+		}
+
+		int calStatus = period.getCalStatus();
+		if (calStatus!=0){
+			return ResultMsg.newInstance(false,"奖金计算已开始，不可修改周期！");
+		}
+
+		DateConverter dateConverter = new DateConverter();
+		Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
+
+		int i = memberService.editPeriod(periodCode,endDate);
+		if (i==1){
+			return ResultMsg.newInstance(true,"修改周期成功！");
+		}else {
+			return ResultMsg.newInstance(false,"修改周期失败！");
+		}
+	}
+
 
 	/*
 	 * 切换周期状态
@@ -1287,11 +1323,14 @@ public class MemberController {
 	}
 
 
+
+
+
 	/*
 	 * 关闭业绩
 	 * */
-	@RequestMapping(value = "/ClosePeriodSales",method = RequestMethod.GET)
-	public ResultMsg ClosePeriodSales(@RequestParam(value = "periodCode",required = false) String periodCode){
+	@RequestMapping(value = "/closePeriodSales",method = RequestMethod.GET)
+	public ResultMsg closePeriodSales(@RequestParam(value = "periodCode",required = false) String periodCode){
 		//查找本期业务周期
 		SysPeriod period = memberService.findPeriod(periodCode);
 		if (period==null){

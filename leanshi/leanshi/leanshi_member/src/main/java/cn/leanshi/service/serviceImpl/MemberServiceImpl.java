@@ -1163,4 +1163,12 @@ public class MemberServiceImpl implements MemberService {
 		return sysPeriodMapper.findPeriodAll();
 	}
 
+	@Override
+	public int editPeriod(String periodCode, Date endDate) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("endDate",endDate);
+		return sysPeriodMapper.editPeriod(map);
+	}
+
 }
