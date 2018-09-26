@@ -1104,6 +1104,7 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"已有该月周期,添加周期失败");
 		}
 
+
 		Date beginDate = dateConverter.convert(beginDateS+" "+"00:00:00");
 		Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
 
