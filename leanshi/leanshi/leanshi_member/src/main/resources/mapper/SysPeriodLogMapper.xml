@@ -22,7 +22,7 @@
     </insert>
 
     <!--条件模糊查询所有周期切换日志-->
-    <select id="findPeriodLogAll" parameterType="java.lang.String" resultMap="LogResultMap">
+    <select id="findPeriodLogAll" parameterType="map" resultMap="LogResultMap">
         select * from rd_sys_period_log
         where 1=1
         <if test="periodCode !=null and periodCode != ''">

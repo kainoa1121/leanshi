@@ -1093,7 +1093,9 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public List<SysPeriodLog> findPeriodLogAll(String periodCode) {
-		return sysPeriodLogMapper.findPeriodLogAll(periodCode);
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		return sysPeriodLogMapper.findPeriodLogAll(map);
 	}
 
 	@Override

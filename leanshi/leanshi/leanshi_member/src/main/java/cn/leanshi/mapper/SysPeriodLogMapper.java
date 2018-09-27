@@ -3,6 +3,7 @@ package cn.leanshi.mapper;
 import cn.leanshi.model.SysPeriodLog;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author :ldq
@@ -12,5 +13,5 @@ import java.util.List;
 public interface SysPeriodLogMapper {
 	int addPeriodLog(SysPeriodLog sysPeriodLog);
 
-	List<SysPeriodLog> findPeriodLogAll(String periodCode);
+	List<SysPeriodLog> findPeriodLogAll(Map<String,Object> map);
 }
