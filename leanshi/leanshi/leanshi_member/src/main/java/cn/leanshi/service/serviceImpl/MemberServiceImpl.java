@@ -1171,4 +1171,18 @@ public class MemberServiceImpl implements MemberService {
 		return sysPeriodMapper.editPeriod(map);
 	}
 
+	@Override
+	public int delPeriod(String periodCode) {
+		return sysPeriodMapper.delPeriod(periodCode);
+	}
+
+	@Override
+	public int updatePeriod(String periodCode, Date beginDate, Date endDate) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("beginDate",beginDate);
+		map.put("endDate",endDate);
+		return sysPeriodMapper.updatePeriod(map);
+	}
+
 }

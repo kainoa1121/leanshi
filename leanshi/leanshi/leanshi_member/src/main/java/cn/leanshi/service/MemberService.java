@@ -111,4 +111,8 @@ public interface MemberService {
 	List<SysPeriod> findPeriodAll();
 
 	int editPeriod(String periodCode, Date endDate);
+
+	int delPeriod(String periodCode);
+
+	int updatePeriod(String periodCode, Date beginDate, Date endDate);
 }

@@ -24,4 +24,8 @@ public interface SysPeriodMapper {
 	List<SysPeriod> findPeriodAll();
 
 	int editPeriod(Map<String, Object> map);
+
+	int delPeriod(String periodCode);
+
+	int updatePeriod(Map<String, Object> map);
 }

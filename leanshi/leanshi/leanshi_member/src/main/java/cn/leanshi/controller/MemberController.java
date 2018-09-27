@@ -1104,8 +1104,9 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"已有该月周期,添加周期失败");
 		}
 
-
+		//开始时间
 		Date beginDate = dateConverter.convert(beginDateS+" "+"00:00:00");
+		//结束时间
 		Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
 
 		//根据这一周期查找是否有上一期周期
@@ -1113,16 +1114,16 @@ public class MemberController {
 		//定义上一周期  没有上一周期的时候为空字符串
 		String prePeriod ="";
 		//上一期结束时间
-		String nextPeriodBefore = "";
+		Date endDateBefore=null;
 		if (period!=null){
 			prePeriod = period.getPeriodCode();
-
-			nextPeriodBefore = period.getNextPeriod();
-
+			if (period.getSalesStatus()==0){
+				return ResultMsg.newInstance(false,prePeriod+"周期还未开始,不可多次添加周期");
+			}
+			endDateBefore = period.getEndDate();
 		}
 
-		if (!"".equals(nextPeriodBefore)){
-			Date endDateBefore = dateConverter.convert(nextPeriodBefore);
+		if (endDateBefore!=null){
 			if (beginDate.getTime()<endDateBefore.getTime()){
 				return ResultMsg.newInstance(false,"开始时间不能超过上一周期结束是时间，添加周期失败！");
 			}
@@ -1158,13 +1159,11 @@ public class MemberController {
 	 * */
 	@RequestMapping(value = "/editPeriod",method = RequestMethod.POST)
 	public ResultMsg editPeriod(@RequestParam(value = "periodCode",required = false) String periodCode,
+								@RequestParam(value = "beginDateS",required = false) String beginDateS,
 								@RequestParam(value = "endDateS",required = false) String endDateS){
 
 		if (periodCode==null||"".equals(periodCode)){
 			return ResultMsg.newInstance(false,"修改周期失败，请输入正确的周期！");
-		}
-		if (endDateS==null&&"".equals(endDateS.toString().trim())){
-			return ResultMsg.newInstance(false,"修改周期失败，请输入正确的结束日期！");
 		}
 
 		SysPeriod period = memberService.findPeriod(periodCode);
@@ -1172,20 +1171,63 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"没有找到该月周期");
 		}
 
-		int calStatus = period.getCalStatus();
-		if (calStatus!=0){
-			return ResultMsg.newInstance(false,"奖金计算已开始，不可修改周期！");
-		}
-
 		DateConverter dateConverter = new DateConverter();
-		Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
 
-		int i = memberService.editPeriod(periodCode,endDate);
-		if (i==1){
-			return ResultMsg.newInstance(true,"修改周期成功！");
-		}else {
-			return ResultMsg.newInstance(false,"修改周期失败！");
+		int salesStatus = period.getSalesStatus();
+		if (salesStatus<3){
+			if(salesStatus>0){
+
+				if (endDateS==null&&"".equals(endDateS.toString().trim())){
+					return ResultMsg.newInstance(false,"修改周期失败，请输入正确的结束日期！");
+				}
+
+				Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
+
+				int i = memberService.editPeriod(periodCode,endDate);
+				if (i==1){
+					return ResultMsg.newInstance(true,"修改周期成功！");
+				}else {
+					return ResultMsg.newInstance(false,"修改周期失败！");
+				}
+
+			}else{
+				if (beginDateS==null&&"".equals(beginDateS.toString().trim())&&endDateS==null&&"".equals(endDateS.toString().trim())){
+					return ResultMsg.newInstance(false,"添加周期失败，请输入正确的日期！");
+				}
+
+				Date beginDate = dateConverter.convert(beginDateS+" "+"00:00:00");
+				Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
+
+				//根据这一周期查找是否有上一期周期
+				SysPeriod periodLast = memberService.findPrePeriod(periodCode);
+				//上一期结束时间
+				String nextPeriodBefore = "";
+				if (periodLast!=null){
+					nextPeriodBefore = periodLast.getNextPeriod();
+				}
+
+				if (!"".equals(nextPeriodBefore)){
+					Date endDateBefore = dateConverter.convert(nextPeriodBefore);
+					if (beginDate.getTime()<endDateBefore.getTime()){
+						return ResultMsg.newInstance(false,"开始时间不能超过上一周期结束是时间，添加周期失败！");
+					}
+				}
+
+				int i = memberService.updatePeriod(periodCode,beginDate,endDate);
+				if (i==1){
+					return ResultMsg.newInstance(true,"修改周期成功！");
+				}else {
+					return ResultMsg.newInstance(false,"修改周期失败！");
+				}
+
+			}
+
+
+		}else{
+			return ResultMsg.newInstance(false,"业绩状态已关闭，不可修改周期！");
 		}
+
+
 	}
 
 
@@ -1323,9 +1365,6 @@ public class MemberController {
 	}
 
 
-
-
-
 	/*
 	 * 关闭业绩
 	 * */
@@ -1349,6 +1388,30 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"业绩状态已关闭，请不要重复操作！");
 		}
 
+	}
+
+	/*
+	 * 删除周期
+	 * */
+	@RequestMapping(value = "/delPeriod",method = RequestMethod.GET)
+	public ResultMsg delPeriod(@RequestParam(value = "periodCode",required = false) String periodCode){
+
+		//查找本期业务周期
+		SysPeriod period = memberService.findPeriod(periodCode);
+		if (period==null){
+			return ResultMsg.newInstance(false,"请传入正确的周期！");
+		}
+
+		if (period.getSalesStatus()!=0){
+			return ResultMsg.newInstance(false,"周期一开始，本周期不能删除！");
+		}
+
+		int i = memberService.delPeriod(periodCode);
+		if (i==1){
+			return ResultMsg.newInstance(true,"删除周期成功！");
+		}else {
+			return ResultMsg.newInstance(false,"删除周期失败！");
+		}
 	}
 
 
