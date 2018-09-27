@@ -21,5 +21,14 @@
               values(#{periodCode},#{actionCode},#{valBefoer},#{valBefoerDesc},#{valAfter},#{valAfterDesc},#{updateTime},#{updateBy},#{updateMemo})
     </insert>
 
+    <!--条件模糊查询所有周期切换日志-->
+    <select id="findPeriodLogAll" parameterType="string" resultMap="LogResultMap">
+        select * from rd_sys_period_log
+        where 1=1
+        <if test="periodCode !=null and periodCode != ''">
+            and PERIOD_CODE LIKE "%"#{periodCode}"%"
+        </if>
+        ORDER BY LOG_ID ASC
+    </select>
 
 </mapper>

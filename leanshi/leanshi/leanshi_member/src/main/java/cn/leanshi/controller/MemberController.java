@@ -9,6 +9,7 @@ import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.SysPeriod;
+import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.model.http.ResultMsg;
 import cn.leanshi.model.util.DateConverter;
 import cn.leanshi.model.util.FileUtil;
@@ -557,6 +558,45 @@ public class MemberController {
 		return ResultMsg.newInstance(false,"修改失败！");
 	}
 
+
+
+	@Value("${upload.path}")
+	private String uploadPath;
+
+	//图片上传
+	@RequestMapping(value = "/uploadFile",method = RequestMethod.POST)
+	public ResultMsg uploadFile(@RequestParam("file") MultipartFile file) {
+
+		// 获取文件名
+		String fileName = file.getOriginalFilename();
+
+		// 设置文件存储路径
+		String filePath = uploadPath + "//" +"img//";
+
+		//设置随机文件名
+		String UUIDFileName = FileUtil.getFileName(fileName);
+		String path = filePath + UUIDFileName;
+
+		File dest = new File(path);
+		// 检测是否存在目录
+		if (!dest.getParentFile().exists()) {
+			dest.getParentFile().mkdirs();// 新建文件夹
+		}
+
+		try {
+			file.transferTo(dest);// 文件写入
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		ResultMsg<String> resultMsg = new ResultMsg<String>();
+		resultMsg.setCode(true);
+		resultMsg.setData("/img/"+UUIDFileName);
+		return resultMsg;
+	}
+
+
+
 	/*
 	 *禁用所有已绑定银行卡
 	 * */
@@ -581,40 +621,6 @@ public class MemberController {
 		}
 		return ResultMsg.newInstance(false,"删除所有收货地址失败！");
 	}
-
-
-
-
-
-	/*
-	 * 根据编号查找会员资格信息 （弃用）
-	 * */
-	@RequestMapping(value = "/findQualificationByMCode",method = RequestMethod.POST)
-	public ResultMsg findQualificationByMCode(@RequestParam String mCode){
-		ResultMsg<MemberQualification> resultMsg = new ResultMsg<MemberQualification>();
-		MemberQualification memberQualification = memberService.findQualificationByMCode(mCode);
-		resultMsg.setData(memberQualification);
-		resultMsg.setCode(true);
-		return resultMsg;
-	}
-
-	/*
-	 * 根据编号和姓名修改会员资格表信息（更改推荐人）（弃用）
-	 * */
-	@RequestMapping(value = "/updateQualificationByMCode",method = RequestMethod.POST)
-	public ResultMsg updateQualificationByMCode(@RequestParam String mCode,@RequestParam String mName,
-												@RequestParam String sponsorCode,@RequestParam String sponsorName,
-												@RequestParam String sponsorCodeNew,@RequestParam String sponsorNameNew,
-												@RequestParam String mDesc){
-
-		int i = memberService.updateQualificationByMCode(mCode,mName,sponsorCode,sponsorName,sponsorCodeNew,sponsorNameNew,mDesc);
-		if (i==1){
-			return ResultMsg.newInstance(true,"修改成功！");
-		}
-		return ResultMsg.newInstance(false,"修改失败！");
-	}
-
-
 
 
 	/*
@@ -1364,6 +1370,27 @@ public class MemberController {
 		}
 	}
 
+	/*查看所有周期切换日志*/
+	@RequestMapping(value = "/findPeriodLogAll",method = RequestMethod.POST)
+	public ResultMsg findPeriodLogAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+									  @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+									  @RequestParam(value = "periodCode",required = false) String periodCode){
+
+		int size=pageSize;
+
+		PageHelper.startPage(currentPage,size);
+
+		ResultMsg<PageInfo<SysPeriodLog>> resultMsg = new ResultMsg<PageInfo<SysPeriodLog>>();
+
+		List<SysPeriodLog> list = memberService.findPeriodLogAll(periodCode);
+
+		PageInfo<SysPeriodLog> pageInfo = new PageInfo<SysPeriodLog>(list);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
+		return resultMsg;
+
+	}
+
 
 	/*
 	 * 关闭业绩
@@ -1413,6 +1440,37 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"删除周期失败！");
 		}
 	}
+
+
+	/*
+	 * 查看本期会员资格表
+	 * */
+	@RequestMapping(value = "/findQualificationAll",method = RequestMethod.POST)
+	public ResultMsg findQualificationAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+										  @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+										  @RequestParam(value = "periodCode",required = false) String periodCode){
+
+		int size=pageSize;
+
+		PageHelper.startPage(currentPage,size);
+
+		ResultMsg<PageInfo<MemberQualification>> resultMsg = new ResultMsg<PageInfo<MemberQualification>>();
+		//查到当前周期的所有会员资格数据
+		List<MemberQualification> list = memberService.findQualificationByPeriod(periodCode);
+
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"本期资格信息还未计算！");
+		}
+
+		PageInfo<MemberQualification> pageInfo = new PageInfo<MemberQualification>(list);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
+
+		return resultMsg;
+
+	}
+
+
 
 
 	/*
@@ -1602,42 +1660,6 @@ public class MemberController {
 
 	}
 
-
-
-	@Value("${upload.path}")
-	private String uploadPath;
-
-	//图片上传
-	@RequestMapping(value = "/uploadFile",method = RequestMethod.POST)
-	public ResultMsg uploadFile(@RequestParam("file") MultipartFile file) {
-
-		// 获取文件名
-		String fileName = file.getOriginalFilename();
-
-		// 设置文件存储路径
-		String filePath = uploadPath + "//" +"img//";
-
-		//设置随机文件名
-		String UUIDFileName = FileUtil.getFileName(fileName);
-		String path = filePath + UUIDFileName;
-
-		File dest = new File(path);
-		// 检测是否存在目录
-		if (!dest.getParentFile().exists()) {
-			dest.getParentFile().mkdirs();// 新建文件夹
-		}
-
-		try {
-			file.transferTo(dest);// 文件写入
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		ResultMsg<String> resultMsg = new ResultMsg<String>();
-		resultMsg.setCode(true);
-		resultMsg.setData("/img/"+UUIDFileName);
-		return resultMsg;
-	}
 
 
 }

@@ -10,6 +10,7 @@ import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.SysPeriod;
+import cn.leanshi.model.SysPeriodLog;
 
 import java.util.Date;
 import java.util.List;
@@ -31,10 +32,6 @@ public interface MemberService {
 	int updateByMBank(String mCode,String mName,String mobile,String mNickname,String withdrawDefault,String mDesc);
 
 	int updateIdByMCodeAndMName(String mCode,String mName,String newMName,Integer idType,String idCode,String mNickname,String mobile,String uploadPath,String mDesc);
-
-	MemberQualification findQualificationByMCode(String mCode);
-
-	int updateQualificationByMCode(String mCode, String mName, String sponsorCode, String sponsorName, String sponsorCodeNew, String sponsorNameNew, String mDesc);
 
 	MemberRelation findRelationByMCode(String mCode);
 
@@ -114,5 +111,8 @@ public interface MemberService {
 
 	int delPeriod(String periodCode);
 
+	List<SysPeriodLog> findPeriodLogAll(String periodCode);
+
 	int updatePeriod(String periodCode, Date beginDate, Date endDate);
+
 }

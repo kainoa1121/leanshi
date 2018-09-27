@@ -11,11 +11,6 @@ import java.util.Map;
  * @description:leanshi_member cn.leanshi.mapper
  */
 public interface MemberQualificationMapper {
-	MemberQualification findQualificationByMCode(String mCode);
-
-	int updateSponsorByMCode(MemberQualification memberQualification);
-
-	int updateNameByMCode(Map<String, Object> map);
 
 	List<MemberQualification> findQualificationByPeriod(String periodCode);
 

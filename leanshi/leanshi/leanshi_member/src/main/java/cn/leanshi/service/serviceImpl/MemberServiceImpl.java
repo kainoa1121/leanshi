@@ -351,91 +351,6 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	/*
-	 * 根据编号查找会员资格信息
-	 * */
-	@Override
-	public MemberQualification findQualificationByMCode(String mCode) {
-		return qualificationMapper.findQualificationByMCode(mCode);
-	}
-
-	/*
-	 * 根据编号和姓名修改会员资格表信息（更改推荐人）(弃用)
-	 * */
-	@Override
-	public int updateQualificationByMCode(String mCode, String mName, String sponsorCode, String sponsorName, String sponsorCodeNew, String sponsorNameNew, String mDesc) {
-		/*MemberEditReview last = editReviewMapper.selectLastByMCode(mCode);
-
-		MemberEditReview editReview = new MemberEditReview();
-		if(last!=null){
-			if (last.getMCode().equals(mCode)){
-				editReview.setMCode(last.getMCode());
-				editReview.setMNameBefore(last.getMName());
-				editReview.setMName(last.getMName());
-				editReview.setIdTypeBefore(last.getIdType());
-				editReview.setIdType(last.getIdType());
-				editReview.setIdCodeBefore(last.getIdCode());
-				editReview.setIdCode(last.getIdCode());
-				editReview.setMNicknameBefore(last.getMNickname());
-				editReview.setMNickname(last.getMNickname());
-				editReview.setGenderBefore(last.getGender());
-				editReview.setGender(last.getGender());
-				editReview.setMobileBefore(last.getMobile());
-				editReview.setMobile(last.getMobile());
-				editReview.setWeChatBefore(last.getWeChat());
-				editReview.setWeChat(last.getWeChat());
-				editReview.setEmailBefore(last.getEmail());
-				editReview.setEmail(last.getEmail());
-				editReview.setAddPostBefore(last.getAddPost());
-				editReview.setAddPost(last.getAddPost());
-				editReview.setProvinceBefore(last.getProvince());
-				editReview.setProvince(last.getProvince());
-				editReview.setCityBefore(last.getCity());
-				editReview.setCity(last.getCity());
-				editReview.setCountryBefore(last.getCountry());
-				editReview.setCountry(last.getCountry());
-				editReview.setDetialBefore(last.getDetial());
-				editReview.setDetial(last.getDetial());
-				editReview.setBankdetailBefore(last.getBankdetail());
-				editReview.setBankdetail(last.getBankdetail());
-				editReview.setAccNameBefore(last.getAccName());
-				editReview.setAccName(last.getAccName());
-				editReview.setAccCodeBefore(last.getAccCode());
-				editReview.setAccCode(last.getAccCode());
-				editReview.setWithdrawDefaultBefore(last.getWithdrawDefault());
-				editReview.setWithdrawDefault(last.getWithdrawDefault());
-
-				editReview.setSponsorCodeBefore(sponsorCode);
-				editReview.setSponsorCode(sponsorCodeNew);
-				editReview.setSponsorNameBefore(sponsorName);
-				editReview.setSponsorName(sponsorNameNew);
-
-				editReview.setRankBefore(last.getRank());
-				editReview.setRank(last.getRank());
-				editReview.setRaCodeBefore(last.getRaCode());
-				editReview.setRaCode(last.getRaCode());
-				editReview.setRaNameBefore(last.getRaName());
-				editReview.setRaName(last.getRaName());
-				editReview.setRaIdTypeBefore(last.getRaIdType());
-				editReview.setRaIdType(last.getRaIdType());
-				editReview.setRaIdCodeBefore(last.getRaIdCode());
-				editReview.setRaIdCode(last.getRaIdCode());
-				editReview.setUpdateBy("无名");
-				editReview.setUpdateMemo(mDesc);
-				editReview.setUpdateType(3);
-				editReview.setUpdateTime(new Date());
-				editReview.setReviewMemo("未提供材料");
-				editReview.setReviewStatus(0); //审核
-			}
-			return editReviewMapper.saveEdit(editReview);
-		}else{
-			return 0;//修改失败，找不到该会员信息
-		}*/
-
-
-		return 0;
-	}
-
-	/*
 	 * 根据编号查找会员状态、级别及关系信息（更改推荐人）
 	 * */
 	@Override
@@ -1174,6 +1089,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int delPeriod(String periodCode) {
 		return sysPeriodMapper.delPeriod(periodCode);
+	}
+
+	@Override
+	public List<SysPeriodLog> findPeriodLogAll(String periodCode) {
+		return sysPeriodLogMapper.findPeriodLogAll(periodCode);
 	}
 
 	@Override
