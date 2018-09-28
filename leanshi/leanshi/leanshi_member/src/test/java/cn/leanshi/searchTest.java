@@ -45,4 +45,17 @@ public class searchTest {
 		Date endDate = dateConverter.convert("2018-08-31");
 		System.out.println(endDate.getTime()>beginDate.getTime());
 	}
+
+	@Test
+	public void fun03(){
+
+		String i = "201809";
+		String j = i.substring(0,4);
+		String s = i.substring(4);
+		System.out.println(j+">>>>>>"+s);
+
+
+	}
+
+
 }

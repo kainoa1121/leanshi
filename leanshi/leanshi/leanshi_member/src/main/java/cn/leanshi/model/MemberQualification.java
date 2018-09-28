@@ -30,7 +30,7 @@ public class MemberQualification {
 	private int rank;//当期计算后个人级别
 	private int rankRecordHigh;//历史最高级别
 	private int leafYn;//是否叶子节点\r\n0：不是\r\n1：是叶子节点
-	private Integer orphan;//是否孤儿
+	private Integer orphan;//是否孤儿 0：是  1：不是
 	private int layer;//所处层次，公司节点为0层，以下每层+1
 	private int g7pv;//当期团队7层的PV
 	private int npv;//当期全网络的PV

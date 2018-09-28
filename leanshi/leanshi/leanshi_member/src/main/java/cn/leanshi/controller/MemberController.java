@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1093,6 +1092,7 @@ public class MemberController {
 	 * */
 	@RequestMapping(value = "/addPeriod",method = RequestMethod.POST)
 	public ResultMsg addPeriod(@RequestParam(value = "periodCode",required = false) String periodCode,
+							   @RequestParam(value = "prePeriod",required = false) String prePeriod,
 							   @RequestParam(value = "beginDateS",required = false) String beginDateS,
 							   @RequestParam(value = "endDateS",required = false) String endDateS){
 		if (periodCode==null||"".equals(periodCode)){
@@ -1115,18 +1115,15 @@ public class MemberController {
 		//结束时间
 		Date endDate = dateConverter.convert(endDateS+" "+"23:59:59");
 
-		//根据这一周期查找是否有上一期周期
-		SysPeriod period = memberService.findPrePeriod(periodCode);
-		//定义上一周期  没有上一周期的时候为空字符串
-		String prePeriod ="";
+		//上一周期
+		SysPeriod periodLast = memberService.findPeriod(prePeriod);
 		//上一期结束时间
 		Date endDateBefore=null;
-		if (period!=null){
-			prePeriod = period.getPeriodCode();
-			if (period.getSalesStatus()==0){
+		if (periodLast!=null){
+			if (periodLast.getSalesStatus()==0){
 				return ResultMsg.newInstance(false,prePeriod+"周期还未开始,不可多次添加周期");
 			}
-			endDateBefore = period.getEndDate();
+			endDateBefore = periodLast.getEndDate();
 		}
 
 		if (endDateBefore!=null){
@@ -1135,24 +1132,12 @@ public class MemberController {
 			}
 		}
 
-		//1.获取Calendar对象
-		Date date = dateConverter.convert(periodCode);
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendar.add(Calendar.MONTH,1);
-		int year = calendar.get(Calendar.YEAR);
-		int month = calendar.get(Calendar.MONTH)+1;
-		String monthS ="";
-		if (month< 10){
-			monthS = 0+""+month;
-		}else{
-			monthS = month+"";
-		}
-		//下一周期
-		String nextPeriod = year+""+monthS;
-
-		int i = memberService.addPeriod(periodCode,prePeriod,nextPeriod,beginDate,endDate);
+		int i = memberService.addPeriod(periodCode,prePeriod,beginDate,endDate);
 		if (i==1){
+			if (periodLast!=null){
+				//把本周期添加到上一周期的下一业绩周期
+				memberService.updatePeriodAddNext(prePeriod,periodCode);
+			}
 			return ResultMsg.newInstance(true,"添加成功！");
 		}else {
 			return ResultMsg.newInstance(false,"添加失败！");
@@ -1198,7 +1183,7 @@ public class MemberController {
 
 			}else{
 				if (beginDateS==null&&"".equals(beginDateS.toString().trim())&&endDateS==null&&"".equals(endDateS.toString().trim())){
-					return ResultMsg.newInstance(false,"添加周期失败，请输入正确的日期！");
+					return ResultMsg.newInstance(false,"修改周期失败，请输入正确的日期！");
 				}
 
 				Date beginDate = dateConverter.convert(beginDateS+" "+"00:00:00");
@@ -1467,10 +1452,7 @@ public class MemberController {
 		resultMsg.setData(pageInfo);
 
 		return resultMsg;
-
 	}
-
-
 
 
 	/*

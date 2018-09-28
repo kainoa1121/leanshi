@@ -57,7 +57,7 @@ public interface MemberService {
 
 	List<Rank> fingRankAll();
 
-	int addPeriod(String periodCode,String prePeriod,String nextPeriod, Date beginDate, Date endDate);
+	int addPeriod(String periodCode,String prePeriod, Date beginDate, Date endDate);
 
 	List<MemberAddress> findAddByMCode(String mCode);
 
@@ -115,4 +115,5 @@ public interface MemberService {
 
 	int updatePeriod(String periodCode, Date beginDate, Date endDate);
 
+	void updatePeriodAddNext(String prePeriod, String periodCode);
 }

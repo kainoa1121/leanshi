@@ -38,13 +38,6 @@
 
     </resultMap>
 
-    <!--根据编号查找会员资格信息-->
-    <select id="findQualificationByMCode" parameterType="string" resultMap="QualificationResultMap">
-        select * from rd_dis_qualification
-        where MM_CODE = #{mCode}
-    </select>
-
-
     <!--根据编号修改会员推荐人-->
     <update id="updateSponsorByMCode" parameterType="cn.leanshi.model.MemberQualification">
       UPDATE rd_dis_qualification

@@ -28,4 +28,6 @@ public interface SysPeriodMapper {
 	int delPeriod(String periodCode);
 
 	int updatePeriod(Map<String, Object> map);
+
+	void updatePeriodAddNext(Map<String, Object> map);
 }

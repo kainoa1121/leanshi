@@ -843,14 +843,13 @@ public class MemberServiceImpl implements MemberService {
 
 
 	/*
-	*添加周期
-	* */
+	 *添加周期
+	 * */
 	@Override
-	public int addPeriod(String periodCode,String prePeriod,String nextPeriod, Date beginDate, Date endDate) {
+	public int addPeriod(String periodCode,String prePeriod, Date beginDate, Date endDate) {
 		SysPeriod period = new SysPeriod();
 		period.setPeriodCode(periodCode);
 		period.setPrePeriod(prePeriod);
-		period.setNextPeriod(nextPeriod);
 		period.setBeginDate(beginDate);
 		period.setEndDate(endDate);
 		period.setSalesStatus(0);//业绩状态 0：未开始
@@ -1105,6 +1104,14 @@ public class MemberServiceImpl implements MemberService {
 		map.put("beginDate",beginDate);
 		map.put("endDate",endDate);
 		return sysPeriodMapper.updatePeriod(map);
+	}
+
+	@Override
+	public void updatePeriodAddNext(String prePeriod,String periodCode) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",prePeriod);
+		map.put("nextPeriod",periodCode);
+		sysPeriodMapper.updatePeriodAddNext(map);
 	}
 
 }
