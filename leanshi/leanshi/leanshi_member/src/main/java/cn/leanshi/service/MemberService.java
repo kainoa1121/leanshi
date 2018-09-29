@@ -116,4 +116,10 @@ public interface MemberService {
 	int updatePeriod(String periodCode, Date beginDate, Date endDate);
 
 	void updatePeriodAddNext(String prePeriod, String periodCode);
+
+	List<MemberQualification> findQualificationMCodeByPeriod(String periodCode);
+
+	List<Member_basic> findMemAll();
+
+	int addMqlf(MemberQualification mqlf);
 }

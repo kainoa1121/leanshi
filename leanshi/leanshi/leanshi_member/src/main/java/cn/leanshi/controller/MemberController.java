@@ -1456,192 +1456,174 @@ public class MemberController {
 
 
 	/*
-	 * 计算本期会员资格表
+	 * 计算本期会员资格
 	 * */
 	@RequestMapping(value = "/countNowQualification",method = RequestMethod.GET)
 	public ResultMsg countNowQualification(@RequestParam(value = "periodCode",required = false) String periodCode){
 
-		ResultMsg<List<MemberQualification>> resultMsg = new ResultMsg<List<MemberQualification>>();
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+		if (qualificationList.size()!=0){
+			return ResultMsg.newInstance(false,"本期资格信息已计算，请不要重复计算！");
+		}
 
 		//判断当前业务周期业绩状态是否已关闭
 		SysPeriod period = memberService.findPeriod(periodCode);
 		if (period.getSalesStatus()==3&&period.getCalStatus()<3){ //已关闭
-			//查到当前周期的所有会员资格数据
-			List<MemberQualification> lists = memberService.findQualificationByPeriod(period.getPeriodCode());
 
-			for (MemberQualification list : lists) {
+			int j = 0;
+			List<Member_basic> MemberList = memberService.findMemAll();
+			for (Member_basic basic : MemberList) {
+				j = 0;
+				MemberQualification mqlf = new MemberQualification();
 
-				//查会员状态关系表
-				MemberRelation relation = memberService.findRelationByMCode(list.getMCode());
-				//上一周期
-				String statusPeriod = relation.getStatusPeriod();
-				MemberQualification qualification = memberService.findQualificationByPeriodAndMCode(statusPeriod,list.getMCode());
+				String mCode = basic.getMCode();//会员编号
+				String mName = basic.getMName();//会员姓名
 
-				//当期个人购买的PV
-				int ppv = 0;
-				list.setPpv(ppv);
-				//当期个人零售的PV，包括分享给普通顾客购买的PV
-				int ppvRetail = 0;
-				list.setAppvFinal(ppvRetail);
-				//期初个人累计PV
-				int appvInit =0;
-				if(qualification!=null){
-					appvInit = qualification.getAppvFinal();
-				}else{
-					appvInit = 0;
+				int ppv = 0;//当期个人购买的PV
+				int ppvRetail = 0;//当期个人零售的PV，包括分享给普通顾客购买的PV
+				int retailInit =0;//个人零售购买的期初值(期初金额)
+				int retail = 0;//个人零售购买额(当月金额)
+				int retailFinal = retailInit + retail;//个人零售购买的期末值(期初金额+当月金额)
+
+				int appvInit =0;//期初个人累计PV
+				//上一期周期
+				String prePeriod = period.getPrePeriod();
+				if (!"".equals(prePeriod)){
+					MemberQualification qualification = memberService.findQualificationByPeriodAndMCode(prePeriod, mCode);
+					if (qualification!=null){
+						appvInit = qualification.getAppvFinal();
+					}
 				}
-				list.setAppvInit(appvInit);
+				int appvFinal = ppv+ppvRetail+appvInit;//期末个人累计PV
 
-				//期末个人累计PV
-				int appvFinal = ppv+ppvRetail+appvInit;
-				list.setAppvFinal(appvFinal);
+				String sponsorCode = "";//推荐人编号
+				String sponsorName = "";//推荐人姓名
+				int mStatus = 0;//当期会员的状态
+				int raStatus = 0;//关联公司绑定状态 0:未绑定 1：已绑定
+				int raShopYn = 0;//老系统会员开店状态 0：未开店 1：已开店
+				int rankInit = 0;//期初个人级别
+				int orphan = 0;//是否孤儿 0：是  1：不是
 
-				//个人零售购买的期初值(期初金额)
-				int retailInit = relation.getReTail();
-				list.setRetailInit(retailInit);
-
-				//个人零售购买额(当月金额)
-				int retail = 0;
-				list.setRetail(retail);
-				//个人零售购买的期末值(期初金额+当月金额)
-				int retailFinal = retailInit + retail;
-				list.setRetailFinal(retailFinal);
-
-				//期初个人级别
-				int rankInit = relation.getRank();
-				list.setRankInit(rankInit);
-
-
-				//判断关联公司绑定状态
-				if (relation.getRaStatus()==1){//1：已绑定
-					list.setRaStatus(relation.getRaStatus());
-					//判断是否开店
-					if(relation.getRaShopYn()==1){//1:开店
-						list.setRaShopYn(relation.getRaShopYn());
-						//判断是否可以升级为代理店
+				MemberRelation relation = memberService.findRelationByMCode(mCode);
+				if (relation!=null){
+					sponsorCode = relation.getSponsorCode();//推荐人编号
+					sponsorName = relation.getSponsorName();//推荐人姓名
+					if (sponsorCode!=null){
+						orphan = 1;
+					}
+					mStatus = relation.getMStatus();//当期会员的状态
+					raStatus = relation.getRaStatus();//关联公司绑定状态 0:未绑定 1：已绑定
+					raShopYn = relation.getRaShopYn();//老系统会员开店状态 0：未开店 1：已开店
+					rankInit = relation.getRank();//期初个人级别
+					retailInit =relation.getReTail();//个人零售购买的期初值(期初金额)
+					//判断关联公司绑定状态
+					if (raStatus==1){//1：已绑定
+						//判断是否开店
+						if(raShopYn==1){//1:开店
+							//判断是否可以升级为代理店
+							//当期计算后个人级别
+							if(rankInit<3){
+								//普通会员
+								if(rankInit==0){
+									if (retailFinal>=360){
+										int rank = 1;
+										mqlf.setRank(rank);
+									}
+								}
+								//vip会员
+								if(rankInit==1){
+									if(retailFinal>=360&&appvFinal>=100){
+										int rank = 3;
+										mqlf.setRank(rank);
+									}
+								}
+								//代理会员
+								if(rankInit==2){
+									if(retailFinal>=360&&appvFinal>=100){
+										int rank = 3;
+										mqlf.setRank(rank);
+									}
+								}
+							}
+							int rank = rankInit;
+							mqlf.setRank(rank);
+						}else{//0.没开店
+							//向老系统查是否开店
+							//当期计算后个人级别
+							if(rankInit<2){
+								//普通会员
+								if(rankInit==0){
+									if (retailFinal>=360){
+										int rank = 1;
+										mqlf.setRank(rank);
+									}
+								}
+								//vip会员
+								if(rankInit==1){
+									if(retailFinal>=360&&appvFinal>=100){
+										int rank = 2;
+										mqlf.setRank(rank);
+									}
+								}
+							}
+							int rank = rankInit;
+							mqlf.setRank(rank);
+						}
+					}else{//0：未绑定
 						//当期计算后个人级别
 						if(rankInit<3){
 							//普通会员
 							if(rankInit==0){
 								if (retailFinal>=360){
-									list.setRank(1);
+									int rank = 1;
+									mqlf.setRank(rank);
 								}
 							}
 							//vip会员
 							if(rankInit==1){
 								if(retailFinal>=360&&appvFinal>=100){
-									list.setRank(3);
-								}
-							}
-							//代理会员
-							if(rankInit==2){
-								if(retailFinal>=360&&appvFinal>=100){
-									list.setRank(3);
+									int rank = 2;
+									mqlf.setRank(rank);
 								}
 							}
 						}
-
-
-					}else{//0.没开店
-						//向老系统查是否开店
-						//先设没开店
-						list.setRaShopYn(relation.getRaShopYn());
-						//当期计算后个人级别
-						if(rankInit<2){
-							//普通会员
-							if(rankInit==0){
-								if (retailFinal>=360){
-									list.setRank(1);
-								}
-							}
-							//vip会员
-							if(rankInit==1){
-								if(retailFinal>=360&&appvFinal>=100){
-									list.setRank(2);
-								}
-							}
-						}
-
-
+						int rank = rankInit;
+						mqlf.setRank(rank);
 					}
-				}else{//0：未绑定
-					list.setRaStatus(relation.getRaStatus());
-					list.setRaShopYn(relation.getRaShopYn());
-					//当期计算后个人级别
-					if(rankInit<3){
-						//普通会员
-						if(rankInit==0){
-							if (retailFinal>=360){
-								list.setRank(1);
-							}
-						}
-						//vip会员
-						if(rankInit==1){
-							if(retailFinal>=360&&appvFinal>=100){
-								list.setRank(2);
-							}
-						}
 
-					}
 				}
 
-				//是否是孤儿
-				//从上一期找是否是孤儿
-				if (qualification!=null){
-					if (qualification.getOrphan()!=null){
-						list.setOrphan(qualification.getOrphan());
-					}else {
-						String sponsorCode = list.getSponsorCode();
-						if (sponsorCode==null){
-							//是孤儿
-							list.setOrphan(0);
-						}else {
-							Member_basic byMCode = memberService.findByMCode(sponsorCode);
-							if (byMCode==null){
-								//是孤儿
-								list.setOrphan(0);
-							}else {
-								//不是孤儿
-								list.setOrphan(1);
-							}
+				mqlf.setPeriodCode(periodCode);
+				mqlf.setMCode(mCode);
+				mqlf.setMName(mName);
+				mqlf.setSponsorCode(sponsorCode);
+				mqlf.setSponsorName(sponsorName);
+				mqlf.setOrphan(orphan);
+				mqlf.setMStatus(mStatus);
+				mqlf.setRaStatus(raStatus);
+				mqlf.setRaShopYn(raShopYn);
+				mqlf.setRankInit(rankInit);
+				mqlf.setPpv(ppv);
+				mqlf.setPpvRetail(ppvRetail);
+				mqlf.setRetailInit(retailInit);
+				mqlf.setRetail(retail);
+				mqlf.setRetailFinal(retailFinal);
+				mqlf.setAppvInit(appvInit);
+				mqlf.setAppvFinal(appvFinal);
 
-						}
-
-					}
-
-				}else{
-					String sponsorCode = list.getSponsorCode();
-					if (sponsorCode==null){
-						//是孤儿
-						list.setOrphan(0);
-					}else {
-						Member_basic byMCode = memberService.findByMCode(sponsorCode);
-						if (byMCode==null){
-							//是孤儿
-							list.setOrphan(0);
-						}else {
-							//不是孤儿
-							list.setOrphan(1);
-						}
-
-					}
-				}
-
-
+				int i = memberService.addMqlf(mqlf);
+				j=i;
 			}
 
-			resultMsg.setData(lists);
-
-			return resultMsg;
-
+			if (j==1){
+				return ResultMsg.newInstance(true,"计算成功！");
+			}else {
+				return ResultMsg.newInstance(false,"计算失败！");
+			}
 		}else{
-
-			return ResultMsg.newInstance(false,"本周期会员资格表还未开始计算！");
+			return ResultMsg.newInstance(false,"本周期会员资格表已计算或者还未可以开始计算！");
 		}
-
-
 	}
-
 
 
 }

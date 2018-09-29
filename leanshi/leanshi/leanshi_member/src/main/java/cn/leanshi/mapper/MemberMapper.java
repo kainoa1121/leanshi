@@ -25,4 +25,6 @@ public interface MemberMapper {
 	List<Member_basic> findMemByMobile(Map<String,Object> map);
 
 	int updateMobAndNickByMCode(Member_basic memberBasic);
+
+	List<Member_basic> findMemAll();
 }

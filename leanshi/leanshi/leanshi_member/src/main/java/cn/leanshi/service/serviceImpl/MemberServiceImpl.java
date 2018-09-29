@@ -1114,4 +1114,19 @@ public class MemberServiceImpl implements MemberService {
 		sysPeriodMapper.updatePeriodAddNext(map);
 	}
 
+	@Override
+	public List<MemberQualification> findQualificationMCodeByPeriod(String periodCode) {
+		return qualificationMapper.findQualificationMCodeByPeriod(periodCode);
+	}
+
+	@Override
+	public List<Member_basic> findMemAll() {
+		return mapper.findMemAll();
+	}
+
+	@Override
+	public int addMqlf(MemberQualification mqlf) {
+		return qualificationMapper.addMqlf(mqlf);
+	}
+
 }
