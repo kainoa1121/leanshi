@@ -1194,7 +1194,7 @@ public class MemberController {
 				//上一期结束时间
 				String nextPeriodBefore = "";
 				if (periodLast!=null){
-					nextPeriodBefore = periodLast.getNextPeriod();
+					nextPeriodBefore = periodLast.getPrePeriod();
 				}
 
 				if (!"".equals(nextPeriodBefore)){

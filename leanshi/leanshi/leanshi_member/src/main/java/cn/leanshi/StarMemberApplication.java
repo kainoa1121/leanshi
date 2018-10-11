@@ -26,7 +26,7 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
  */
 @SpringBootApplication
 @MapperScan("cn.leanshi.mapper")
-public class StarMemberApplication {
+public class  StarMemberApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StarMemberApplication.class,args);
 	}
