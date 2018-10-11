@@ -720,11 +720,17 @@ public class MemberServiceImpl implements MemberService {
 					//更改基本信息表
 					int j = mapper.updateMobAndNickByMCode(memberBasic);
 
-					Map<String,Object> map = new HashMap<>();
-					map.put("mCode",memberEditReview.getMCode());
-					map.put("withdrawDefault",memberEditReview.getWithdrawDefault());
-					//更改会员银行信息表
-					int i = bankMapper.updateByMBank(map);
+					int i;
+					List<MemberBank> bank = bankMapper.findMBankByMCode(memberEditReview.getMCode());
+					if (bank.size()==0){
+						i=1;
+					}else {
+						Map<String,Object> map = new HashMap<>();
+						map.put("mCode",memberEditReview.getMCode());
+						map.put("withdrawDefault",memberEditReview.getWithdrawDefault());
+						//更改会员银行信息表
+						i = bankMapper.updateByMBank(map);
+					}
 					if (i!=1||j!=1){
 						//修改失败---审核失败
 						return 0;
