@@ -25,8 +25,17 @@
     </select>
 
     <insert id="addPeriod" parameterType="cn.leanshi.model.SysPeriod">
-        INSERT INTO rd_sys_period(PERIOD_CODE,PRE_PERIOD,NEXT_PERIOD,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,BONUS_STATUS) values(#{periodCode},#{prePeriod},#{nextPeriod},#{salesStatus},#{calStatus},#{beginDate},#{endDate},#{calTimes},#{bonusStatus})
+        INSERT INTO rd_sys_period(PERIOD_CODE,PRE_PERIOD,SALES_STATUS,CAL_STATUS,BEGIN_DATE,END_DATE,CAL_TIMES,BONUS_STATUS) values(#{periodCode},#{prePeriod},#{salesStatus},#{calStatus},#{beginDate},#{endDate},#{calTimes},#{bonusStatus})
     </insert>
+
+    <!--把本周期添加到上一周期的下一业绩周期-->
+    <update id="updatePeriodAddNext" parameterType="map" >
+        UPDATE rd_sys_period
+        SET
+        NEXT_PERIOD = #{nextPeriod}
+        WHERE
+        PERIOD_CODE = #{periodCode}
+    </update>
 
     <!--根据这一周期查找是否有上一期周期-->
     <select id="findPrePeriod" parameterType="string" resultMap="SysPeriodResultMap">

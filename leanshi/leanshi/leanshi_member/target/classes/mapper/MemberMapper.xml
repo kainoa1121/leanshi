@@ -111,4 +111,9 @@
         WHERE
         MM_CODE = #{mCode}
     </update>
+
+    <!--查找所有会员编号和姓名-->
+    <select id="findMemAll" resultMap="BaseResultMap">
+        select MM_CODE,MM_NAME from rd_mem_basic_info
+    </select>
 </mapper>

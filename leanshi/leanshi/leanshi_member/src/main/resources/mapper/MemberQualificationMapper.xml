@@ -85,4 +85,12 @@
                     #{rank},#{orphan})
     </insert>
 
+    <select id="findMaxLayerByPeriodCode" parameterType="string" resultType="int">
+        select max(LAYER) from RD_DIS_QUALIFICATION where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="findByLayer" parameterType="map" resultMap="QualificationResultMap">
+        select * from rd_dis_qualification where LEAF_YN = 1 and LAYER = #{layer} and PERIOD_CODE = #{periodCode} and RANK_INIT &lt;2 and RANK>=2
+    </select>
+
 </mapper>

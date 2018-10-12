@@ -19,4 +19,18 @@ public interface MemberQualificationMapper {
 	List<MemberQualification> findQualificationMCodeByPeriod(String periodCode);
 
 	int addMqlf(MemberQualification mqlf);
+
+	/**
+	 * @author zc
+	 * @param periodCode
+	 * @return
+	 */
+	int findMaxLayerByPeriodCode(String periodCode);
+
+	/**
+	 * @author zc
+	 * @param map
+	 * @return
+	 */
+	List<MemberQualification> findByLayer(Map<String, Object> map);
 }
