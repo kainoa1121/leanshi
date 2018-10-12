@@ -1633,7 +1633,7 @@ public class MemberController {
 	public ResultMsg countNowPeriod(@RequestParam(value = "periodCode",required = false) String periodCode){
 
 		//计算层级
-		String company = "00000";//公司
+		String company = "80000000";//公司
 		countMemLayer(company,periodCode,0);
 
 		//叶子计算

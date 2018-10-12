@@ -69,4 +69,133 @@
         where PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
     </select>
 
+    <!--根据业务周期查找所有会员编号-->
+    <select id="findQualificationMCodeByPeriod" parameterType="string" resultMap="QualificationResultMap">
+        select MM_CODE from rd_dis_qualification
+        where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <!--添加资格信息-->
+    <insert id="addMqlf" parameterType="cn.leanshi.model.MemberQualification">
+        INSERT INTO rd_dis_qualification(PERIOD_CODE,MM_CODE,MM_NAME,SPONSOR_CODE,SPONSOR_NAME,MM_STATUS,
+                                        RA_STATUS,RA_SHOP_YN,PPV,PPV_RETAIL,APPV_INIT,APPV_FINAL,A_RETAIL_INIT,
+                                        A_RETAIL,A_RETAIL_FINAL,RANK_INIT,RANK,ORPHAN)
+        values(#{periodCode},#{mCode},#{mName},#{sponsorCode},#{sponsorName},#{mStatus},#{raStatus},#{raShopYn},
+                    #{ppv},#{ppvRetail},#{appvInit},#{appvFinal},#{retailInit},#{retail},#{retailFinal},#{rankInit},
+                    #{rank},#{orphan})
+    </insert>
+
+    <!--删除指定周期数据-->
+    <delete id="delQulfByPeriod" parameterType="string">
+        DELETE FROM rd_dis_qualification WHERE PERIOD_CODE = #{periodCode}
+    </delete>
+
+    <!--层级计算-->
+    <update id="updateQualifi" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        LAYER = #{layer}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--叶子计算-->
+    <update id="updateQualifiLeafYn" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        LEAF_YN = #{leafYn}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--查找最大的层数-->
+    <select id="findLayerMax" parameterType="string" resultType="int">
+        SELECT MAX(LAYER) FROM rd_dis_qualification
+        WHERE PERIOD_CODE = #{periodCode}
+    </select>
+
+    <!--找出对应层数的数据-->
+    <select id="findQualifiByLayer" parameterType="java.util.Map" resultMap="QualificationResultMap">
+        SELECT * FROM rd_dis_qualification
+        WHERE PERIOD_CODE = #{periodCode} AND LAYER = #{layer}
+    </select>
+
+    <!--计算npv-->
+    <update id="updateQlfNPV" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        NPV = NPV + #{npv}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--计算g7pv-->
+    <update id="updateQlfG7PV" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        G7PV = G7PV + #{g7pv}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--计算gpv-->
+    <update id="updateQulfGPV" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        GPV_FLAGSHIP = #{gpvFlagship}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--计算档期个人等级-->
+    <update id="updateQulfRank" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        RANK = #{rank}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--计算直推团队最高级别-->
+    <select id="findQulfCountRankBySponsorCode" parameterType="string" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM rd_dis_qualification
+        WHERE GROUP_RANK_MAX = #{groupRankMax} AND SPONSOR_CODE = #{sponsorCode} AND PERIOD_CODE = #{periodCode}
+    </select>
+
+    <!--查找直推团队最高级别-->
+    <select id="findQulfGroup" parameterType="java.util.Map" resultMap="QualificationResultMap">
+        SELECT * FROM rd_dis_qualification
+        WHERE SPONSOR_CODE = #{sponsorCode} AND PERIOD_CODE = #{periodCode}
+    </select>
+
+    <!--修改团队最高级别-->
+    <update id="updateQulfGroup" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        GROUP_RANK_MAX = #{groupRankMax}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--修改直接推荐代理、下属3级代理店网络数、旗舰店网络数、高级旗舰店网络数-->
+    <update id="updateQulfD" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        DD_RANK2_NUMBER = #{ddRank2Number},
+        DL_RANK6_NUMBER = #{dlRank6Number},
+        DL_RANK7_NUMBER = #{dlRank7Number},
+        DL_RANK8_NUMBER = #{dlRank8Number}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--修改历史最高等级-->
+    <update id="updateQulfRankHight" parameterType="java.util.Map">
+        UPDATE rd_dis_qualification
+        SET
+        RANK_RECORD_HIGH = #{rankRecordHigh}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
 </mapper>
