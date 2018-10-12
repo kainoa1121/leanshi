@@ -1135,4 +1135,9 @@ public class MemberServiceImpl implements MemberService {
 		return qualificationMapper.addMqlf(mqlf);
 	}
 
+	@Override
+	public int delQulfByPeriod(String periodCode) {
+		return qualificationMapper.delQulfByPeriod(periodCode);
+	}
+
 }

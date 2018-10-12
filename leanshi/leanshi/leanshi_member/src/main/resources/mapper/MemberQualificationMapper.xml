@@ -75,7 +75,7 @@
         where PERIOD_CODE = #{periodCode}
     </select>
 
-    <!--添加资格信息addMqlf-->
+    <!--添加资格信息-->
     <insert id="addMqlf" parameterType="cn.leanshi.model.MemberQualification">
         INSERT INTO rd_dis_qualification(PERIOD_CODE,MM_CODE,MM_NAME,SPONSOR_CODE,SPONSOR_NAME,MM_STATUS,
                                         RA_STATUS,RA_SHOP_YN,PPV,PPV_RETAIL,APPV_INIT,APPV_FINAL,A_RETAIL_INIT,
@@ -84,5 +84,10 @@
                     #{ppv},#{ppvRetail},#{appvInit},#{appvFinal},#{retailInit},#{retail},#{retailFinal},#{rankInit},
                     #{rank},#{orphan})
     </insert>
+
+    <!--删除指定周期数据-->
+    <delete id="delQulfByPeriod" parameterType="string">
+        DELETE FROM rd_dis_qualification WHERE PERIOD_CODE = #{periodCode}
+    </delete>
 
 </mapper>

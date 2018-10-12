@@ -122,4 +122,6 @@ public interface MemberService {
 	List<Member_basic> findMemAll();
 
 	int addMqlf(MemberQualification mqlf);
+
+	int delQulfByPeriod(String periodCode);
 }

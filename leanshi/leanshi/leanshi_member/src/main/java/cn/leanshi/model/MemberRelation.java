@@ -13,6 +13,9 @@ public class MemberRelation {
 
 	private String mCode; //会员编号
 	private int rank; //会员级别:参考级别体系
+	private int rankNow; //当前计算后级别
+	private int rankBefore; //上一周期级别
+	private int rankBeforeDouble; //上上一周期级别
 	private String rankPeriod; //升级业务期:YYYYMM
 	private int reTail;//累计按零售价购买额:用于判断是否可 以升VIP会员
 	private String loginPwd; //登录密码:加密保存

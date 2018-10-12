@@ -1463,7 +1463,7 @@ public class MemberController {
 
 		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
 		if (qualificationList.size()!=0){
-			return ResultMsg.newInstance(false,"本期资格信息已计算，请不要重复计算！");
+			int i = memberService.delQulfByPeriod(periodCode);
 		}
 
 		//判断当前业务周期业绩状态是否已关闭

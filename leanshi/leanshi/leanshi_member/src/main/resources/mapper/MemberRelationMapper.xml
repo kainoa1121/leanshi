@@ -4,6 +4,9 @@
     <resultMap id="RelationResultMap" type="cn.leanshi.model.MemberRelation">
         <result column="MM_CODE" property="mCode" />
         <result column="RANK" property="rank" />
+        <result column="RANK_NOW" property="rankNow" />
+        <result column="RANK_BEFORE" property="rankBefore" />
+        <result column="RANK_BEFORE_DOUBLE" property="rankBeforeDouble" />
         <result column="RANK_PERIOD" property="rankPeriod" />
         <result column="A_RETAIL" property="reTail" />
         <result column="LOGIN_PWD" property="loginPwd" />

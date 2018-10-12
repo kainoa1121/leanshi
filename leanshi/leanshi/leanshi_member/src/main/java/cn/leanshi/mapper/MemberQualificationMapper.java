@@ -19,4 +19,6 @@ public interface MemberQualificationMapper {
 	List<MemberQualification> findQualificationMCodeByPeriod(String periodCode);
 
 	int addMqlf(MemberQualification mqlf);
+
+	int delQulfByPeriod(String periodCode);
 }
