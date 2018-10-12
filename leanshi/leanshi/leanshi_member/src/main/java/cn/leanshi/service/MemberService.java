@@ -124,4 +124,35 @@ public interface MemberService {
 	int addMqlf(MemberQualification mqlf);
 
 	int delQulfByPeriod(String periodCode);
+
+	List<MemberRelation> findRelationBySponsorCode(String mCode);
+
+	int updateQualifi(String periodCode, String code, int layerNext);
+
+	int updateQualifiLeafYn(String mCode, String periodCode, int leafYn);
+
+	int findLayerMax(String periodCode);
+
+	List<MemberQualification> findQualifiByLayer(String periodCode, int i);
+
+	int updateQlfNPV(String periodCode, String mCode, int npv);
+
+	int updateQlfG7PV(String periodCode, String mCode, int g7pv);
+
+	int updateQulfGPV(String periodCode, String mCode, int npv);
+
+	int updateQulfRank(String periodCode, String mCode, int rank);
+
+	int findRltCountRank2BySponsorCode(String mCode);
+
+	int findQulfCountRankBySponsorCode(String periodCode,String mCode, int i);
+
+	List<MemberQualification> findQulfGroup(String periodCode, String mCode);
+
+	int updateQulfGroup(String periodCode, String mCode, int groupRankMax);
+
+	int updateQulfD(String periodCode, String mCode, int count2, int count6, int count7, int count8);
+
+	int updateQulfRankHight(String periodCode, String mCode, int rankRecordHigh);
+
 }

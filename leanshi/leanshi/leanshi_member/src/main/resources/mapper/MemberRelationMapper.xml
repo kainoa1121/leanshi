@@ -61,4 +61,16 @@
         MM_CODE = #{mCode}
     </update>
 
+    <!--根据推荐人编号查找会员资格信息-->
+    <select id="findRelationBySponsorCode" parameterType="string" resultMap="RelationResultMap">
+        SELECT * FROM rd_mm_relation
+        WHERE SPONSOR_CODE = #{sponsorCode}
+    </select>
+
+    <!--计算直推代理人数-->
+    <select id="findRelationBySponsorCode" parameterType="string" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM rd_mm_relation
+        WHERE RANK >= 2 AND SPONSOR_CODE = #{sponsorCode}
+    </select>
+
 </mapper>

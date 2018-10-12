@@ -1140,4 +1140,128 @@ public class MemberServiceImpl implements MemberService {
 		return qualificationMapper.delQulfByPeriod(periodCode);
 	}
 
+	@Override
+	public List<MemberRelation> findRelationBySponsorCode(String sponsorCode) {
+		return relationMapper.findRelationBySponsorCode(sponsorCode);
+	}
+
+	@Override
+	public int updateQualifi(String periodCode, String code, int layerNext) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",code);
+		map.put("layer",layerNext);
+		return qualificationMapper.updateQualifi(map);
+	}
+
+	@Override
+	public int updateQualifiLeafYn(String mCode, String periodCode,int leafYn) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("leafYn",leafYn);
+		return qualificationMapper.updateQualifiLeafYn(map);
+	}
+
+	@Override
+	public int findLayerMax(String periodCode) {
+		return qualificationMapper.findLayerMax(periodCode);
+	}
+
+	@Override
+	public List<MemberQualification> findQualifiByLayer(String periodCode, int i) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("layer",i);
+		return qualificationMapper.findQualifiByLayer(map);
+	}
+
+	@Override
+	public int updateQlfNPV(String periodCode, String mCode, int npv) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("npv",npv);
+		return qualificationMapper.updateQlfNPV(map);
+	}
+
+	@Override
+	public int updateQlfG7PV(String periodCode, String mCode, int g7pv) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("g7pv",g7pv);
+		return qualificationMapper.updateQlfG7PV(map);
+	}
+
+	@Override
+	public int updateQulfGPV(String periodCode, String mCode, int npv) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("gpvFlagship",npv);
+		return qualificationMapper.updateQulfGPV(map);
+	}
+
+	@Override
+	public int updateQulfRank(String periodCode, String mCode, int rank) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("rank",rank);
+		return qualificationMapper.updateQulfRank(map);
+	}
+
+	@Override
+	public int findRltCountRank2BySponsorCode(String sponsorCode) {
+		return relationMapper.findRltCountRank2BySponsorCode(sponsorCode);
+	}
+
+	@Override
+	public int findQulfCountRankBySponsorCode(String periodCode, String mCode, int groupRankMax) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("sponsorCode",mCode);
+		map.put("groupRankMax",groupRankMax);
+		return qualificationMapper.findQulfCountRankBySponsorCode(map);
+	}
+
+	@Override
+	public List<MemberQualification> findQulfGroup(String periodCode, String mCode) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("sponsorCode",mCode);
+		return qualificationMapper.findQulfGroup(map);
+	}
+
+	@Override
+	public int updateQulfGroup(String periodCode, String mCode, int groupRankMax) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("groupRankMax",groupRankMax);
+		return qualificationMapper.updateQulfGroup(map);
+	}
+
+	@Override
+	public int updateQulfD(String periodCode, String mCode,int count2, int count6, int count7, int count8) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("ddRank2Number",count2);
+		map.put("dlRank6Number",count6);
+		map.put("dlRank7Number",count7);
+		map.put("dlRank8Number",count8);
+		return qualificationMapper.updateQulfD(map);
+	}
+
+	@Override
+	public int updateQulfRankHight(String periodCode, String mCode, int rankRecordHigh) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("rankRecordHigh",rankRecordHigh);
+		return qualificationMapper.updateQulfRankHight(map);
+	}
+
 }
