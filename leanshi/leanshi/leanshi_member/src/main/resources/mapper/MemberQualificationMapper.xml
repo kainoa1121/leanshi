@@ -110,7 +110,7 @@
 
     <!--查找最大的层数-->
     <select id="findLayerMax" parameterType="string" resultType="int">
-        SELECT MAX(LAYER) FROM rd_dis_qualification
+        SELECT IfNULL(MAX(LAYER),0) FROM rd_dis_qualification
         WHERE PERIOD_CODE = #{periodCode}
     </select>
 

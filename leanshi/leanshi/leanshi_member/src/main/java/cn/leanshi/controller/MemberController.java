@@ -1463,7 +1463,7 @@ public class MemberController {
 
 		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
 		if (qualificationList.size()!=0){
-			int i = memberService.delQulfByPeriod(periodCode);
+			return ResultMsg.newInstance(false,"请不要重复计算！");
 		}
 
 		//判断当前业务周期业绩状态是否已关闭
@@ -1625,6 +1625,28 @@ public class MemberController {
 		}
 	}
 
+	/*回滚计算资格表*/
+	@RequestMapping(value = "/backNowPeriodQualf",method = RequestMethod.GET)
+	public ResultMsg backNowPeriodQualf(@RequestParam(value = "periodCode",required = false) String periodCode){
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+
+		int i = 0;
+
+		if (qualificationList.size()!=0){
+			i = memberService.delQulfByPeriod(periodCode);
+		}
+
+		if (qualificationList.size()==0){
+			i = 1;
+		}
+
+		if (i!=0){
+			return ResultMsg.newInstance(true,"回滚成功！");
+		}else {
+			return ResultMsg.newInstance(false,"回滚失败！");
+		}
+	}
+
 
 	/*
 	 * 计算本期会员业绩
@@ -1773,7 +1795,6 @@ public class MemberController {
 					int h = memberService.updateQulfRankHight(periodCode,qualification.getMCode(),rankInit);
 				}
 
-
 			}
 		}
 
@@ -1800,11 +1821,7 @@ public class MemberController {
 			}
 		}
 
-
-
-
-
-		return null;
+		return ResultMsg.newInstance(true,"计算完成！");
 	}
 
 
@@ -1880,13 +1897,36 @@ public class MemberController {
 
 			}
 
-			if (qlfSpon.getRankInit()>=rank||sponsorCode=="00000"){
+			if (qlfSpon.getRankInit()>=rank||sponsorCode=="80000000"){
 				return;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+	}
+
+
+	//回滚业绩表
+	@RequestMapping(value = "/backNowPeriod",method = RequestMethod.GET)
+	public ResultMsg backNowPeriod(@RequestParam(value = "periodCode",required = false) String periodCode){
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+
+		int i = 0;
+
+		if (qualificationList.size()!=0){
+
+		}
+
+		if (qualificationList.size()==0){
+			return ResultMsg.newInstance(false,"还没开始资格计算，回滚业绩失败！");
+		}
+
+		if (i!=0){
+			return ResultMsg.newInstance(true,"回滚成功！");
+		}else {
+			return ResultMsg.newInstance(false,"回滚失败！");
+		}
 	}
 
 }
