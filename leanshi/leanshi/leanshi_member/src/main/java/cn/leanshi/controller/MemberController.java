@@ -7,6 +7,7 @@ import cn.leanshi.model.MemberEditReview;
 import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
+import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
@@ -1910,16 +1911,27 @@ public class MemberController {
 	//回滚业绩表
 	@RequestMapping(value = "/backNowPeriod",method = RequestMethod.GET)
 	public ResultMsg backNowPeriod(@RequestParam(value = "periodCode",required = false) String periodCode){
-		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
 
 		int i = 0;
+		try {
+			List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
 
-		if (qualificationList.size()!=0){
+			if (qualificationList.size()==0){
+				return ResultMsg.newInstance(false,"还没开始资格计算，回滚业绩失败！");
+			}
 
-		}
+			List<RdBonusMaster> masterList = memberService.findMasterByPeriod(periodCode);
+			if (masterList.size()!=0){
+				return ResultMsg.newInstance(false,"奖金表已经计算，回滚业绩失败！");
+			}
 
-		if (qualificationList.size()==0){
-			return ResultMsg.newInstance(false,"还没开始资格计算，回滚业绩失败！");
+			for (MemberQualification qualification : qualificationList) {
+				//回滚  把数值都设为0
+				i = memberService.delQulfPV(qualification);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (i!=0){

@@ -8,6 +8,7 @@ import cn.leanshi.mapper.MemberMapper;
 import cn.leanshi.mapper.MemberQualificationMapper;
 import cn.leanshi.mapper.MemberRelationMapper;
 import cn.leanshi.mapper.RankMapper;
+import cn.leanshi.mapper.RdBonusMasterMapper;
 import cn.leanshi.mapper.RdRaBindingMapper;
 import cn.leanshi.mapper.SysPeriodLogMapper;
 import cn.leanshi.mapper.SysPeriodMapper;
@@ -19,6 +20,7 @@ import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
+import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
@@ -55,6 +57,7 @@ public class MemberServiceImpl implements MemberService {
 	private final RankMapper rankMapper;
 	private final MemberAddressMapper addressMapper;
 	private final MemberAccountMapper accountMapper;
+	private final RdBonusMasterMapper masterMapper;
 
 
 	/*
@@ -1262,6 +1265,31 @@ public class MemberServiceImpl implements MemberService {
 		map.put("mCode",mCode);
 		map.put("rankRecordHigh",rankRecordHigh);
 		return qualificationMapper.updateQulfRankHight(map);
+	}
+
+	@Override
+	public List<RdBonusMaster> findMasterByPeriod(String periodCode) {
+		return masterMapper.findMasterByPeriod(periodCode);
+	}
+
+	@Override
+	public int delQulfPV(MemberQualification qualification) {
+		if (qualification.getRankInit()>=2){
+			qualification.setRank(0);
+		}
+		qualification.setRankRecordHigh(qualification.getRankInit());
+		qualification.setLeafYn(0);
+		qualification.setLayer(0);
+		qualification.setG7pv(0);
+		qualification.setNpv(0);
+		qualification.setGpvFlagship(0);
+		qualification.setGroupRankMax(0);
+		qualification.setDdRank2Number(0);
+		qualification.setDlRank6Number(0);
+		qualification.setDlRank7Number(0);
+		qualification.setDlRank8Number(0);
+
+		return qualificationMapper.delQulfPV(qualification);
 	}
 
 }

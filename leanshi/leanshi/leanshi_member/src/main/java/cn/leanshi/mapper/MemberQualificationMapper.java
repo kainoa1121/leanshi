@@ -47,4 +47,6 @@ public interface MemberQualificationMapper {
 	int updateQulfD(Map<String, Object> map);
 
 	int updateQulfRankHight(Map<String, Object> map);
+
+	int delQulfPV(MemberQualification qualification);
 }

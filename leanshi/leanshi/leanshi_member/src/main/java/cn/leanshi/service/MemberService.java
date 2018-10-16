@@ -8,6 +8,7 @@ import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
+import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
@@ -155,4 +156,7 @@ public interface MemberService {
 
 	int updateQulfRankHight(String periodCode, String mCode, int rankRecordHigh);
 
+	List<RdBonusMaster> findMasterByPeriod(String periodCode);
+
+	int delQulfPV(MemberQualification qualification);
 }
