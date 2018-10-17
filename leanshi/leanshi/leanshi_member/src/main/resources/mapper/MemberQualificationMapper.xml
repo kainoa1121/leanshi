@@ -157,7 +157,7 @@
     </update>
 
     <!--计算直推团队最高级别-->
-    <select id="findQulfCountRankBySponsorCode" parameterType="string" resultType="java.lang.Integer">
+    <select id="findQulfCountRankBySponsorCode" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM rd_dis_qualification
         WHERE GROUP_RANK_MAX = #{groupRankMax} AND SPONSOR_CODE = #{sponsorCode} AND PERIOD_CODE = #{periodCode}
     </select>
