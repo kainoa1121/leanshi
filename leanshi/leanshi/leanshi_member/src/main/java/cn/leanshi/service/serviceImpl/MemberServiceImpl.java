@@ -1282,7 +1282,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 		qualification.setRankRecordHigh(qualification.getRankInit());
 		qualification.setLeafYn(0);
-		qualification.setLayer(0);
+		qualification.setLayer(null);
 		qualification.setG7pv(0);
 		qualification.setNpv(0);
 		qualification.setGpvFlagship(0);
