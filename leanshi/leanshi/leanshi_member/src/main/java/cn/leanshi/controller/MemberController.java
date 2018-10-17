@@ -1877,15 +1877,19 @@ public class MemberController {
 			}
 			//推荐人本期资格信息
 			MemberQualification qualification = memberService.findQualificationByPeriodAndMCode(periodCode, sponsorCode);
-			if (qualification.getPpv()>=50){
-				int l = memberService.updateQlfG7PV(periodCode, sponsorCode, g7pvLast);
-				count--;
-				if(count<=0){
-					return;//结束方法
+			if (qualification!=null){
+
+				if (qualification.getPpv()>=50){
+					int l = memberService.updateQlfG7PV(periodCode, sponsorCode, g7pvLast);
+					count--;
+					if(count<=0){
+						return;//结束方法
+					}
+					countMemG7PV(relation.getSponsorCode(),periodCode,g7pvLast,count);
+				}else{
+					count +=1;
 				}
-				countMemG7PV(relation.getSponsorCode(),periodCode,g7pvLast,count);
-			}else{
-				count +=1;
+
 			}
 
 		} catch (Exception e) {
