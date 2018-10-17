@@ -1970,7 +1970,7 @@ public class MemberController {
 		if (qualificationList.size()!=0){
 			return ResultMsg.newInstance(true,"统计已完成！");
 		}else {
-			return ResultMsg.newInstance(false,"还未统计！");
+			return ResultMsg.newInstance(false,"还未统计");
 		}
 
 	}
