@@ -1961,6 +1961,22 @@ public class MemberController {
 	}
 
 	/*
+	 * 查看业绩表状态
+	 * */
+	@RequestMapping(value = "/findPeriodStatus ",method = RequestMethod.GET)
+	public ResultMsg findPeriodStatus(@RequestParam(value = "periodCode",required = false) String periodCode){
+
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+		if (qualificationList.size()!=0){
+			return ResultMsg.newInstance(true,"统计已完成！");
+		}else {
+			return ResultMsg.newInstance(false,"还未统计！");
+		}
+
+	}
+
+
+	/*
 	 * 查看本期会员欠款表(模糊条件查询)
 	 * */
 	@RequestMapping(value = "/findReceivableAll",method = RequestMethod.POST)
