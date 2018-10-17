@@ -110,7 +110,7 @@
 
     <!--查找最大的层数-->
     <select id="findLayerMax" parameterType="string" resultType="int">
-        SELECT MAX(LAYER) FROM rd_dis_qualification
+        SELECT IfNULL(MAX(LAYER),0) FROM rd_dis_qualification
         WHERE PERIOD_CODE = #{periodCode}
     </select>
 
@@ -194,6 +194,26 @@
         UPDATE rd_dis_qualification
         SET
         RANK_RECORD_HIGH = #{rankRecordHigh}
+        WHERE
+        PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
+    </update>
+
+    <!--回滚业绩表-->
+    <update id="delQulfPV" parameterType="cn.leanshi.model.MemberQualification">
+        UPDATE rd_dis_qualification
+        SET
+        RANK = #{rank},
+        RANK_RECORD_HIGH = #{rankRecordHigh},
+        LEAF_YN = #{leafYn},
+        LAYER = #{layer},
+        G7PV = #{g7pv},
+        NPV = #{npv},
+        GPV_FLAGSHIP = #{gpvFlagship},
+        GROUP_RANK_MAX = #{groupRankMax},
+        DD_RANK2_NUMBER = #{ddRank2Number},
+        DL_RANK6_NUMBER = #{dlRank6Number},
+        DL_RANK7_NUMBER = #{dlRank7Number},
+        DL_RANK8_NUMBER = #{dlRank8Number}
         WHERE
         PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
     </update>

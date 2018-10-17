@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdReceivableDetailMapper">
+
+    <resultMap id="RDResultMap" type="cn.leanshi.model.RdReceivableDetail">
+        <result column="TRANS_NUMBER" property="transNumber" />
+        <result column="BATCH_NUMBER" property="batchNumber" />
+        <result column="MM_CODE" property="mCode" />
+        <result column="TR_TYPE_CODE" property="trTypeCode" />
+        <result column="TR_SOURCE_TYPE" property="trSourceType" />
+        <result column="TR_BANK_OID" property="trBankOid" />
+        <result column="CURRENCY_CODE" property="currencyCode" />
+        <result column="BLANCE_BEFORE" property="blanceBefore" />
+        <result column="AMOUNT" property="amount" />
+        <result column="BLANCE_AFTER" property="blanceAfter" />
+        <result column="TRANS_DATE" property="transDate" />
+        <result column="TRANS_PERIOD" property="transPeriod" />
+        <result column="TRANS_DESC" property="transDesc" />
+        <result column="STATUS" property="status" />
+        <result column="WASHED_YN" property="washedYn" />
+        <result column="ORIGN_TRANS_NUMBER" property="orignTransNumber" />
+        <result column="CREATION_BY" property="creationBy" />
+        <result column="CREATION_TIME" property="creationTime" />
+        <result column="UPDATE_BY" property="updateBy" />
+        <result column="UPDATE_TIME" property="updateTime" />
+        <result column="AUTOHRIZE_BY" property="autohrizeBy" />
+        <result column="AUTOHRIZE_TIME" property="autohrizeTime" />
+        <result column="AUTOHRIZE_DESC" property="autohrizeDesc" />
+    </resultMap>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdReceivableMasterMapper">
+
+    <resultMap id="ReceivableResultMap" type="cn.leanshi.model.RdReceivableMaster">
+        <result column="MM_CODE" property="mCode" />
+        <result column="MM_NICK_NAME" property="mNickname" />
+        <result column="RECEIVABLE_BLANCE" property="receivableBlance" />
+        <result column="CURRENCY_CODE" property="currencyCode" />
+        <result column="STATUS" property="status" />
+        <result column="BNS_DEDUCT_PECENT" property="bnsDeductPecent" />
+    </resultMap>
+
+    <!--模糊条件查询-->
+    <select id="findReceivableAll" parameterType="java.util.Map" resultMap="ReceivableResultMap">
+        SELECT * FROM rd_receivable_master
+        WHERE 1=1
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="status !=null and status != ''">
+            AND STATUS = #{status}
+        </if>
+        ORDER BY MM_CODE ASC
+    </select>
+
+</mapper>

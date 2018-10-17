@@ -10,6 +10,7 @@ import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 
@@ -159,4 +160,6 @@ public interface MemberService {
 	List<RdBonusMaster> findMasterByPeriod(String periodCode);
 
 	int delQulfPV(MemberQualification qualification);
+
+	List<RdReceivableMaster> findReceivableAll(String mCode, String mNickname, int status);
 }

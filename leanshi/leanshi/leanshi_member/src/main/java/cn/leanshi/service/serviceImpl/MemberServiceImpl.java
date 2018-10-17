@@ -10,6 +10,7 @@ import cn.leanshi.mapper.MemberRelationMapper;
 import cn.leanshi.mapper.RankMapper;
 import cn.leanshi.mapper.RdBonusMasterMapper;
 import cn.leanshi.mapper.RdRaBindingMapper;
+import cn.leanshi.mapper.RdReceivableMasterMapper;
 import cn.leanshi.mapper.SysPeriodLogMapper;
 import cn.leanshi.mapper.SysPeriodMapper;
 import cn.leanshi.model.MemberAccount;
@@ -22,6 +23,7 @@ import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.service.MemberService;
@@ -58,6 +60,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberAddressMapper addressMapper;
 	private final MemberAccountMapper accountMapper;
 	private final RdBonusMasterMapper masterMapper;
+	private final RdReceivableMasterMapper receivableMapperr;
 
 
 	/*
@@ -1290,6 +1293,15 @@ public class MemberServiceImpl implements MemberService {
 		qualification.setDlRank8Number(0);
 
 		return qualificationMapper.delQulfPV(qualification);
+	}
+
+	@Override
+	public List<RdReceivableMaster> findReceivableAll(String mCode, String mNickname, int status) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("status",status);
+		return receivableMapperr.findReceivableAll(map);
 	}
 
 }

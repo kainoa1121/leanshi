@@ -9,6 +9,7 @@ import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.model.http.ResultMsg;
@@ -1648,6 +1649,20 @@ public class MemberController {
 		}
 	}
 
+	/*
+	 * 查看资格表状态
+	 * */
+	@RequestMapping(value = "/findQulfStatus",method = RequestMethod.GET)
+	public ResultMsg findQulfStatus(@RequestParam(value = "periodCode",required = false) String periodCode){
+
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+		if (qualificationList.size()!=0){
+			return ResultMsg.newInstance(true,"统计已完成！");
+		}else {
+			return ResultMsg.newInstance(false,"还未统计！");
+		}
+
+	}
 
 	/*
 	 * 计算本期会员业绩
@@ -1940,5 +1955,36 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"回滚失败！");
 		}
 	}
+
+	/*
+	 * 查看本期会员欠款表(模糊条件查询)
+	 * */
+	@RequestMapping(value = "/findReceivableAll",method = RequestMethod.POST)
+	public ResultMsg findReceivableAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+									   @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+									   @RequestParam(value = "mCode",required = false) String mCode,
+									   @RequestParam(value = "mNickname",required = false) String mNickname,
+									   @RequestParam(value = "status",required = false) int status){
+
+		int size=pageSize;
+
+		PageHelper.startPage(currentPage,size);
+
+		ResultMsg<PageInfo<RdReceivableMaster>> resultMsg = new ResultMsg<PageInfo<RdReceivableMaster>>();
+		//查到当前周期的所有会员资格数据
+		List<RdReceivableMaster> list = memberService.findReceivableAll(mCode,mNickname,status);
+
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"本期奖金信息还未计算！");
+		}
+
+		PageInfo<RdReceivableMaster> pageInfo = new PageInfo<RdReceivableMaster>(list);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
+
+		return resultMsg;
+
+	}
+
 
 }

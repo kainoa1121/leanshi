@@ -68,7 +68,7 @@
     </select>
 
     <!--计算直推代理人数-->
-    <select id="findRelationBySponsorCode" parameterType="string" resultType="java.lang.Integer">
+    <select id="findRltCountRank2BySponsorCode" parameterType="string" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM rd_mm_relation
         WHERE RANK >= 2 AND SPONSOR_CODE = #{sponsorCode}
     </select>
