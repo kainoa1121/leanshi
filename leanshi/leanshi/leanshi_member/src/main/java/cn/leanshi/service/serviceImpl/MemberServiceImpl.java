@@ -1304,4 +1304,37 @@ public class MemberServiceImpl implements MemberService {
 		return receivableMapperr.findReceivableAll(map);
 	}
 
+	@Override
+	public int defBankByOid(Integer oId, String mCode, Integer defaultBank) {
+		if (defaultBank==1){
+			try {
+				//把相同编号的其他银行卡的默认方式设为0
+				int countEdit = bankMapper.updateBankDefaultByMCode(mCode);
+
+				//查询该会员有多少个银行卡
+				int count = bankMapper.selectCount(mCode);
+
+				if (countEdit==count){
+					//设置默认提现银行卡
+					Map<String,Object> map = new HashMap<>();
+					map.put("oId",oId);
+					map.put("mCode",mCode);
+					map.put("defaultBank",defaultBank);
+					int i = bankMapper.defBankByOid(map);
+					if(i==1){
+						return i;
+					}
+					return 0;
+				}else {
+
+					return 0;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		return 0;
+	}
+
 }

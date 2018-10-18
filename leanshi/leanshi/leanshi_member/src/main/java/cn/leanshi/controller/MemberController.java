@@ -415,10 +415,25 @@ public class MemberController {
 		}
 
 		MemberBank bank = new MemberBank();
-		bank.setMCode(mCode);
-		bank.setBankCode(bankCode);
-		bank.setAccName(accName);
-		bank.setAccCode(accCode);
+		try {
+			List<MemberBank> memberBanks = memberService.findMBankByMCode(mCode);
+			if (memberBanks.size()==0){
+				bank.setMCode(mCode);
+				bank.setBankCode(bankCode);
+				bank.setAccName(accName);
+				bank.setAccCode(accCode);
+				bank.setDefaultBank(1);
+			}else{
+				bank.setMCode(mCode);
+				bank.setBankCode(bankCode);
+				bank.setAccName(accName);
+				bank.setAccCode(accCode);
+				bank.setDefaultBank(0);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		int i = memberService.addBankByMCode(bank);
 		if (i==1){
 			return ResultMsg.newInstance(true,"添加成功！");
@@ -438,6 +453,20 @@ public class MemberController {
 			return ResultMsg.newInstance(true,"解绑成功！");
 		}
 		return ResultMsg.newInstance(false,"解绑失败！");
+	}
+
+	/*
+	 * 根据oid设置默认提现银行卡
+	 * */
+	@RequestMapping(value = "/defBankByOid",method = RequestMethod.POST)
+	public ResultMsg defBankByOid(@RequestParam Integer oId,@RequestParam String mCode,@RequestParam Integer defaultBank){
+
+		int i = memberService.defBankByOid(oId,mCode,defaultBank);
+
+		if (i==1){
+			return ResultMsg.newInstance(true,"设置默认提现卡成功！");
+		}
+		return ResultMsg.newInstance(false,"设置默认提现卡失败！");
 	}
 
 	/*
@@ -1968,9 +1997,19 @@ public class MemberController {
 
 		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
 		if (qualificationList.size()!=0){
-			return ResultMsg.newInstance(true,"统计已完成！");
+			int i =1;
+			for (MemberQualification qualification : qualificationList) {
+				if (qualification.getLayer()==0){
+					i=0;
+				}
+			}
+			if (i==1){
+				return ResultMsg.newInstance(true,"统计已完成！");
+			}else{
+				return ResultMsg.newInstance(false,"还未统计！");
+			}
 		}else {
-			return ResultMsg.newInstance(false,"还未统计");
+			return ResultMsg.newInstance(false,"还未统计！");
 		}
 
 	}

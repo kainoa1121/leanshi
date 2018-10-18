@@ -162,4 +162,6 @@ public interface MemberService {
 	int delQulfPV(MemberQualification qualification);
 
 	List<RdReceivableMaster> findReceivableAll(String mCode, String mNickname, int status);
+
+	int defBankByOid(Integer oId, String mCode, Integer defaultBank);
 }

@@ -20,6 +20,7 @@ public class MemberBank {
 	private String bankDetail;//'银行详细信息'
 	private String validThru;//'有效期:MM/YY'
 	private String cvv2;//'信用卡CVV2码:3位'
+	private Integer defaultBank;//默认提现卡 0：不是  1：是
 	private String paymentDefault;//'默认支付方式'
 	private String withdrawDefault;//'默认提现方式'
 	private String rechargeDefault;//'默认充值账户'
