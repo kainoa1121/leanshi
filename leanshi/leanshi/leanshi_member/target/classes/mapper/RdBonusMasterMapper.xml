@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdBonusMasterMapper">
+
+    <resultMap id="RdBonusMaster" type="cn.leanshi.model.RdBonusMaster">
+        <result column="PERIOD_CODE" property="periodCode"/>
+        <result column="MM_CODE" property="mCode" />
+        <result column="BONUS_RETAIL" property="bonusRetail" />
+        <result column="BONUS_NEW_VIP" property="bonusNewVip" />
+        <result column="BONUS_DEVP_1" property="bonusDevp1" />
+        <result column="BONUS_DEVP_2" property="bonusDevp2" />
+        <result column="BONUS_DEVP_SHARE" property="bonusDevpShare" />
+        <result column="BONUS_DEVP_SUM" property="bonusDevpSum" />
+        <result column="BONUS_LD_DIRECT" property="bonusLdDirect" />
+        <result column="BONUS_LD_INDIRECT" property="bonusLdIndirect" />
+        <result column="BONUS_LD_SUPPORT" property="bonusLdSupport" />
+        <result column="BONUS_LD_SUM" property="bonusLdSum" />
+        <result column="CHARGE_SERVICE" property="chargeService" />
+        <result column="BONUS_SUM" property="bonusSum" />
+    </resultMap>
+
+    <select id="searchByPeriodCode" parameterType="string" resultMap="RdBonusMaster">
+        SELECT * FROM rd_bonus_master WHERE PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="searchByPeriodCodeAndMcode" parameterType="map" resultMap="RdBonusMaster">
+        SELECT * FROM rd_bonus_master WHERE PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </select>
+
+    <insert id="insertRdBonusMaster" parameterType="cn.leanshi.model.RdBonusMaster">
+        INSERT INTO rd_bonus_master(PERIOD_CODE,MM_CODE,BONUS_RETAIL,BONUS_NEW_VIP,BONUS_DEVP_1,BONUS_DEVP_2,BONUS_DEVP_SHARE,BONUS_DEVP_SUM,
+        BONUS_LD_DIRECT,BONUS_LD_INDIRECT,BONUS_LD_SUPPORT,BONUS_LD_SUM,CHARGE_SERVICE,BONUS_SUM
+        ) values(#{periodCode},#{mCode},0,0,0,0,0,0,0,0,0,0,0,0)
+    </insert>
+
+    <update id="updateBonusDevp1" parameterType="map">
+        update rd_bonus_master set BONUS_DEVP_1 = BONUS_DEVP_1 + #{add} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+
+    <delete id="deleteByPeriodCode" parameterType="string">
+        delete from rd_bonus_master WHERE PERIOD_CODE = #{periodCode}
+    </delete>
+
+    <update id="updateBonusDevp2" parameterType="map">
+        update rd_bonus_master set BONUS_DEVP_2 = BONUS_DEVP_2 + #{add} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+
+    <update id="updateBonusDevpShare" parameterType="map">
+    update rd_bonus_master set BONUS_DEVP_SHARE = BONUS_DEVP_SHARE + #{add} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+
+    <update id="updateBonusNewVip" parameterType="map">
+        update rd_bonus_master set BONUS_NEW_VIP = BONUS_NEW_VIP + #{add} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+
+    <select id="selectAll" parameterType="string" resultMap="RdBonusMaster">
+        select * from rd_bonus_master where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <update id="updateBonusSum" parameterType="map">
+        update rd_bonus_master set BONUS_DEVP_SHARE = #{bounsDevpShare}, BONUS_DEVP_SUM = #{bonusDevpDum}, BONUS_LD_SUM = #{bonusLdSum},BONUS_SUM = #{bonusSum} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+    
+    <select id="findSumShare" parameterType="string" resultType="int">
+        select sum(BONUS_DEVP_SHARE) from rd_bonus_master where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <update id="updateBonusLDDirect" parameterType="map">
+        update rd_bonus_master set BONUS_LD_DIRECT = BONUS_LD_DIRECT + #{bonusLDDirect} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+
+    <update id="updateBonusLDIndirect" parameterType="map">
+        update rd_bonus_master set BONUS_LD_INDIRECT = BONUS_LD_INDIRECT + #{bonusLDIndirect} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+
+    <update id="updateBonusLDSupport" parameterType="map">
+        update rd_bonus_master set BONUS_LD_SUPPORT = BONUS_LD_SUPPORT + #{bonusLDSupport} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
+    </update>
+</mapper>
