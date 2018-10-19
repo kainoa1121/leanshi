@@ -8,7 +8,9 @@ import cn.leanshi.mapper.MemberMapper;
 import cn.leanshi.mapper.MemberQualificationMapper;
 import cn.leanshi.mapper.MemberRelationMapper;
 import cn.leanshi.mapper.RankMapper;
+import cn.leanshi.mapper.RdBonusMasterMapper;
 import cn.leanshi.mapper.RdRaBindingMapper;
+import cn.leanshi.mapper.RdReceivableMasterMapper;
 import cn.leanshi.mapper.SysPeriodLogMapper;
 import cn.leanshi.mapper.SysPeriodMapper;
 import cn.leanshi.model.MemberAccount;
@@ -19,7 +21,9 @@ import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
+import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.service.MemberService;
@@ -55,6 +59,8 @@ public class MemberServiceImpl implements MemberService {
 	private final RankMapper rankMapper;
 	private final MemberAddressMapper addressMapper;
 	private final MemberAccountMapper accountMapper;
+	private final RdBonusMasterMapper masterMapper;
+	private final RdReceivableMasterMapper receivableMapperr;
 
 
 	/*
@@ -1133,6 +1139,202 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int addMqlf(MemberQualification mqlf) {
 		return qualificationMapper.addMqlf(mqlf);
+	}
+
+	@Override
+	public int delQulfByPeriod(String periodCode) {
+		return qualificationMapper.delQulfByPeriod(periodCode);
+	}
+
+	@Override
+	public List<MemberRelation> findRelationBySponsorCode(String sponsorCode) {
+		return relationMapper.findRelationBySponsorCode(sponsorCode);
+	}
+
+	@Override
+	public int updateQualifi(String periodCode, String code, int layerNext) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",code);
+		map.put("layer",layerNext);
+		return qualificationMapper.updateQualifi(map);
+	}
+
+	@Override
+	public int updateQualifiLeafYn(String mCode, String periodCode,int leafYn) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("leafYn",leafYn);
+		return qualificationMapper.updateQualifiLeafYn(map);
+	}
+
+	@Override
+	public int findLayerMax(String periodCode) {
+		return qualificationMapper.findLayerMax(periodCode);
+	}
+
+	@Override
+	public List<MemberQualification> findQualifiByLayer(String periodCode, int i) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("layer",i);
+		return qualificationMapper.findQualifiByLayer(map);
+	}
+
+	@Override
+	public int updateQlfNPV(String periodCode, String mCode, int npv) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("npv",npv);
+		return qualificationMapper.updateQlfNPV(map);
+	}
+
+	@Override
+	public int updateQlfG7PV(String periodCode, String mCode, int g7pv) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("g7pv",g7pv);
+		return qualificationMapper.updateQlfG7PV(map);
+	}
+
+	@Override
+	public int updateQulfGPV(String periodCode, String mCode, int npv) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("gpvFlagship",npv);
+		return qualificationMapper.updateQulfGPV(map);
+	}
+
+	@Override
+	public int updateQulfRank(String periodCode, String mCode, int rank) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("rank",rank);
+		return qualificationMapper.updateQulfRank(map);
+	}
+
+	@Override
+	public int findRltCountRank2BySponsorCode(String sponsorCode) {
+		return relationMapper.findRltCountRank2BySponsorCode(sponsorCode);
+	}
+
+	@Override
+	public int findQulfCountRankBySponsorCode(String periodCode, String mCode, int groupRankMax) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("sponsorCode",mCode);
+		map.put("groupRankMax",groupRankMax);
+		return qualificationMapper.findQulfCountRankBySponsorCode(map);
+	}
+
+	@Override
+	public List<MemberQualification> findQulfGroup(String periodCode, String mCode) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("sponsorCode",mCode);
+		return qualificationMapper.findQulfGroup(map);
+	}
+
+	@Override
+	public int updateQulfGroup(String periodCode, String mCode, int groupRankMax) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("groupRankMax",groupRankMax);
+		return qualificationMapper.updateQulfGroup(map);
+	}
+
+	@Override
+	public int updateQulfD(String periodCode, String mCode,int count2, int count6, int count7, int count8) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("ddRank2Number",count2);
+		map.put("dlRank6Number",count6);
+		map.put("dlRank7Number",count7);
+		map.put("dlRank8Number",count8);
+		return qualificationMapper.updateQulfD(map);
+	}
+
+	@Override
+	public int updateQulfRankHight(String periodCode, String mCode, int rankRecordHigh) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("periodCode",periodCode);
+		map.put("mCode",mCode);
+		map.put("rankRecordHigh",rankRecordHigh);
+		return qualificationMapper.updateQulfRankHight(map);
+	}
+
+	@Override
+	public List<RdBonusMaster> findMasterByPeriod(String periodCode) {
+		return masterMapper.findMasterByPeriod(periodCode);
+	}
+
+	@Override
+	public int delQulfPV(MemberQualification qualification) {
+		if (qualification.getRankInit()>=2){
+			qualification.setRank(0);
+		}
+		qualification.setRankRecordHigh(qualification.getRankInit());
+		qualification.setLeafYn(0);
+		qualification.setLayer(null);
+		qualification.setG7pv(0);
+		qualification.setNpv(0);
+		qualification.setGpvFlagship(0);
+		qualification.setGroupRankMax(0);
+		qualification.setDdRank2Number(0);
+		qualification.setDlRank6Number(0);
+		qualification.setDlRank7Number(0);
+		qualification.setDlRank8Number(0);
+
+		return qualificationMapper.delQulfPV(qualification);
+	}
+
+	@Override
+	public List<RdReceivableMaster> findReceivableAll(String mCode, String mNickname, int status) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("status",status);
+		return receivableMapperr.findReceivableAll(map);
+	}
+
+	@Override
+	public int defBankByOid(Integer oId, String mCode, Integer defaultBank) {
+		if (defaultBank==1){
+			try {
+				//把相同编号的其他银行卡的默认方式设为0
+				int countEdit = bankMapper.updateBankDefaultByMCode(mCode);
+
+				//查询该会员有多少个银行卡
+				int count = bankMapper.selectCount(mCode);
+
+				if (countEdit==count){
+					//设置默认提现银行卡
+					Map<String,Object> map = new HashMap<>();
+					map.put("oId",oId);
+					map.put("mCode",mCode);
+					map.put("defaultBank",defaultBank);
+					int i = bankMapper.defBankByOid(map);
+					if(i==1){
+						return i;
+					}
+					return 0;
+				}else {
+
+					return 0;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		return 0;
 	}
 
 }

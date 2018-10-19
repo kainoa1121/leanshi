@@ -1,6 +1,11 @@
 package cn.leanshi.model;
 
+
 import java.io.Serializable;
+
+import lombok.Data;
+
+
 import java.math.BigDecimal;
 
 /**
@@ -139,4 +144,5 @@ public class RdBonusMaster implements Serializable {
     public void setBonusSum(BigDecimal bonusSum) {
         this.bonusSum = bonusSum;
     }
+
 }

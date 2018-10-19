@@ -23,4 +23,10 @@ public interface MemberBankMapper {
 	int countMBankByMCode(String mCode);
 
 	int addBankByMCode(MemberBank bank);
+
+	int updateBankDefaultByMCode(String mCode);
+
+	int selectCount(String mCode);
+
+	int defBankByOid(Map<String, Object> map);
 }

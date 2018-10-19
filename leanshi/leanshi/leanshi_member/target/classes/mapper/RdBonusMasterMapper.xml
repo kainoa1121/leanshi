@@ -76,4 +76,11 @@
     <update id="updateBonusLDSupport" parameterType="map">
         update rd_bonus_master set BONUS_LD_SUPPORT = BONUS_LD_SUPPORT + #{bonusLDSupport} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
     </update>
+
+
+    <!--根据周期查找奖金表-->
+    <select id="findMasterByPeriod" parameterType="string" resultMap="RdBonusMaster">
+        SELECT * FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
 </mapper>

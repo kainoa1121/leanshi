@@ -8,7 +8,9 @@ import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
+import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 
@@ -122,4 +124,44 @@ public interface MemberService {
 	List<Member_basic> findMemAll();
 
 	int addMqlf(MemberQualification mqlf);
+
+	int delQulfByPeriod(String periodCode);
+
+	List<MemberRelation> findRelationBySponsorCode(String mCode);
+
+	int updateQualifi(String periodCode, String code, int layerNext);
+
+	int updateQualifiLeafYn(String mCode, String periodCode, int leafYn);
+
+	int findLayerMax(String periodCode);
+
+	List<MemberQualification> findQualifiByLayer(String periodCode, int i);
+
+	int updateQlfNPV(String periodCode, String mCode, int npv);
+
+	int updateQlfG7PV(String periodCode, String mCode, int g7pv);
+
+	int updateQulfGPV(String periodCode, String mCode, int npv);
+
+	int updateQulfRank(String periodCode, String mCode, int rank);
+
+	int findRltCountRank2BySponsorCode(String mCode);
+
+	int findQulfCountRankBySponsorCode(String periodCode,String mCode, int i);
+
+	List<MemberQualification> findQulfGroup(String periodCode, String mCode);
+
+	int updateQulfGroup(String periodCode, String mCode, int groupRankMax);
+
+	int updateQulfD(String periodCode, String mCode, int count2, int count6, int count7, int count8);
+
+	int updateQulfRankHight(String periodCode, String mCode, int rankRecordHigh);
+
+	List<RdBonusMaster> findMasterByPeriod(String periodCode);
+
+	int delQulfPV(MemberQualification qualification);
+
+	List<RdReceivableMaster> findReceivableAll(String mCode, String mNickname, int status);
+
+	int defBankByOid(Integer oId, String mCode, Integer defaultBank);
 }

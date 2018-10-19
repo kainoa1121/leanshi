@@ -2,8 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.leanshi.mapper.RdBonusMasterMapper">
 
+
     <resultMap id="RdBonusMaster" type="cn.leanshi.model.RdBonusMaster">
         <result column="PERIOD_CODE" property="periodCode"/>
+
         <result column="MM_CODE" property="mCode" />
         <result column="BONUS_RETAIL" property="bonusRetail" />
         <result column="BONUS_NEW_VIP" property="bonusNewVip" />
@@ -17,6 +19,7 @@
         <result column="BONUS_LD_SUM" property="bonusLdSum" />
         <result column="CHARGE_SERVICE" property="chargeService" />
         <result column="BONUS_SUM" property="bonusSum" />
+
     </resultMap>
 
     <select id="searchByPeriodCode" parameterType="string" resultMap="RdBonusMaster">
@@ -76,4 +79,12 @@
     <update id="updateBonusLDSupport" parameterType="map">
         update rd_bonus_master set BONUS_LD_SUPPORT = BONUS_LD_SUPPORT + #{bonusLDSupport} where PERIOD_CODE = #{periodCode} and MM_CODE = #{mCode}
     </update>
+
+
+
+    <!--根据周期查找奖金表-->
+    <select id="findMasterByPeriod" parameterType="string" resultMap="RdBonusMaster">
+        SELECT * FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
 </mapper>

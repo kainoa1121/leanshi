@@ -2,6 +2,7 @@ package cn.leanshi.mapper;
 
 import cn.leanshi.model.RdBonusMaster;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,4 +60,7 @@ public interface RdBonusMasterMapper {
     void updateBonusLDIndirect(HashMap<String,Object> map);
 
     void updateBonusLDSupport(HashMap<String, Object> map);
+
+    List<RdBonusMaster> findMasterByPeriod(String periodCode);
+
 }

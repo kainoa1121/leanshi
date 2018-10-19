@@ -7,7 +7,9 @@ import cn.leanshi.model.MemberEditReview;
 import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
+import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.model.http.ResultMsg;
@@ -413,10 +415,25 @@ public class MemberController {
 		}
 
 		MemberBank bank = new MemberBank();
-		bank.setMCode(mCode);
-		bank.setBankCode(bankCode);
-		bank.setAccName(accName);
-		bank.setAccCode(accCode);
+		try {
+			List<MemberBank> memberBanks = memberService.findMBankByMCode(mCode);
+			if (memberBanks.size()==0){
+				bank.setMCode(mCode);
+				bank.setBankCode(bankCode);
+				bank.setAccName(accName);
+				bank.setAccCode(accCode);
+				bank.setDefaultBank(1);
+			}else{
+				bank.setMCode(mCode);
+				bank.setBankCode(bankCode);
+				bank.setAccName(accName);
+				bank.setAccCode(accCode);
+				bank.setDefaultBank(0);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		int i = memberService.addBankByMCode(bank);
 		if (i==1){
 			return ResultMsg.newInstance(true,"添加成功！");
@@ -436,6 +453,20 @@ public class MemberController {
 			return ResultMsg.newInstance(true,"解绑成功！");
 		}
 		return ResultMsg.newInstance(false,"解绑失败！");
+	}
+
+	/*
+	 * 根据oid设置默认提现银行卡
+	 * */
+	@RequestMapping(value = "/defBankByOid",method = RequestMethod.POST)
+	public ResultMsg defBankByOid(@RequestParam Integer oId,@RequestParam String mCode,@RequestParam Integer defaultBank){
+
+		int i = memberService.defBankByOid(oId,mCode,defaultBank);
+
+		if (i==1){
+			return ResultMsg.newInstance(true,"设置默认提现卡成功！");
+		}
+		return ResultMsg.newInstance(false,"设置默认提现卡失败！");
 	}
 
 	/*
@@ -1463,7 +1494,7 @@ public class MemberController {
 
 		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
 		if (qualificationList.size()!=0){
-			return ResultMsg.newInstance(false,"本期资格信息已计算，请不要重复计算！");
+			return ResultMsg.newInstance(false,"请不要重复计算！");
 		}
 
 		//判断当前业务周期业绩状态是否已关闭
@@ -1623,6 +1654,395 @@ public class MemberController {
 		}else{
 			return ResultMsg.newInstance(false,"本周期会员资格表已计算或者还未可以开始计算！");
 		}
+	}
+
+	/*回滚计算资格表*/
+	@RequestMapping(value = "/backNowPeriodQualf",method = RequestMethod.GET)
+	public ResultMsg backNowPeriodQualf(@RequestParam(value = "periodCode",required = false) String periodCode){
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+
+		int i = 0;
+
+		if (qualificationList.size()!=0){
+			i = memberService.delQulfByPeriod(periodCode);
+		}
+
+		if (qualificationList.size()==0){
+			i = 1;
+		}
+
+		if (i!=0){
+			return ResultMsg.newInstance(true,"回滚成功！");
+		}else {
+			return ResultMsg.newInstance(false,"回滚失败！");
+		}
+	}
+
+	/*
+	 * 查看资格表状态
+	 * */
+	@RequestMapping(value = "/findQulfStatus",method = RequestMethod.GET)
+	public ResultMsg findQulfStatus(@RequestParam(value = "periodCode",required = false) String periodCode){
+
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+		if (qualificationList.size()!=0){
+			return ResultMsg.newInstance(true,"统计已完成！");
+		}else {
+			return ResultMsg.newInstance(false,"还未统计！");
+		}
+
+	}
+
+	/*
+	 * 计算本期会员业绩
+	 * */
+	@RequestMapping(value = "/countNowPeriod",method = RequestMethod.GET)
+	public ResultMsg countNowPeriod(@RequestParam(value = "periodCode",required = false) String periodCode){
+
+		//计算层级
+		String company = "80000000";//公司
+		countMemLayer(company,periodCode,0);
+
+		//叶子计算
+		try {
+			List<MemberQualification> list = memberService.findQualificationByPeriod(periodCode);
+			for (MemberQualification qualification : list) {
+				String mCode = qualification.getMCode();
+				//根据编号作为推荐人编号查找是否作为推荐人
+				List<MemberRelation> relation = memberService.findRelationBySponsorCode(mCode);
+				int leafYn;
+				if (relation.size()==0){
+					leafYn = 1;
+				}else{
+					leafYn = 0;
+				}
+				//叶子计算
+				int i = memberService.updateQualifiLeafYn(mCode,periodCode,leafYn);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+		//npv计算   G7pv计算
+		//查找最大的层数
+		int LayerMax = memberService.findLayerMax(periodCode);
+		for (int i=LayerMax;i>0;i--){
+			List<MemberQualification> qlfList = memberService.findQualifiByLayer(periodCode, i);
+			for (MemberQualification qualification : qlfList) {
+				//修改自己的npv
+				int npv = qualification.getPpv() + qualification.getNpv();
+				int m = memberService.updateQlfNPV(periodCode,qualification.getMCode(),qualification.getPpv());
+
+				//修改推荐人的npv
+				if (qualification.getSponsorCode()!=null||qualification.getSponsorCode()!="80000000"){
+					int n = memberService.updateQlfNPV(periodCode,qualification.getSponsorCode(),npv);
+				}
+
+				//G7pv计算
+				int g7pv = qualification.getPpv() + qualification.getG7pv();
+				//修改自己的g7pv
+				int g = memberService.updateQlfG7PV(periodCode,qualification.getMCode(),qualification.getPpv());
+				//调用计算g7pv方法计算后7层的g7pv
+				countMemG7PV(qualification.getSponsorCode(),periodCode,g7pv,7);
+
+				//计算个人本期后等级
+
+				int count8 = memberService.findQulfCountRankBySponsorCode(periodCode,qualification.getMCode(),8);//直推高级旗舰店数
+				int count7 = memberService.findQulfCountRankBySponsorCode(periodCode,qualification.getMCode(),7);//直推旗舰店数
+				int count6 = memberService.findQulfCountRankBySponsorCode(periodCode,qualification.getMCode(),6);//直推三级代理店数
+				int count2 = memberService.findRltCountRank2BySponsorCode(qualification.getMCode());//计算直推代理数
+
+				int c = memberService.updateQulfD(periodCode,qualification.getMCode(),count2,count6,count7,count8);
+
+				int rankInit = qualification.getRankInit();
+				if (rankInit>=2){
+
+					int ppv = qualification.getPpv();//当期个人购买的PV
+					int rank;
+					if (ppv>=50){
+						if (count8>=3){//升级超级旗舰店
+							rank = 9;
+						}else{
+							if (count7>=3){//升级高级旗舰店
+								rank = 8;
+							}else{
+								if (count6>=5){//升级旗舰店数
+									rank = 7;
+								}else{
+									if (qualification.getRaShopYn()==1){//已开店
+										if (count2>=10&&qualification.getG7pv()>=20000){//升级三级代理店
+											rank = 6;
+										}else if (count2>=8&&qualification.getG7pv()>=5000){//升级二级代理店
+											rank = 5;
+										}else if (count2>=5&&qualification.getG7pv()>=1000){//升级一级代理店
+											rank = 4;
+										}else {//升级初级代理店
+											rank = 3;
+										}
+									}else{//未开店
+										if (count2>=10&&qualification.getG7pv()>=40000){//升级三级代理店
+											rank = 6;
+										}else if (count2>=8&&qualification.getG7pv()>=10000){//升级二级代理店
+											rank = 5;
+										}else if (count2>=5&&qualification.getG7pv()>=2000){//升级一级代理店
+											rank = 4;
+										}else if (qualification.getG7pv()>=500){//升级初级代理店
+											rank = 3;
+										}else{//升不了级
+											if (rankInit<=3){//原来的级别
+												rank = rankInit;
+											}else {//降到初级代理店
+												rank = 3;
+											}
+										}
+									}
+								}
+							}
+						}
+
+					}else{
+						if (rankInit<=3){//原来的级别
+							rank = rankInit;
+						}else {//降到初级代理店
+							rank=3;
+						}
+					}
+
+					qualification.setRank(rank);
+					int r = memberService.updateQulfRank(periodCode,qualification.getMCode(),rank);
+
+				}
+
+				//判断直推的团队最高级别是否比自己的级别高
+				try {
+					MemberQualification qlf = memberService.findQualificationByPeriodAndMCode(periodCode, qualification.getMCode());
+					List<MemberQualification> lists = memberService.findQulfGroup(periodCode,qualification.getMCode());
+					for (MemberQualification list : lists) {
+						int groupRankMax = list.getGroupRankMax();
+						if (groupRankMax>qualification.getRank()){
+							int gCount = memberService.updateQulfGroup(periodCode,qualification.getMCode(),groupRankMax);
+						}else {
+							int gCount = memberService.updateQulfGroup(periodCode,qualification.getMCode(),qualification.getRank());
+						}
+
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				//历史最高级别
+				if (rankInit<qualification.getRank()){
+					int h = memberService.updateQulfRankHight(periodCode,qualification.getMCode(),qualification.getRank());
+				}else{
+					int h = memberService.updateQulfRankHight(periodCode,qualification.getMCode(),rankInit);
+				}
+
+			}
+		}
+
+		//旗舰gpv
+		//第一步
+		List<MemberQualification> list = memberService.findQualificationByPeriod(periodCode);
+		for (MemberQualification qualification : list) {
+			int rank = qualification.getRank();
+			if (rank>=7){
+				//npv的值等于gpv初始值
+				int i = memberService.updateQulfGPV(periodCode,qualification.getMCode(),qualification.getNpv());
+			}
+		}
+		//第二步
+		for (int i=LayerMax;i>0;i--){
+			List<MemberQualification> qlfList = memberService.findQualifiByLayer(periodCode, i);
+			for (MemberQualification qualification : qlfList) {
+				int rank = qualification.getRankInit();
+				if (rank>=7){
+					//调用计算旗舰gpv方法
+					countMemGPV(qualification.getSponsorCode(),periodCode,rank,qualification.getGpvFlagship(),7);
+				}
+
+			}
+		}
+
+		return ResultMsg.newInstance(true,"计算完成！");
+	}
+
+
+	/*
+	 *计算层级
+	 * */
+	public void countMemLayer(String mCode,String periodCode,int layer){
+
+		try {
+
+			List<MemberRelation> relationSponsor = memberService.findRelationBySponsorCode(mCode);
+			if (relationSponsor.size()>0){
+				int layerNext = layer+1;
+				for (MemberRelation relation : relationSponsor) {
+					String code = relation.getMCode();
+					int i = memberService.updateQualifi(periodCode,code,layerNext);
+					countMemLayer(code,periodCode,layerNext);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/*
+	 * G7pv计算
+	 * */
+	public void countMemG7PV(String sponsorCode,String periodCode,int g7pvLast,int count){
+
+		try {
+			//推荐人
+			MemberRelation relation = memberService.findRelationByMCode(sponsorCode);
+			if (relation==null){
+				return; //结束方法
+			}
+			//推荐人本期资格信息
+			MemberQualification qualification = memberService.findQualificationByPeriodAndMCode(periodCode, sponsorCode);
+			if (qualification!=null){
+
+				if (qualification.getPpv()>=50){
+					int l = memberService.updateQlfG7PV(periodCode, sponsorCode, g7pvLast);
+					count--;
+					if(count<=0){
+						return;//结束方法
+					}
+					countMemG7PV(relation.getSponsorCode(),periodCode,g7pvLast,count);
+				}else{
+					count +=1;
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	/*
+	 * 计算旗舰gpv
+	 * */
+	public void countMemGPV(String sponsorCode,String periodCode,int rank,int gpv,int conRank){
+
+		try {
+			//推荐人的本期资格信息
+			MemberQualification qlfSpon = memberService.findQualificationByPeriodAndMCode(periodCode, sponsorCode);
+			if (qlfSpon==null){
+				return;
+			}
+			if (qlfSpon.getRankInit()<=rank&&qlfSpon.getRankInit()>=conRank){
+				int gpvSpon = qlfSpon.getGpvFlagship()-gpv;
+				int i = memberService.updateQulfGPV(periodCode, sponsorCode, gpvSpon);
+				conRank = qlfSpon.getRankInit()+1;
+				countMemGPV(qlfSpon.getSponsorCode(),periodCode,rank,gpv,conRank);
+
+			}
+
+			if (qlfSpon.getRankInit()>=rank||sponsorCode=="80000000"){
+				return;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+	//回滚业绩表
+	@RequestMapping(value = "/backNowPeriod",method = RequestMethod.GET)
+	public ResultMsg backNowPeriod(@RequestParam(value = "periodCode",required = false) String periodCode){
+
+		int i = 0;
+		try {
+			List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+
+			if (qualificationList.size()==0){
+				return ResultMsg.newInstance(false,"还没开始资格计算，回滚业绩失败！");
+			}
+
+			List<RdBonusMaster> masterList = memberService.findMasterByPeriod(periodCode);
+			if (masterList.size()!=0){
+				return ResultMsg.newInstance(false,"奖金表已经计算，回滚业绩失败！");
+			}
+
+			for (MemberQualification qualification : qualificationList) {
+				//回滚  把数值都设为0
+				i = memberService.delQulfPV(qualification);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (i!=0){
+			return ResultMsg.newInstance(true,"回滚成功！");
+		}else {
+			return ResultMsg.newInstance(false,"回滚失败！");
+		}
+	}
+
+	/*
+	 * 查看业绩表状态
+	 * */
+	@RequestMapping(value = "/findPeriodStatus ",method = RequestMethod.GET)
+	public ResultMsg findPeriodStatus(@RequestParam(value = "periodCode",required = false) String periodCode){
+
+		List<MemberQualification> qualificationList = memberService.findQualificationMCodeByPeriod(periodCode);
+		if (qualificationList.size()!=0){
+			int i =1;
+			for (MemberQualification qualification : qualificationList) {
+				if (qualification.getLayer()==0){
+					i=0;
+				}
+			}
+			if (i==1){
+				return ResultMsg.newInstance(true,"统计已完成！");
+			}else{
+				return ResultMsg.newInstance(false,"还未统计！");
+			}
+		}else {
+			return ResultMsg.newInstance(false,"还未统计！");
+		}
+
+	}
+
+
+	/*
+	 * 查看本期会员欠款表(模糊条件查询)
+	 * */
+	@RequestMapping(value = "/findReceivableAll",method = RequestMethod.POST)
+	public ResultMsg findReceivableAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+									   @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+									   @RequestParam(value = "mCode",required = false) String mCode,
+									   @RequestParam(value = "mNickname",required = false) String mNickname,
+									   @RequestParam(value = "status",required = false) int status){
+
+		int size=pageSize;
+
+		PageHelper.startPage(currentPage,size);
+
+		ResultMsg<PageInfo<RdReceivableMaster>> resultMsg = new ResultMsg<PageInfo<RdReceivableMaster>>();
+		//查到当前周期的所有会员资格数据
+		List<RdReceivableMaster> list = memberService.findReceivableAll(mCode,mNickname,status);
+
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"本期奖金信息还未计算！");
+		}
+
+		PageInfo<RdReceivableMaster> pageInfo = new PageInfo<RdReceivableMaster>(list);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
+
+		return resultMsg;
+
 	}
 
 

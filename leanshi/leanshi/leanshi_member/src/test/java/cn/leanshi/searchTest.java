@@ -4,6 +4,7 @@ import cn.leanshi.model.util.DateConverter;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,22 @@ public class searchTest {
 		String j = i.substring(0,4);
 		String s = i.substring(4);
 		System.out.println(j+">>>>>>"+s);
+
+
+	}
+
+	@Test
+	public void fun04(){
+
+		StringBuilder str=new StringBuilder();//定义变长字符串
+		Random random=new Random();
+		//随机生成数字，并添加到字符串
+		for(int i=0;i<8;i++){
+			str.append(random.nextInt(10));
+		}
+		//将字符串转换为数字并输出
+		int num=Integer.parseInt(str.toString());
+		System.out.println(num);
 
 
 	}

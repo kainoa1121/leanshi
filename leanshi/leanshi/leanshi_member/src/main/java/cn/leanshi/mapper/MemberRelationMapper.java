@@ -2,6 +2,8 @@ package cn.leanshi.mapper;
 
 import cn.leanshi.model.MemberRelation;
 
+import java.util.List;
+
 /**
  * 会员状态、级别及关系
  * @author :ldq
@@ -16,4 +18,9 @@ public interface MemberRelationMapper {
 	int updateRelaSponNameByMCode(String mCode);
 
 	int updateSponsorByMCode(MemberRelation relation);
+
+	List<MemberRelation> findRelationBySponsorCode(String sponsorCode);
+
+	int findRltCountRank2BySponsorCode(String sponsorCode);
+
 }
