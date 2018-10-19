@@ -27,4 +27,22 @@
         ORDER BY MM_CODE ASC
     </select>
 
+    <!--根据编号查找会员欠款-->
+    <select id="findReceivableByMCode" parameterType="string" resultMap="ReceivableResultMap">
+        SELECT * FROM rd_receivable_master WHERE MM_CODE = #{mCode}
+    </select>
+
+    <!--创建欠款主表-->
+    <insert id="addReceivableM" parameterType="cn.leanshi.model.RdReceivableMaster">
+        INSERT INTO rd_receivable_master(MM_CODE,MM_NICK_NAME,RECEIVABLE_BLANCE,CURRENCY_CODE,BNS_DEDUCT_PECENT) VALUES (#{mCode},#{mNickname},#{receivableBlance},#{currencyCode},#{bnsDeductPecent})
+    </insert>
+
+    <!--新增欠款-->
+    <update id="updateRM" parameterType="java.util.Map">
+        UPDATE rd_receivable_master
+        SET
+        RECEIVABLE_BLANCE = #{receivableBlance}
+        WHERE MM_CODE = #{mCode}
+    </update>
+
 </mapper>

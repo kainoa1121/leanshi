@@ -9,6 +9,7 @@ import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
@@ -20,10 +21,12 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
@@ -2014,7 +2017,6 @@ public class MemberController {
 
 	}
 
-
 	/*
 	 * 查看本期会员欠款表(模糊条件查询)
 	 * */
@@ -2030,11 +2032,11 @@ public class MemberController {
 		PageHelper.startPage(currentPage,size);
 
 		ResultMsg<PageInfo<RdReceivableMaster>> resultMsg = new ResultMsg<PageInfo<RdReceivableMaster>>();
-		//查到当前周期的所有会员资格数据
+		//查到当前周期的所有会员欠款表
 		List<RdReceivableMaster> list = memberService.findReceivableAll(mCode,mNickname,status);
 
 		if (list==null||list.size()==0||list.isEmpty()){
-			return ResultMsg.newInstance(false,"本期奖金信息还未计算！");
+			return ResultMsg.newInstance(false,"会员欠款表还没有数据！");
 		}
 
 		PageInfo<RdReceivableMaster> pageInfo = new PageInfo<RdReceivableMaster>(list);
@@ -2042,6 +2044,217 @@ public class MemberController {
 		resultMsg.setData(pageInfo);
 
 		return resultMsg;
+
+	}
+
+	/*
+	 * 根据编号查找会员欠款明细
+	 * */
+	@RequestMapping(value = "/findReceivableByMCode",method = RequestMethod.GET)
+	public ResultMsg findReceivableByMCode(@RequestParam String mCode){
+
+		ResultMsg<Map<String,Object>> resultMsg = new ResultMsg<Map<String,Object>>();
+
+		Map<String,Object> map = new HashMap<String,Object>();
+
+		try {
+			Member_basic mem = memberService.findByMCode(mCode);
+			map.put("mCode",mem.getMCode());
+			map.put("mName",mem.getMName());
+			map.put("mNickname",mem.getMNickname());
+			map.put("idCode",mem.getIdCode());
+
+			RdReceivableMaster receivableMaster = memberService.findReceivableByMCode(mCode);
+			if (receivableMaster!=null){
+				map.put("receivableBlance",receivableMaster.getReceivableBlance());//会员欠款余额
+				map.put("currencyCode",receivableMaster.getCurrencyCode());//币种
+				map.put("bnsDeductPecent",receivableMaster.getBnsDeductPecent());//自动扣工资的百分比
+			}else{
+				map.put("receivableBlance",0);//会员欠款余额
+				map.put("currencyCode","人民币");//币种
+				map.put("bnsDeductPecent",0);//自动扣工资的百分比
+			}
+
+			MemberBank bank = memberService.findMBankByMCodeAndDefual(mCode);
+			if (bank==null){
+				map.put("bank","该用户没有默认体现银行卡,如要借款体现请先添加默认提现银行卡！");
+			}else {
+				map.put("bank",bank);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resultMsg.setCode(true);
+		resultMsg.setData(map);
+
+		return resultMsg;
+	}
+
+
+	/*
+	 * 创建会员欠款单
+	 * */
+	@RequestMapping(value = "/addReceivable",method = RequestMethod.POST)
+	public ResultMsg addReceivable(@RequestParam(value = "mCode",required = false) String mCode,
+								   @RequestParam(value = "mNickname",required = false) String mNickname,
+								   @RequestParam(value = "currencyCode",required = false) String currencyCode,
+								   @RequestParam(value = "receivableBlance",required = false) BigDecimal receivableBlance,
+								   @RequestParam(value = "trTypeCode",required = false) String trTypeCode,
+								   @RequestParam(value = "oId",required = false) int oId,
+								   @RequestParam(value = "amount",required = false) BigDecimal amount,
+								   @RequestParam(value = "blanceAfter",required = false) BigDecimal blanceAfter,
+								   @RequestParam(value = "bnsDeductPecent",required = false) int bnsDeductPecent
+	){
+
+		//创建欠款明细表
+		RdReceivableDetail detail = new RdReceivableDetail();
+
+		//随机生成10位的交易流水号
+		StringBuilder str=new StringBuilder();//定义变长字符串
+		Random random=new Random();
+		//随机生成数字，并添加到字符串
+		for(int i=0;i<8;i++){
+			str.append(random.nextInt(10));
+		}
+		//将字符串转换为数字并输出
+		int num=Integer.parseInt(str.toString());
+
+		int d = 0;
+		if (trTypeCode=="NR"){//新增欠款
+			detail.setTransNumber(num);
+			detail.setMCode(mCode);
+			detail.setMNickname(mNickname);
+			detail.setTrTypeCode(trTypeCode);
+			detail.setTrSourceType("CMP");
+			detail.setTrBankOid(oId);
+			detail.setCurrencyCode(currencyCode);
+			detail.setBlanceBefore(receivableBlance);
+			detail.setAmount(amount);
+			detail.setBlanceAfter(blanceAfter);
+			detail.setBnsDeductPecent(bnsDeductPecent);
+			detail.setTransDate(new Date());
+			detail.setStatus(2);
+			detail.setCreationBy("无名");
+			detail.setCreationTime(new Date());
+
+			d = memberService.addRDNR(detail);
+			if (d==1){
+				return ResultMsg.newInstance(true,"创建成功！");
+			}else{
+				return ResultMsg.newInstance(false,"创建失败！");
+			}
+		}
+
+		if (trTypeCode=="RR"){//归还欠款
+			detail.setTransNumber(num);
+			detail.setMCode(mCode);
+			detail.setTrTypeCode(trTypeCode);
+			detail.setTrSourceType("CMP");
+			detail.setCurrencyCode(currencyCode);
+			detail.setBlanceBefore(receivableBlance);
+			detail.setAmount(amount);
+			detail.setBlanceAfter(blanceAfter);
+			detail.setTransDate(new Date());
+			detail.setStatus(2);
+			detail.setCreationBy("无名");
+			detail.setCreationTime(new Date());
+
+			d = memberService.addRDRR(detail);
+			if (d==1){
+				return ResultMsg.newInstance(true,"创建成功！");
+			}else{
+				return ResultMsg.newInstance(false,"创建失败！");
+			}
+		}
+
+		return ResultMsg.newInstance(false,"交易类型有误！");
+	}
+
+
+	/*
+	 * 查看会员欠款明细表(模糊条件查询)
+	 * */
+	@RequestMapping(value = "/findReceivableDetailAll",method = RequestMethod.POST)
+	public ResultMsg findReceivableDetailAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+											 @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+											 @RequestParam(value = "transTimeS",required = false) String transTimeS,
+											 @RequestParam(value = "mCode",required = false) String mCode,
+											 @RequestParam(value = "mNickname",required = false) String mNickname,
+											 @RequestParam(value = "transNumber",required = false) int transNumber,
+											 @RequestParam(value = "trTypeCode",required = false) String trTypeCode,
+											 @RequestParam(value = "status",required = false) int status){
+		int size=pageSize;
+
+		PageHelper.startPage(currentPage,size);
+
+		ResultMsg<PageInfo<RdReceivableDetail>> resultMsg = new ResultMsg<PageInfo<RdReceivableDetail>>();
+		//查所有会员欠款明细信息
+
+		String[] timeS = transTimeS.split("-");
+		String timeStarS =timeS[0];
+		String timeEndS =timeS[1];
+
+		DateConverter dateConverter = new DateConverter();
+		Date timeStar = dateConverter.convert(timeStarS);
+		Date timeEnd = dateConverter.convert(timeEndS);
+
+		List<RdReceivableDetail> list = memberService.findReceivableDetailAll(mCode,mNickname,transNumber,trTypeCode,status,timeStar,timeEnd);
+
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"没有欠款明细数据！");
+		}
+
+		PageInfo<RdReceivableDetail> pageInfo = new PageInfo<RdReceivableDetail>(list);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
+
+		return resultMsg;
+
+	}
+
+	/*
+	 *审核会员欠款
+	 * */
+	@RequestMapping(value = "/AuditReceivable",method = RequestMethod.POST)
+	public ResultMsg  AuditReceivable(@RequestParam(value = "mCode",required = false) String mCode,
+									  @RequestParam(value = "mNickname",required = false) String mNickname,
+									  @RequestParam(value = "transNumber",required = false) int transNumber,
+									  @RequestParam(value = "status",required = false) int status){
+
+		//修改明细表
+		int r= memberService.updateRD(mCode,transNumber,status);
+
+		RdReceivableDetail rd = memberService.findRD(mCode,transNumber);
+
+		RdReceivableMaster receivableMaster = memberService.findReceivableByMCode(mCode);
+		int m = 0;
+		if (status==3){//3：已授权
+			if (r==1){
+				//修改主表
+				if (receivableMaster==null){//过去没借过款
+
+					RdReceivableMaster master = new RdReceivableMaster();
+					master.setMCode(mCode);
+					master.setMNickname(mNickname);
+					master.setCurrencyCode(rd.getCurrencyCode());
+					master.setReceivableBlance(rd.getBlanceAfter());
+					master.setBnsDeductPecent(rd.getBnsDeductPecent());
+
+					//创建欠款主表
+					m = memberService.addReceivableM(master);
+
+				}else {//过去借过款
+					//修改欠款主表
+					m = memberService.updateRM(mCode,rd.getBlanceAfter(),rd.getBnsDeductPecent());
+				}
+			}
+		}
+		if (m==1){
+			return ResultMsg.newInstance(true,"审核成功！");
+		}else{
+			return ResultMsg.newInstance(false,"审核失败！");
+		}
 
 	}
 

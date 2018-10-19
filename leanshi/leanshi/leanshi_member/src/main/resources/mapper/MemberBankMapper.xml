@@ -68,4 +68,9 @@
         UPDATE rd_mm_bank SET DEFAULTBANK = #{defaultBank} WHERE OID = #{oId} AND MM_CODE = #{mCode}
     </update>
 
+    <!--根据mcode查询该会员默认银行卡-->
+    <select id="findMBankByMCodeAndDefual" parameterType="string" resultMap="BankResultMap">
+        SELECT * FROM rd_mm_bank WHERE MM_CODE = #{mCode} AND DEFAULTBANK = 1
+    </select>
+
 </mapper>

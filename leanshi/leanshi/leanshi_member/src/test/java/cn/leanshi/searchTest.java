@@ -74,5 +74,15 @@ public class searchTest {
 
 	}
 
+	@Test
+	public void fun05(){
+		String transTimeS = "201801-201809";
+		String[] timeS = transTimeS.split("-");
+		String timeStarS =timeS[0];
+		String timeEndS =timeS[1];
+
+		System.out.println("------"+timeStarS+"--------"+timeEndS+"--------");
+	}
+
 
 }

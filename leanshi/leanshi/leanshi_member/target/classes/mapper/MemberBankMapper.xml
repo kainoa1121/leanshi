@@ -3,18 +3,19 @@
 <mapper namespace="cn.leanshi.mapper.MemberBankMapper">
     <resultMap id="BankResultMap" type="cn.leanshi.model.MemberBank">
         <id column="OID" jdbcType="INTEGER" property="oId" />
-        <result column="MM_CODE" jdbcType="VARCHAR" property="mCode" />
-        <result column="ACC_TYPE" jdbcType="VARCHAR" property="accType" />
-        <result column="CURRENCY" jdbcType="VARCHAR" property="currency" />
-        <result column="ACC_CODE" jdbcType="VARCHAR" property="accCode" />
-        <result column="ACC_NAME" jdbcType="VARCHAR" property="accName" />
-        <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
-        <result column="BANK_DETAIL" jdbcType="VARCHAR" property="bankDetail" />
-        <result column="VALID_THRU" jdbcType="VARCHAR" property="validThru" />
-        <result column="CVV2" jdbcType="VARCHAR" property="cvv2" />
-        <result column="PAYMENT_DEFAULT" jdbcType="VARCHAR" property="paymentDefault" />
-        <result column="WITHDRAW_DEFAULT" jdbcType="VARCHAR" property="withdrawDefault" />
-        <result column="RECHARGE_DEFAULT" jdbcType="VARCHAR" property="rechargeDefault" />
+        <result column="MM_CODE" property="mCode" />
+        <result column="ACC_TYPE" property="accType" />
+        <result column="CURRENCY" property="currency" />
+        <result column="ACC_CODE" property="accCode" />
+        <result column="ACC_NAME" property="accName" />
+        <result column="BANK_CODE" property="bankCode" />
+        <result column="BANK_DETAIL" property="bankDetail" />
+        <result column="VALID_THRU" property="validThru" />
+        <result column="CVV2" property="cvv2" />
+        <result column="DEFAULTBANK" property="defaultBank" />
+        <result column="PAYMENT_DEFAULT" property="paymentDefault" />
+        <result column="WITHDRAW_DEFAULT" property="withdrawDefault" />
+        <result column="RECHARGE_DEFAULT" property="rechargeDefault" />
     </resultMap>
 
     <!--根据编号查找所有会员银行信息-->
@@ -47,10 +48,24 @@
         SELECT COUNT(*) FROM rd_mm_bank WHERE MM_CODE = #{mCode}
     </select>
 
-
     <!--根据编号添加银行卡-->
     <insert id="addBankByMCode" parameterType="cn.leanshi.model.MemberBank">
-        INSERT INTO rd_mm_bank(MM_CODE,ACC_TYPE,BANK_CODE,ACC_NAME,ACC_CODE) values(#{mCode},#{accType},#{bankCode},#{accName},#{accCode})
+        INSERT INTO rd_mm_bank(MM_CODE,ACC_TYPE,BANK_CODE,ACC_NAME,ACC_CODE,DEFAULTBANK) values(#{mCode},#{accType},#{bankCode},#{accName},#{accCode},#{defaultBank})
     </insert>
+
+    <!--把相同编号的其他银行卡的默认方式设为0-->
+    <update id="updateBankDefaultByMCode" parameterType="string">
+        UPDATE rd_mm_bank SET DEFAULTBANK = 0 WHERE MM_CODE = #{mCode}
+    </update>
+
+    <!--查询该会员有多少个银行卡-->
+    <select id="selectCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM rd_mm_bank WHERE MM_CODE = #{mCode}
+    </select>
+
+    <!--设置默认提现银行卡-->
+    <update id="defBankByOid" parameterType="map">
+        UPDATE rd_mm_bank SET DEFAULTBANK = #{defaultBank} WHERE OID = #{oId} AND MM_CODE = #{mCode}
+    </update>
 
 </mapper>

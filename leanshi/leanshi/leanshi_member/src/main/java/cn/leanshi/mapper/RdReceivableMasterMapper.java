@@ -12,4 +12,10 @@ import java.util.Map;
  */
 public interface RdReceivableMasterMapper {
 	List<RdReceivableMaster> findReceivableAll(Map<String, Object> map);
+
+	RdReceivableMaster findReceivableByMCode(String mCode);
+
+	int addReceivableM(RdReceivableMaster master);
+
+	int updateRM(Map<String, Object> map);
 }

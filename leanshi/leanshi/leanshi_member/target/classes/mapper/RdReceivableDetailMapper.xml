@@ -13,6 +13,7 @@
         <result column="BLANCE_BEFORE" property="blanceBefore" />
         <result column="AMOUNT" property="amount" />
         <result column="BLANCE_AFTER" property="blanceAfter" />
+        <result column="BNS_DEDUCT_PECENT" property="bnsDeductPecent" />
         <result column="TRANS_DATE" property="transDate" />
         <result column="TRANS_PERIOD" property="transPeriod" />
         <result column="TRANS_DESC" property="transDesc" />

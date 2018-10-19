@@ -10,6 +10,7 @@ import cn.leanshi.mapper.MemberRelationMapper;
 import cn.leanshi.mapper.RankMapper;
 import cn.leanshi.mapper.RdBonusMasterMapper;
 import cn.leanshi.mapper.RdRaBindingMapper;
+import cn.leanshi.mapper.RdReceivableDetailMapper;
 import cn.leanshi.mapper.RdReceivableMasterMapper;
 import cn.leanshi.mapper.SysPeriodLogMapper;
 import cn.leanshi.mapper.SysPeriodMapper;
@@ -23,12 +24,14 @@ import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,8 +63,8 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberAddressMapper addressMapper;
 	private final MemberAccountMapper accountMapper;
 	private final RdBonusMasterMapper masterMapper;
-	private final RdReceivableMasterMapper receivableMapperr;
-
+	private final RdReceivableMasterMapper receivableMapper;
+	private final RdReceivableDetailMapper receivableDetailMapper;
 
 	/*
 	 *条件模糊查询
@@ -1301,7 +1304,7 @@ public class MemberServiceImpl implements MemberService {
 		map.put("mCode",mCode);
 		map.put("mNickname",mNickname);
 		map.put("status",status);
-		return receivableMapperr.findReceivableAll(map);
+		return receivableMapper.findReceivableAll(map);
 	}
 
 	@Override
@@ -1335,6 +1338,70 @@ public class MemberServiceImpl implements MemberService {
 
 		}
 		return 0;
+	}
+
+	@Override
+	public List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, int transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("transNumber",transNumber);
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("trTypeCode",trTypeCode);
+		map.put("status",status);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
+		return receivableDetailMapper.findReceivableDetailAll(map);
+	}
+
+	@Override
+	public int updateRD(String mCode, int transNumber, int status) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("transNumber",transNumber);
+		map.put("mCode",mCode);
+		map.put("status",status);
+		return receivableDetailMapper.updateRD(map);
+	}
+
+	@Override
+	public RdReceivableDetail findRD(String mCode, int transNumber) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("transNumber",transNumber);
+		map.put("mCode",mCode);
+		return receivableDetailMapper.findRD(map);
+	}
+
+	@Override
+	public RdReceivableMaster findReceivableByMCode(String mCode) {
+		return receivableMapper.findReceivableByMCode(mCode);
+	}
+
+	@Override
+	public int addReceivableM(RdReceivableMaster master) {
+		return receivableMapper.addReceivableM(master);
+	}
+
+	@Override
+	public int updateRM(String mCode, BigDecimal blanceAfter, int bnsDeductPecent) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("receivableBlance",blanceAfter);
+		map.put("bnsDeductPecent",bnsDeductPecent);
+		return receivableMapper.updateRM(map);
+	}
+
+	@Override
+	public MemberBank findMBankByMCodeAndDefual(String mCode) {
+		return bankMapper.findMBankByMCodeAndDefual(mCode);
+	}
+
+	@Override
+	public int addRDNR(RdReceivableDetail detail) {
+		return receivableDetailMapper.addRDNR(detail);
+	}
+
+	@Override
+	public int addRDRR(RdReceivableDetail detail) {
+		return receivableDetailMapper.addRDRR(detail);
 	}
 
 }

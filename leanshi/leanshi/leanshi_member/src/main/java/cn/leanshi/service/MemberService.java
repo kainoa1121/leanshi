@@ -10,10 +10,12 @@ import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -164,4 +166,22 @@ public interface MemberService {
 	List<RdReceivableMaster> findReceivableAll(String mCode, String mNickname, int status);
 
 	int defBankByOid(Integer oId, String mCode, Integer defaultBank);
+
+	List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, int transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd);
+
+	int updateRD(String mCode, int transNumber, int status);
+
+	RdReceivableDetail findRD(String mCode, int transNumber);
+
+	RdReceivableMaster findReceivableByMCode(String mCode);
+
+	int addReceivableM(RdReceivableMaster master);
+
+	int updateRM(String mCode, BigDecimal blanceAfter, int bnsDeductPecent);
+
+	MemberBank findMBankByMCodeAndDefual(String mCode);
+
+	int addRDNR(RdReceivableDetail detail);
+
+	int addRDRR(RdReceivableDetail detail);
 }
