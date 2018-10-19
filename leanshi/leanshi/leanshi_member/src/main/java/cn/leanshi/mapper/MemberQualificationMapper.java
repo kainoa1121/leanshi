@@ -2,6 +2,7 @@ package cn.leanshi.mapper;
 
 import cn.leanshi.model.MemberQualification;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,4 +34,25 @@ public interface MemberQualificationMapper {
 	 * @return
 	 */
 	List<MemberQualification> findByLayer(Map<String, Object> map);
+
+	/**
+	 * @author zc 根据周期查询出当前周期内新晋升成为vip的顾客
+	 * @param periodCode
+	 * @return
+	 */
+    List<MemberQualification> findNewVip(String periodCode);
+
+	/**
+	 * @author zc 根据周期查询该周期内总pv
+	 * @param periodCode
+	 * @return
+	 */
+    int findSumPv(String periodCode);
+
+	/**
+	 * @author zc 根据周期以及所处层次，查询该期符合获得领导奖的客户MemberQualification集合
+	 * @param map
+	 * @return
+	 */
+	List<MemberQualification> findRankGE7(HashMap<String,Object> map);
 }
