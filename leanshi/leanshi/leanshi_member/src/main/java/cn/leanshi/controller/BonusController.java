@@ -134,7 +134,7 @@ public class BonusController {
             //查询当前周期拓展奖分红总基数
             int sumShare=bonusService.findSumShare(periodCode);
             if(sumShare==0){
-                System.out.println(periodCode+"期不存在拓展奖分红");
+                return ResultMsg.newInstance(false,"当前周期不存在或该周期会员资格信息未统计完成");
             }
             //拓展奖分红系数
             double coefficient=sumPv*0.18/sumShare;
