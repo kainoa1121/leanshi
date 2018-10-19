@@ -75,8 +75,7 @@
         where PERIOD_CODE = #{periodCode}
     </select>
 
-
-    <!--添加资格信息addMqlf-->
+    <!--添加资格信息-->
     <insert id="addMqlf" parameterType="cn.leanshi.model.MemberQualification">
         INSERT INTO rd_dis_qualification(PERIOD_CODE,MM_CODE,MM_NAME,SPONSOR_CODE,SPONSOR_NAME,MM_STATUS,
                                         RA_STATUS,RA_SHOP_YN,PPV,PPV_RETAIL,APPV_INIT,APPV_FINAL,A_RETAIL_INIT,
@@ -85,6 +84,8 @@
                     #{ppv},#{ppvRetail},#{appvInit},#{appvFinal},#{retailInit},#{retail},#{retailFinal},#{rankInit},
                     #{rank},#{orphan})
     </insert>
+
+
     <select id="findMaxLayerByPeriodCode" parameterType="string" resultType="int">
         select max(LAYER) from RD_DIS_QUALIFICATION where PERIOD_CODE = #{periodCode}
     </select>
@@ -104,6 +105,7 @@
     <select id="findRankGE7" parameterType="map" resultMap="QualificationResultMap">
     select * from rd_dis_qualification where PERIOD_CODE = #{periodCode} and LAYER = #{num} and RANK >= 7
     </select>
+
     <!--删除指定周期数据-->
     <delete id="delQulfByPeriod" parameterType="string">
         DELETE FROM rd_dis_qualification WHERE PERIOD_CODE = #{periodCode}
@@ -176,7 +178,7 @@
     </update>
 
     <!--计算直推团队最高级别-->
-    <select id="findQulfCountRankBySponsorCode" parameterType="string" resultType="java.lang.Integer">
+    <select id="findQulfCountRankBySponsorCode" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM rd_dis_qualification
         WHERE GROUP_RANK_MAX = #{groupRankMax} AND SPONSOR_CODE = #{sponsorCode} AND PERIOD_CODE = #{periodCode}
     </select>
