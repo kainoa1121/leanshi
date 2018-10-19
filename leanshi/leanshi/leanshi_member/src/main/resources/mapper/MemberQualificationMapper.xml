@@ -85,6 +85,27 @@
                     #{rank},#{orphan})
     </insert>
 
+
+    <select id="findMaxLayerByPeriodCode" parameterType="string" resultType="int">
+        select max(LAYER) from RD_DIS_QUALIFICATION where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="findByLayer" parameterType="map" resultMap="QualificationResultMap">
+        select * from rd_dis_qualification where  LAYER = #{layer} and PERIOD_CODE = #{periodCode} and PPV > 0 and ORPHAN = 1
+    </select>
+
+    <select id="findNewVip" parameterType="string" resultMap="QualificationResultMap">
+        select * from rd_dis_qualification where PERIOD_CODE = #{periodCode} and ORPHAN = 1 and A_RETAIL_INIT &lt; 360 and A_RETAIL_FINAL >= 360
+    </select>
+
+    <select id="findSumPv" parameterType="string" resultType="int">
+        select sum(ppv) from rd_dis_qualification where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="findRankGE7" parameterType="map" resultMap="QualificationResultMap">
+    select * from rd_dis_qualification where PERIOD_CODE = #{periodCode} and LAYER = #{num} and RANK >= 7
+    </select>
+
     <!--删除指定周期数据-->
     <delete id="delQulfByPeriod" parameterType="string">
         DELETE FROM rd_dis_qualification WHERE PERIOD_CODE = #{periodCode}

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdBonusPaymentMapper">
+
+    <resultMap id="RdBonusPayment" type="cn.leanshi.model.RdBonusPayment">
+        <result column="PERIOD_CODE" property="periodCode"/>
+        <result column="MM_CODE" property="mCode" />
+        <result column="MM_NAME" property="mName" />
+        <result column="BONUS_SUM" property="bonusSum" />
+        <result column="CURRENCY_CODE" property="currencyCode" />
+        <result column="BONUS_SUM_MONEY" property="bonusSumMoney" />
+        <result column="BONUS_REISSUE" property="bonusReissue" />
+        <result column="CHARGE_SUM" property="chargeSum" />
+        <result column="PAYABLE_SUM" property="payableSum" />
+        <result column="PAY_STATUS" property="payStatus" />
+    </resultMap>
+
+    <select id="searchBonusPaymentByCodeAndName" parameterType="map" resultMap="RdBonusPayment">
+        SELECT * FROM rd_bonus_payment WHERE MM_CODE = #{mCode} and MM_NAME = #{mName}
+    </select>
+
+    <!--    <select id="searchBonusPayment" parameterType="map" resultMap="RdBonusPayment">
+         SELECT * FROM rd_bonus_payment WHERE PERIOD_CODE = #{periodCode}
+         <if test="mCode !=null and mCode != ''">
+             AND MM_CODE =#{mCode}
+         </if>
+         <if test="payStatus !=null and payStatus != ''">
+             AND PAY_STATUS =#{payStatus}
+         </if>
+         order by PERIOD_CODE desc
+     </select>
+
+     <select id="searchBonusPaymentByPeriodLeft" parameterType="map" resultMap="RdBonusPayment">
+         SELECT * FROM rd_bonus_payment WHERE PERIOD_CODE >= #{periodCode}
+         <if test="mCode !=null and mCode != ''">
+             AND MM_CODE =#{mCode}
+         </if>
+         <if test="payStatus !=null and payStatus != ''">
+             AND PAY_STATUS =#{payStatus}
+         </if>
+         order by PERIOD_CODE desc
+     </select>
+
+     <select id="searchBonusPaymentByPeriodRight" parameterType="map" resultMap="RdBonusPayment">
+         SELECT * FROM rd_bonus_payment WHERE PERIOD_CODE &lt;= #{periodCode}
+         <if test="mCode !=null and mCode != ''">
+             AND MM_CODE =#{mCode}
+         </if>
+         <if test="payStatus !=null and payStatus != ''">
+             AND PAY_STATUS =#{payStatus}
+         </if>
+         order by PERIOD_CODE desc
+     </select>
+
+     <select id="searchBonusPaymentWithoutPeriod" parameterType="map" resultMap="RdBonusPayment">
+         SELECT * FROM rd_bonus_payment WHERE 1=1
+         <if test="mCode !=null and mCode != ''">
+             AND MM_CODE =#{mCode}
+         </if>
+         <if test="payStatus !=null and payStatus != ''">
+             AND PAY_STATUS =#{payStatus}
+         </if>
+         order by PERIOD_CODE desc
+     </select>-->
+
+<!--    <select id="searchBonusPaymentByCriteria" parameterType="map" resultMap="RdBonusPayment">
+        SELECT * FROM rd_bonus_payment WHERE 1=1
+        <if test="periodCodeLeft !=null and periodCodeLeft!=''">
+            and PERIOD_CODE >= #{periodCodeLeft}
+        </if>
+        <if test="periodCodeRight !=null and periodCodeRight!=''">
+            and PERIOD_CODE &lt;= #{periodCodeRight}
+        </if>
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE =#{mCode}
+        </if>
+        <if test="payStatus !=null and payStatus != ''">
+            AND PAY_STATUS =#{payStatus}
+        </if>
+        order by PERIOD_CODE desc
+    </select>-->
+    <select id="searchBonusPaymentByCriteria" parameterType="map" resultMap="RdBonusPayment">
+        SELECT * FROM rd_bonus_payment WHERE 1=1
+        <choose>
+            <when test="mCode !=null and mCode != '' and mName !=null and mName != ''">
+                AND MM_CODE =#{mCode}
+            </when>
+            <when test="mCode !=null and mCode != '' and mName ==null">
+                AND MM_CODE =#{mCode}
+            </when>
+            <when test="mCode ==null and mName !=null and mName != ''">
+                AND MM_NAME =#{mName}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <if test="periodCodeLeft !=null and periodCodeLeft!=''">
+            and PERIOD_CODE >= #{periodCodeLeft}
+        </if>
+        <if test="periodCodeRight !=null and periodCodeRight!=''">
+            and PERIOD_CODE &lt;= #{periodCodeRight}
+        </if>
+        <if test="payStatus !=null and payStatus != ''">
+            AND PAY_STATUS =#{payStatus}
+        </if>
+        order by PERIOD_CODE desc
+    </select>
+
+</mapper>
