@@ -2190,14 +2190,21 @@ public class MemberController {
 
 		ResultMsg<PageInfo<RdReceivableDetail>> resultMsg = new ResultMsg<PageInfo<RdReceivableDetail>>();
 		//查所有会员欠款明细信息
+		Date timeStar = null;
+		Date timeEnd = null;
+		if (transTimeS==""){
+			 timeStar = null;
+			 timeEnd = null;
+		}else{
 
-		String[] timeS = transTimeS.split("-");
-		String timeStarS =timeS[0];
-		String timeEndS =timeS[1];
+			String[] timeS = transTimeS.split("-");
+			String timeStarS =timeS[0];
+			String timeEndS =timeS[1];
 
-		DateConverter dateConverter = new DateConverter();
-		Date timeStar = dateConverter.convert(timeStarS);
-		Date timeEnd = dateConverter.convert(timeEndS);
+			DateConverter dateConverter = new DateConverter();
+			 timeStar = dateConverter.convert(timeStarS);
+			 timeEnd = dateConverter.convert(timeEndS);
+		}
 
 		List<RdReceivableDetail> list = memberService.findReceivableDetailAll(mCode,mNickname,transNumber,trTypeCode,status,timeStar,timeEnd);
 
