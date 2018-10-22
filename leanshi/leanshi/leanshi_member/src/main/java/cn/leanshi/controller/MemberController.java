@@ -2122,7 +2122,7 @@ public class MemberController {
 		int num=Integer.parseInt(str.toString());
 
 		int d = 0;
-		if (trTypeCode=="NR"){//新增欠款
+		if (trTypeCode.equals("NR")){//新增欠款
 			detail.setTransNumber(num);
 			detail.setMCode(mCode);
 			detail.setMNickname(mNickname);
@@ -2147,7 +2147,7 @@ public class MemberController {
 			}
 		}
 
-		if (trTypeCode=="RR"){//归还欠款
+		if (trTypeCode.equals("RR")){//归还欠款
 			detail.setTransNumber(num);
 			detail.setMCode(mCode);
 			detail.setTrTypeCode(trTypeCode);
@@ -2320,7 +2320,7 @@ public class MemberController {
 										 @RequestParam(value = "statusBefore",required = false) int statusBefore,
 										 @RequestParam(value = "statusAfter",required = false) int statusAfter,
 										 @RequestParam(value = "updateDesc",required = false) String updateDesc){
-		if (statusType=="MM"){//会员状态
+		if (statusType.equals("MM")){//会员状态
 			//修改状态表
 			int r = memberService.updateRelaStatus(mCode,statusAfter);
 			//保存修改信息
@@ -2332,7 +2332,7 @@ public class MemberController {
 			}
 		}
 
-		if (statusType=="MR"){//会员积分状态
+		if (statusType.equals("MR")){//会员积分状态
 			//修改会员账户信息表
 			int r = memberService.updateAccountStatus(mCode,statusAfter);
 			//保存修改信息
