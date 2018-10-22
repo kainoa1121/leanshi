@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 public class RdReceivableDetail {
 
-	private int transNumber;//交易流水号
+	private Integer transNumber;//交易流水号
 	private int batchNumber;//批记录号
 	private String mCode;//会员编号
 	private String mNickname;//'昵称'

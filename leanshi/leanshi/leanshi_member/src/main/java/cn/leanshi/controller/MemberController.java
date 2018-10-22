@@ -2181,7 +2181,7 @@ public class MemberController {
 											 @RequestParam(value = "transTimeS",required = false) String transTimeS,
 											 @RequestParam(value = "mCode",required = false) String mCode,
 											 @RequestParam(value = "mNickname",required = false) String mNickname,
-											 @RequestParam(value = "transNumber",required = false) int transNumber,
+											 @RequestParam(value = "transNumber",required = false) Integer transNumber,
 											 @RequestParam(value = "trTypeCode",required = false) String trTypeCode,
 											 @RequestParam(value = "status",required = false) int status){
 		int size=pageSize;
