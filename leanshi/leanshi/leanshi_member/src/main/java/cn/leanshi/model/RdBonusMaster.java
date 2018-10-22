@@ -2,10 +2,6 @@ package cn.leanshi.model;
 
 
 import java.io.Serializable;
-
-import lombok.Data;
-
-
 import java.math.BigDecimal;
 
 /**

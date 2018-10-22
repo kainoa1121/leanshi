@@ -67,7 +67,7 @@
         <if test="trTypeCode !=null and trTypeCode != ''">
             AND TR_TYPE_CODE = #{trTypeCode}
         </if>
-        <if test="status !=null">
+        <if test="status !=null and status !=0">
             AND STATUS = #{status}
         </if>
         <if test="timeStar !=null and timeEnd !=null">
