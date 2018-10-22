@@ -2355,7 +2355,7 @@ public class MemberController {
 	public ResultMsg findStatusDetailAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
 										 @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
 										 @RequestParam(value = "statusType",required = false) String statusType,
-										 @RequestParam(value = "transTimeS",required = false) String transTimeS,
+										 @RequestParam(value = "statusTimeS",required = false) String statusTimeS,
 										 @RequestParam(value = "mCode",required = false) String mCode,
 										 @RequestParam(value = "mNickname",required = false) String mNickname) {
 		int size = pageSize;
@@ -2366,11 +2366,11 @@ public class MemberController {
 
 		Date timeStar = null;
 		Date timeEnd = null;
-		if (transTimeS==""){
+		if (statusTimeS==""){
 			timeStar = null;
 			timeEnd = null;
 		}else{
-			String[] timeS = transTimeS.split("-");
+			String[] timeS = statusTimeS.split("-");
 			String timeStarS =timeS[0];
 			String timeEndS =timeS[1];
 			DateConverter dateConverter = new DateConverter();
