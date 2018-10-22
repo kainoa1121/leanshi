@@ -2206,8 +2206,13 @@ public class MemberController {
 			 timeEnd = dateConverter.convert(timeEndS);
 		}
 
-		List<RdReceivableDetail> list = memberService.findReceivableDetailAll(mCode,mNickname,transNumber,trTypeCode,status,timeStar,timeEnd);
+		List<RdReceivableDetail> list = null;
+		try {
+			list = memberService.findReceivableDetailAll(mCode,mNickname,transNumber,trTypeCode,status,timeStar,timeEnd);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (list==null||list.size()==0||list.isEmpty()){
 			return ResultMsg.newInstance(false,"没有欠款明细数据！");
 		}
