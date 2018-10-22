@@ -12,6 +12,7 @@ import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
+import cn.leanshi.model.RdStatusDetail;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 
@@ -184,4 +185,12 @@ public interface MemberService {
 	int addRDNR(RdReceivableDetail detail);
 
 	int addRDRR(RdReceivableDetail detail);
+
+	int updateRelaStatus(String mCode, int statusAfter);
+
+	int updateAccountStatus(String mCode, int statusAfter);
+
+	int addStatusD(String mCode, String mNickname, String statusType, int statusBefore, int statusAfter, String updateDesc);
+
+	List<RdStatusDetail> findStatusDetailAll(String statusType, Date timeStar, Date timeEnd, String mCode, String mNickname);
 }

@@ -12,6 +12,7 @@ import cn.leanshi.mapper.RdBonusMasterMapper;
 import cn.leanshi.mapper.RdRaBindingMapper;
 import cn.leanshi.mapper.RdReceivableDetailMapper;
 import cn.leanshi.mapper.RdReceivableMasterMapper;
+import cn.leanshi.mapper.RdStatusDetailMapper;
 import cn.leanshi.mapper.SysPeriodLogMapper;
 import cn.leanshi.mapper.SysPeriodMapper;
 import cn.leanshi.model.MemberAccount;
@@ -26,6 +27,7 @@ import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
+import cn.leanshi.model.RdStatusDetail;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.service.MemberService;
@@ -65,6 +67,7 @@ public class MemberServiceImpl implements MemberService {
 	private final RdBonusMasterMapper masterMapper;
 	private final RdReceivableMasterMapper receivableMapper;
 	private final RdReceivableDetailMapper receivableDetailMapper;
+	private final RdStatusDetailMapper statusDetailMapper;
 
 	/*
 	 *条件模糊查询
@@ -1402,6 +1405,48 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int addRDRR(RdReceivableDetail detail) {
 		return receivableDetailMapper.addRDRR(detail);
+	}
+
+	@Override
+	public int updateRelaStatus(String mCode, int statusAfter) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mStatus",statusAfter);
+		return relationMapper.updateRelaStatus(map);
+	}
+
+	@Override
+	public int updateAccountStatus(String mCode, int statusAfter) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("Status",statusAfter);
+		relationMapper.updateMPointStatus(map);
+		return accountMapper.updateAccountStatus(map);
+	}
+
+	@Override
+	public int addStatusD(String mCode, String mNickname, String statusType, int statusBefore, int statusAfter, String updateDesc) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("statusType",statusType);
+		map.put("statusBefore",statusBefore);
+		map.put("statusAfter",statusAfter);
+		map.put("updateBy","无名");
+		map.put("updateTime",new Date());
+		map.put("updateDesc",updateDesc);
+		return statusDetailMapper.addStatusD(map);
+	}
+
+	@Override
+	public List<RdStatusDetail> findStatusDetailAll(String statusType, Date timeStar, Date timeEnd, String mCode, String mNickname) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("statusType",statusType);
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
+		return statusDetailMapper.findStatusDetailAll(map);
 	}
 
 }

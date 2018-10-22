@@ -11,6 +11,7 @@ import cn.leanshi.model.RdBonusMaster;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
+import cn.leanshi.model.RdStatusDetail;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.model.http.ResultMsg;
@@ -2268,6 +2269,128 @@ public class MemberController {
 			return ResultMsg.newInstance(false,"审核失败！");
 		}
 
+	}
+
+	/*
+	 * 根据编号查找会员状态（会员状态维护）
+	 * */
+	@RequestMapping(value = "/findStatusByMCode",method = RequestMethod.GET)
+	public ResultMsg findStatusByMCode(@RequestParam String mCode){
+
+		ResultMsg<Map<String,Object>> resultMsg = new ResultMsg<Map<String,Object>>();
+
+		Map<String,Object> map = new HashMap<String,Object>();
+
+		try {
+			Member_basic memberBasic = memberService.findByMCode(mCode);
+			map.put("mCode",memberBasic.getMCode());
+			map.put("mName",memberBasic.getMName());
+			map.put("mNickname",memberBasic.getMNickname());
+			map.put("idCode",memberBasic.getIdCode());
+			map.put("mobile",memberBasic.getMobile());
+
+			MemberRelation relation = memberService.findRelationByMCode(mCode);
+			map.put("mStatus",relation.getMStatus());
+			map.put("mPointStatus",relation.getMPointStatus());
+
+			MemberAccount account = memberService.findMemAccountByMCode(mCode);
+			map.put("bonusBlance",account.getBonusBlance());
+			map.put("walletBlance",account.getWalletBlance());
+			map.put("redemptionBlance",account.getRedemptionBlance());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resultMsg.setCode(true);
+		resultMsg.setData(map);
+
+		return resultMsg;
+	}
+
+
+
+	/*
+	 * 修改状态（会员状态维护）
+	 * */
+	@RequestMapping(value = "/updateStatusByMCode",method = RequestMethod.POST)
+	public ResultMsg updateStatusByMCode(@RequestParam(value = "mCode",required = false) String mCode,
+										 @RequestParam(value = "mNickname",required = false) String mNickname,
+										 @RequestParam(value = "statusType",required = false) String statusType,
+										 @RequestParam(value = "statusBefore",required = false) int statusBefore,
+										 @RequestParam(value = "statusAfter",required = false) int statusAfter,
+										 @RequestParam(value = "updateDesc",required = false) String updateDesc){
+		if (statusType=="MM"){//会员状态
+			//修改状态表
+			int r = memberService.updateRelaStatus(mCode,statusAfter);
+			//保存修改信息
+			int s = memberService.addStatusD(mCode,mNickname,statusType,statusBefore,statusAfter,updateDesc);
+			if (r==1&&s==1){
+				return ResultMsg.newInstance(true,"修改成功！");
+			}else{
+				return ResultMsg.newInstance(false,"修改失败！");
+			}
+		}
+
+		if (statusType=="MR"){//会员积分状态
+			//修改会员账户信息表
+			int r = memberService.updateAccountStatus(mCode,statusAfter);
+			//保存修改信息
+			int s = memberService.addStatusD(mCode,mNickname,statusType,statusBefore,statusAfter,updateDesc);
+
+			if (r==1&&s==1){
+				return ResultMsg.newInstance(true,"修改成功！");
+			}else{
+				return ResultMsg.newInstance(false,"修改失败！");
+			}
+		}
+
+		return ResultMsg.newInstance(false,"修改类型错误！");
+	}
+
+	/*
+	 * 查看会员状态更改明细(模糊条件查询)
+	 * */
+	@RequestMapping(value = "/findStatusDetailAll",method = RequestMethod.POST)
+	public ResultMsg findStatusDetailAll(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+										 @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+										 @RequestParam(value = "statusType",required = false) String statusType,
+										 @RequestParam(value = "transTimeS",required = false) String transTimeS,
+										 @RequestParam(value = "mCode",required = false) String mCode,
+										 @RequestParam(value = "mNickname",required = false) String mNickname) {
+		int size = pageSize;
+
+		PageHelper.startPage(currentPage, size);
+
+		ResultMsg<PageInfo<RdStatusDetail>> resultMsg = new ResultMsg<PageInfo<RdStatusDetail>>();
+
+		Date timeStar = null;
+		Date timeEnd = null;
+		if (transTimeS==""){
+			timeStar = null;
+			timeEnd = null;
+		}else{
+			String[] timeS = transTimeS.split("-");
+			String timeStarS =timeS[0];
+			String timeEndS =timeS[1];
+			DateConverter dateConverter = new DateConverter();
+			timeStar = dateConverter.convert(timeStarS);
+			timeEnd = dateConverter.convert(timeEndS);
+		}
+		List<RdStatusDetail> list = null;
+		try {
+			list = memberService.findStatusDetailAll(statusType,timeStar,timeEnd,mCode,mNickname);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"没有查到数据！");
+		}
+		PageInfo<RdStatusDetail> pageInfo = new PageInfo<RdStatusDetail>(list);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
+
+		return resultMsg;
 	}
 
 
