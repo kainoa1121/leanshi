@@ -6,6 +6,7 @@
         <result column="TRANS_NUMBER" property="transNumber" />
         <result column="BATCH_NUMBER" property="batchNumber" />
         <result column="MM_CODE" property="mCode" />
+        <result column="MM_NICK_NAME" property="mNickname" />
         <result column="TR_TYPE_CODE" property="trTypeCode" />
         <result column="TR_SOURCE_TYPE" property="trSourceType" />
         <result column="TR_BANK_OID" property="trBankOid" />
@@ -28,4 +29,65 @@
         <result column="AUTOHRIZE_TIME" property="autohrizeTime" />
         <result column="AUTOHRIZE_DESC" property="autohrizeDesc" />
     </resultMap>
+
+    <!--创建欠款明细表-->
+    <insert id="addRDNR" parameterType="cn.leanshi.model.RdReceivableDetail">
+        INSERT INTO rd_receiveable_detail(TRANS_NUMBER,MM_CODE,MM_NICK_NAME,TR_TYPE_CODE,TR_SOURCE_TYPE,TR_BANK_OID,
+        CURRENCY_CODE,BLANCE_BEFORE,AMOUNT,BLANCE_AFTER,BNS_DEDUCT_PECENT,
+        TRANS_DATE,STATUS,CREATION_BY,UPDATE_TIME)
+        VALUES (#{transNumber},#{mCode},#{mNickname},#{trTypeCode},#{trSourceType},#{trBankOid},#{currencyCode},
+        #{blanceBefore},#{amount},#{blanceAfter},#{bnsDeductPecent},#{transDate},#{status},
+        #{creationBy},#{creationTime})
+    </insert>
+
+    <!--创建还款明细表-->
+    <insert id="addRDRR" parameterType="cn.leanshi.model.RdReceivableDetail">
+        INSERT INTO rd_receiveable_detail(TRANS_NUMBER,MM_CODE,MM_NICK_NAME,TR_TYPE_CODE,TR_SOURCE_TYPE,TR_BANK_OID,
+        CURRENCY_CODE,BLANCE_BEFORE,AMOUNT,BLANCE_AFTER,BNS_DEDUCT_PECENT,
+        TRANS_DATE,STATUS,CREATION_BY,UPDATE_TIME)
+        VALUES (#{transNumber},#{mCode},#{mNickname},#{trTypeCode},#{trSourceType},#{currencyCode},
+        #{blanceBefore},#{amount},#{blanceAfter}#{transDate},#{status},
+        #{creationBy},#{creationTime})
+    </insert>
+
+
+    <!--添加模糊搜索-->
+    <select id="findReceivableDetailAll" parameterType="java.util.Map" resultMap="RDResultMap">
+        SELECT * FROM rd_receiveable_detail
+        WHERE 1=1
+        <if test="transNumber !=null">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="trTypeCode !=null and trTypeCode != ''">
+            AND TR_TYPE_CODE = #{trTypeCode}
+        </if>
+        <if test="status !=0">
+            AND STATUS = #{status}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_DATE ASC
+    </select>
+
+    <!--审核会员-->
+    <update id="updateRD" parameterType="java.util.Map">
+        UPDATE rd_receiveable_detail
+        SET
+        STATUS = #{status}
+        WHERE MM_CODE = #{mCode}
+    </update>
+
+    <!--根据编号和流水号查欠款明细-->
+    <select id="findRD" parameterType="java.util.Map" resultMap="RDResultMap">
+        SELECT * FROM rd_receiveable_detail WHERE MM_CODE = #{mCode} AND TRANS_NUMBER = #{transNumber}
+    </select>
+
+
 </mapper>

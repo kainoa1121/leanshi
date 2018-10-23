@@ -1344,7 +1344,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, int transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd) {
+	public List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, Integer transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd) {
 		Map<String,Object> map = new HashMap<>();
 		map.put("transNumber",transNumber);
 		map.put("mCode",mCode);

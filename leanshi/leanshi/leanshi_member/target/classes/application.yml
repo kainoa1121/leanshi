@@ -26,3 +26,8 @@ pagehelper:
     reasonable: true
     supportMethodsArguments: true
     params: count=countSql
+
+logging:
+  level:
+    cn:
+      leanshi: debug

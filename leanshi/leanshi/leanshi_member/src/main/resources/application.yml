@@ -30,4 +30,4 @@ pagehelper:
 logging:
   level:
     cn:
-      leanshi=debug
+      leanshi: debug

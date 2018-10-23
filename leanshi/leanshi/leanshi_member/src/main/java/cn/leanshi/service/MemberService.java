@@ -168,7 +168,7 @@ public interface MemberService {
 
 	int defBankByOid(Integer oId, String mCode, Integer defaultBank);
 
-	List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, int transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd);
+	List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, Integer transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd);
 
 	int updateRD(String mCode, int transNumber, int status);
 
