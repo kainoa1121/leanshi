@@ -55,7 +55,7 @@
     <select id="findReceivableDetailAll" parameterType="java.util.Map" resultMap="RDResultMap">
         SELECT * FROM rd_receiveable_detail
         WHERE 1=1
-        <if test="transNumber !=null and transNumber != ''">
+        <if test="transNumber !=null">
             AND TRANS_NUMBER = #{transNumber}
         </if>
         <if test="mCode !=null and mCode != ''">
@@ -67,7 +67,7 @@
         <if test="trTypeCode !=null and trTypeCode != ''">
             AND TR_TYPE_CODE = #{trTypeCode}
         </if>
-        <if test="status !=null and status !=0">
+        <if test="status !=0">
             AND STATUS = #{status}
         </if>
         <if test="timeStar !=null and timeEnd !=null">
