@@ -70,17 +70,9 @@
         <if test="status !=0">
             AND STATUS = #{status}
         </if>
-        <choose>
-            <when test="timeStar=timeEnd and timeStar !=null">
-                AND TRANS_DATE = #{timeStar}
-            </when>
-            <otherwise>
-                AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
-            </otherwise>
-        </choose>
-        <!--<if test="timeStar !=null and timeEnd !=null">
+        <if test="timeStar !=null and timeEnd !=null">
             AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
-        </if>-->
+        </if>
         ORDER BY TRANS_DATE ASC
     </select>
 
