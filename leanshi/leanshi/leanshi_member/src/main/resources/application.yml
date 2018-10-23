@@ -28,4 +28,6 @@ pagehelper:
     params: count=countSql
 
 logging:
-  level: cn.leanshi=debug
+  level:
+    cn:
+      leanshi=debug
