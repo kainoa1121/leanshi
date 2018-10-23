@@ -2198,7 +2198,7 @@ public class MemberController {
 			 timeEnd = null;
 		}else{
 
-			String[] timeS = transTimeS.split("-");
+			String[] timeS = transTimeS.split("/");
 			String timeStarS =timeS[0]+" "+"00:00:00";
 			String timeEndS =timeS[1]+" "+"23:59:59";
 
@@ -2370,7 +2370,7 @@ public class MemberController {
 			timeStar = null;
 			timeEnd = null;
 		}else{
-			String[] timeS = statusTimeS.split("-");
+			String[] timeS = statusTimeS.split("/");
 			String timeStarS =timeS[0]+" "+"00:00:00";
 			String timeEndS =timeS[1]+" "+"23:59:59";
 			DateConverter dateConverter = new DateConverter();
