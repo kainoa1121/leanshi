@@ -81,7 +81,7 @@
         UPDATE rd_receiveable_detail
         SET
         STATUS = #{status}
-        WHERE MM_CODE = #{mCode}
+        WHERE MM_CODE = #{mCode} AND TRANS_NUMBER = #{transNumber}
     </update>
 
     <!--根据编号和流水号查欠款明细-->
