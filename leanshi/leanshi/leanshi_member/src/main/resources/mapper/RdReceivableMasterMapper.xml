@@ -21,7 +21,7 @@
         <if test="mNickname !=null and mNickname != ''">
             AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
         </if>
-        <if test="status !=null and status !=0">
+        <if test="status !=0">
             AND STATUS = #{status}
         </if>
         ORDER BY MM_CODE ASC
