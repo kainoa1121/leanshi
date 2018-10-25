@@ -2366,16 +2366,20 @@ public class MemberController {
 
 		Date timeStar = null;
 		Date timeEnd = null;
-		if (statusTimeS==""){
-			timeStar = null;
-			timeEnd = null;
-		}else{
-			String[] timeS = statusTimeS.split("/");
-			String timeStarS =timeS[0]+" "+"00:00:00";
-			String timeEndS =timeS[1]+" "+"23:59:59";
-			DateConverter dateConverter = new DateConverter();
-			timeStar = dateConverter.convert(timeStarS);
-			timeEnd = dateConverter.convert(timeEndS);
+		try {
+			if (statusTimeS==""){
+				timeStar = null;
+				timeEnd = null;
+			}else{
+				String[] timeS = statusTimeS.split("/");
+				String timeStarS =timeS[0]+" "+"00:00:00";
+				String timeEndS =timeS[1]+" "+"23:59:59";
+				DateConverter dateConverter = new DateConverter();
+				timeStar = dateConverter.convert(timeStarS);
+				timeEnd = dateConverter.convert(timeEndS);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		List<RdStatusDetail> list = null;
 		try {
