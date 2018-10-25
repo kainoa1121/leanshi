@@ -2364,23 +2364,23 @@ public class MemberController {
 
 		ResultMsg<PageInfo<RdStatusDetail>> resultMsg = new ResultMsg<PageInfo<RdStatusDetail>>();
 
+		System.out.println("____"+statusTimeS+"___");
+
 		Date timeStar = null;
 		Date timeEnd = null;
-		try {
-			if ("".equals(statusTimeS)){
-				timeStar = null;
-				timeEnd = null;
-			}else{
-				String[] timeS = statusTimeS.split("/");
-				String timeStarS =timeS[0]+" "+"00:00:00";
-				String timeEndS =timeS[1]+" "+"23:59:59";
-				DateConverter dateConverter = new DateConverter();
-				timeStar = dateConverter.convert(timeStarS);
-				timeEnd = dateConverter.convert(timeEndS);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		if ("".equals(statusTimeS)){
+			timeStar = null;
+			timeEnd = null;
+		}else{
+			String[] timeS = statusTimeS.split("/");
+			String timeStarS =timeS[0]+" "+"00:00:00";
+			String timeEndS =timeS[1]+" "+"23:59:59";
+			DateConverter dateConverter = new DateConverter();
+			timeStar = dateConverter.convert(timeStarS);
+			timeEnd = dateConverter.convert(timeEndS);
 		}
+
 		List<RdStatusDetail> list = null;
 		try {
 			list = memberService.findStatusDetailAll(statusType,timeStar,timeEnd,mCode,mNickname);
