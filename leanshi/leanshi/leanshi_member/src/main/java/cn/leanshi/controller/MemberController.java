@@ -2193,7 +2193,7 @@ public class MemberController {
 		//查所有会员欠款明细信息
 		Date timeStar = null;
 		Date timeEnd = null;
-		if (transTimeS==""){
+		if ("".equals(transTimeS)){
 			 timeStar = null;
 			 timeEnd = null;
 		}else{
@@ -2367,7 +2367,7 @@ public class MemberController {
 		Date timeStar = null;
 		Date timeEnd = null;
 		try {
-			if (statusTimeS==""){
+			if ("".equals(statusTimeS)){
 				timeStar = null;
 				timeEnd = null;
 			}else{
