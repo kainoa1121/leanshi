@@ -4,10 +4,12 @@ import cn.leanshi.model.MemberAccount;
 import cn.leanshi.model.MemberAddress;
 import cn.leanshi.model.MemberBank;
 import cn.leanshi.model.MemberEditReview;
+import cn.leanshi.model.MemberIntegralRule;
 import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.RdBonusMaster;
+import cn.leanshi.model.RdMemberAccountLog;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -2364,8 +2367,6 @@ public class MemberController {
 
 		ResultMsg<PageInfo<RdStatusDetail>> resultMsg = new ResultMsg<PageInfo<RdStatusDetail>>();
 
-		System.out.println("____"+statusTimeS+"___");
-
 		Date timeStar = null;
 		Date timeEnd = null;
 
@@ -2394,6 +2395,245 @@ public class MemberController {
 		resultMsg.setCode(true);
 		resultMsg.setData(pageInfo);
 
+		return resultMsg;
+	}
+
+	/*
+	 * 查看会员积分管理明细(模糊条件查询)
+	 * */
+	@RequestMapping(value = "/findAccountLog",method = RequestMethod.POST)
+	public ResultMsg findAccountLog(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+									@RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+									@RequestParam(value = "transTimeS",required = false) String transTimeS,
+									@RequestParam(value = "mCode",required = false) String mCode,
+									@RequestParam(value = "mNickname",required = false) String mNickname,
+									@RequestParam(value = "transNumber",required = false) Integer transNumber,
+									@RequestParam(value = "batchNumber",required = false) Integer batchNumber,
+									@RequestParam(value = "transTypeCode",required = false) String transTypeCode,
+									@RequestParam(value = "typeS",required = false) String typeS) {
+		int size = pageSize;
+
+		PageHelper.startPage(currentPage, size);
+
+		ResultMsg<PageInfo<RdMemberAccountLog>> resultMsg = new ResultMsg<PageInfo<RdMemberAccountLog>>();
+
+		Date timeStar = null;
+		Date timeEnd = null;
+		if ("".equals(transTimeS)){
+			timeStar = null;
+			timeEnd = null;
+		}else{
+			String[] timeS = transTimeS.split("/");
+			String timeStarS =timeS[0]+" "+"00:00:00";
+			String timeEndS =timeS[1]+" "+"23:59:59";
+			DateConverter dateConverter = new DateConverter();
+			timeStar = dateConverter.convert(timeStarS);
+			timeEnd = dateConverter.convert(timeEndS);
+		}
+		List<RdMemberAccountLog> list = null;
+		if ("".equals(transTypeCode)){
+			list = memberService.findRdAccLog1(timeStar,timeEnd,mCode,mNickname,transNumber,batchNumber,typeS);
+		}else{
+			list = memberService.findRdAccLog2(timeStar,timeEnd,mCode,mNickname,transNumber,batchNumber,transTypeCode,typeS);
+		}
+
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"没有查到数据！");
+		}
+
+		Map<String,Object> map = new HashMap<String,Object>();
+		int i =1;
+		BigDecimal intoAll = new BigDecimal("0.00");//全部转入
+		BigDecimal outAll = new BigDecimal("0.00");//全部转出
+		for (RdMemberAccountLog accountLog : list) {
+
+			if ((!"".equals(mCode)||!"".equals(mNickname)||transNumber!=null)&&i==1){
+				MemberAccount memberAccount = memberService.findMemAccountByMCode(accountLog.getMCode());
+				Member_basic basic = memberService.findByMCode(accountLog.getMCode());
+				if (memberAccount!=null&&basic!=null){
+					map.put("mCode",basic.getMCode());
+					map.put("mNickname",basic.getMNickname());
+					map.put("mPointStatus",memberAccount.getBonusStatus());
+					map.put("bonusBlance",memberAccount.getBonusBlance());
+					map.put("walletBlance",memberAccount.getWalletBlance());
+					map.put("redemptionBlance",memberAccount.getRedemptionBlance());
+				}
+				i++;
+			}
+
+			String TypeCode = accountLog.getTransTypeCode();
+
+			if (TypeCode.equals("BA")||TypeCode.equals("RC")||TypeCode.equals("RB")||TypeCode.equals("BT")||TypeCode.equals("TF")||TypeCode.equals("OT")||TypeCode.equals("PC")){//转入
+				intoAll.add(accountLog.getAmount());
+			}
+
+			if (TypeCode.equals("WD")||TypeCode.equals("SP")||TypeCode.equals("RR")||TypeCode.equals("OP")||TypeCode.equals("TT")||TypeCode.equals("EG")){//转出
+				outAll.add(accountLog.getAmount());
+			}
+		}
+		map.put("intoAll",intoAll);
+		map.put("outAll",outAll);
+
+		PageInfo<RdMemberAccountLog> pageInfo = new PageInfo<RdMemberAccountLog>(list);
+		resultMsg.setCode(true);
+		resultMsg.setMap(map);
+		resultMsg.setData(pageInfo);
+		return resultMsg;
+	}
+
+	/*
+	 * 查看会员积分规则设置
+	 * */
+	@RequestMapping(value = "/findRule",method = RequestMethod.GET)
+	public ResultMsg findRule() {
+		ResultMsg<MemberIntegralRule> resultMsg = new ResultMsg<MemberIntegralRule>();
+		MemberIntegralRule rule = memberService.findRule();
+		resultMsg.setCode(true);
+		resultMsg.setData(rule);
+		return resultMsg;
+	}
+
+	/*
+	 * 修改会员积分规则设置
+	 * */
+	@RequestMapping(value = "/updateRule",method = RequestMethod.POST)
+	public ResultMsg updateRule(@RequestParam(value = "rsCountBonusPoint",required = false) Integer rsCountBonusPoint,
+								@RequestParam(value = "bonusPointWdLimit",required = false) Integer bonusPointWdLimit,
+								@RequestParam(value = "bonusPointWd",required = false) Integer bonusPointWd,
+								@RequestParam(value = "bonusPointShopping",required = false) Integer bonusPointShopping,
+								@RequestParam(value = "shoppingPointSr",required = false) Integer shoppingPointSr,
+								@RequestParam(value = "tranksShoppingPoint",required = false) Integer tranksShoppingPoint) {
+
+		MemberIntegralRule memberIntegralRule = new MemberIntegralRule();
+		memberIntegralRule.setRsCountBonusPoint(rsCountBonusPoint);
+		memberIntegralRule.setBonusPointWdLimit(bonusPointWdLimit);
+		memberIntegralRule.setBonusPointWd(bonusPointWd);
+		memberIntegralRule.setBonusPointShopping(bonusPointShopping);
+		memberIntegralRule.setShoppingPointSr(shoppingPointSr);
+		memberIntegralRule.setTranksShoppingPoint(tranksShoppingPoint);
+
+		int i = memberService.updateRule(memberIntegralRule);
+
+		if (i==1){
+			return ResultMsg.newInstance(true,"修改成功！");
+		}else{
+			return ResultMsg.newInstance(false,"修改失败！");
+		}
+	}
+
+
+
+	/*
+	 * 查看所有待提现会员账户交易日志
+	 * */
+	@RequestMapping(value = "/findAccountLogWD",method = RequestMethod.POST)
+	public ResultMsg findAccountLogWD(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+									  @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize) {
+		int size = pageSize;
+
+		PageHelper.startPage(currentPage, size);
+
+		ResultMsg<PageInfo<RdMemberAccountLog>> resultMsg = new ResultMsg<PageInfo<RdMemberAccountLog>>();
+
+		List<RdMemberAccountLog> list = memberService.findAccountLogWD();
+
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"没有查到数据！");
+		}
+
+		PageInfo<RdMemberAccountLog> pageInfo = new PageInfo<RdMemberAccountLog>(list);
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> banks = new ArrayList<Object>();
+		List<RdMemberAccountLog> infoList = pageInfo.getList();
+
+		for (RdMemberAccountLog log : infoList) {
+			Integer oId = log.getTrBankOId();
+			MemberBank bank = memberService.findMBankByOId(oId);
+			banks.add(bank);
+		}
+		map.put("bank",banks);
+		resultMsg.setMap(map);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
+		return resultMsg;
+
+	}
+
+	/*
+	 *审核提现
+	 * */
+	@RequestMapping(value = "/updateAccLogWDOne",method = RequestMethod.POST)
+	public ResultMsg updateAccLogWDOne(@RequestParam(value = "mCode",required = false) String mCode,
+									   @RequestParam(value = "transNumber",required = false) Integer transNumber,
+									   @RequestParam(value = "status",required = false) int status) {
+
+		if (transNumber==null||mCode==null||"".equals(mCode)){
+			return ResultMsg.newInstance(false,"没有该数据！");
+		}
+		int i = memberService.updateAccLogWDOne(mCode,transNumber,status);
+
+		if (i==1){
+			return ResultMsg.newInstance(true,"审核成功！");
+		}else{
+			return ResultMsg.newInstance(false,"审核失败！");
+		}
+	}
+
+	/*
+	 * 查看会员积分提现记录(模糊条件查询)
+	 * */
+	@RequestMapping(value = "/findAccountLogWDALL",method = RequestMethod.POST)
+	public ResultMsg findAccountLogWDALL(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+										 @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+										 @RequestParam(value = "transTimeS",required = false) String transTimeS,
+										 @RequestParam(value = "mCode",required = false) String mCode,
+										 @RequestParam(value = "mNickname",required = false) String mNickname,
+										 @RequestParam(value = "transNumber",required = false) Integer transNumber,
+										 @RequestParam(value = "status",required = false) int status) {
+		int size = pageSize;
+
+		PageHelper.startPage(currentPage, size);
+
+		ResultMsg<PageInfo<RdMemberAccountLog>> resultMsg = new ResultMsg<PageInfo<RdMemberAccountLog>>();
+
+		Date timeStar = null;
+		Date timeEnd = null;
+		if ("".equals(transTimeS)){
+			timeStar = null;
+			timeEnd = null;
+		}else{
+			String[] timeS = transTimeS.split("/");
+			String timeStarS =timeS[0]+" "+"00:00:00";
+			String timeEndS =timeS[1]+" "+"23:59:59";
+			DateConverter dateConverter = new DateConverter();
+			timeStar = dateConverter.convert(timeStarS);
+			timeEnd = dateConverter.convert(timeEndS);
+		}
+
+		List<RdMemberAccountLog> list = null;
+		try {
+			list = memberService.findAccountLogWDALL(transNumber,timeStar,timeEnd,mCode,mNickname,status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (list==null||list.size()==0||list.isEmpty()){
+			return ResultMsg.newInstance(false,"没有查到数据！");
+		}
+
+		PageInfo<RdMemberAccountLog> pageInfo = new PageInfo<RdMemberAccountLog>(list);
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Object> banks = new ArrayList<Object>();
+		List<RdMemberAccountLog> infoList = pageInfo.getList();
+
+		for (RdMemberAccountLog log : infoList) {
+			Integer oId = log.getTrBankOId();
+			MemberBank bank = memberService.findMBankByOId(oId);
+			banks.add(bank);
+		}
+		map.put("bank",banks);
+		resultMsg.setMap(map);
+		resultMsg.setCode(true);
+		resultMsg.setData(pageInfo);
 		return resultMsg;
 	}
 

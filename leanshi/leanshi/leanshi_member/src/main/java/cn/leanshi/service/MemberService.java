@@ -4,11 +4,13 @@ import cn.leanshi.model.MemberAccount;
 import cn.leanshi.model.MemberAddress;
 import cn.leanshi.model.MemberBank;
 import cn.leanshi.model.MemberEditReview;
+import cn.leanshi.model.MemberIntegralRule;
 import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdBonusMaster;
+import cn.leanshi.model.RdMemberAccountLog;
 import cn.leanshi.model.RdRaBinding;
 import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
@@ -193,4 +195,20 @@ public interface MemberService {
 	int addStatusD(String mCode, String mNickname, String statusType, int statusBefore, int statusAfter, String updateDesc);
 
 	List<RdStatusDetail> findStatusDetailAll(String statusType, Date timeStar, Date timeEnd, String mCode, String mNickname);
+
+	List<RdMemberAccountLog> findRdAccLog1(Date timeStar, Date timeEnd, String mCode, String mNickname, Integer transNumber, Integer batchNumber, String typeS);
+
+	List<RdMemberAccountLog> findRdAccLog2(Date timeStar, Date timeEnd, String mCode, String mNickname, Integer transNumber, Integer batchNumber, String transTypeCode, String typeS);
+
+	MemberIntegralRule findRule();
+
+	List<RdMemberAccountLog> findAccountLogWD();
+
+	MemberBank findMBankByOId(Integer oId);
+
+	int updateAccLogWDOne(String mCode, Integer transNumber, int status);
+
+	List<RdMemberAccountLog> findAccountLogWDALL(Integer transNumber, Date timeStar, Date timeEnd, String mCode, String mNickname, int status);
+
+	int updateRule(MemberIntegralRule memberIntegralRule);
 }

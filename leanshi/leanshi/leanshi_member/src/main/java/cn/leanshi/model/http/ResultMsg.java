@@ -2,6 +2,8 @@ package cn.leanshi.model.http;
 
 import lombok.Data;
 
+import java.util.Map;
+
 /**
  * @author :ldq
  * @date:2018/8/15
@@ -12,6 +14,7 @@ public class ResultMsg<T> {
 
 	private boolean code;
 	private String msg;
+	private Map<String,Object> map;
 	private T data;
 
 	public boolean isCode() {
@@ -28,6 +31,14 @@ public class ResultMsg<T> {
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public Map<String, Object> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<String, Object> map) {
+		this.map = map;
 	}
 
 	public T getData() {
