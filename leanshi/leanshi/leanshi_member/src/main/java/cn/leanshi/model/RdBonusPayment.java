@@ -1,6 +1,7 @@
 package cn.leanshi.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 奖金发放表
@@ -8,23 +9,15 @@ import java.io.Serializable;
  */
 public class RdBonusPayment implements Serializable {
     private String periodCode;//业务周期
-    private String mName;//会员姓名
+    private String mNickName;//会员昵称
     private String mCode;//会员编号
-    private int bonusSum;//当期计算出来的奖金(PV)
+    private BigDecimal bonusSum;//当期计算出来的奖金(PV)
     private String currencyCode;//币种
-    private int bonusSumMoney;//当期计算出来的奖金(PV)
-    private int bonusReissue;//应补发的奖金
-    private int chargeSum;//本期处理的扣款合计
-    private int payableSum;//应付奖金（总奖金-各项扣款）
+    private BigDecimal bonusSumMoney;//当期计算出来的奖金(人民币)
+    private BigDecimal bonusReissue;//应补发的奖金
+    private BigDecimal chargeSum;//本期处理的扣款合计
+    private BigDecimal payableSum;//应付奖金（总奖金-各项扣款）
     private int payStatus;//发放标志  1.已发放  0.未发放
-
-    public String getmName() {
-        return mName;
-    }
-
-    public void setmName(String mName) {
-        this.mName = mName;
-    }
 
     public String getPeriodCode() {
         return periodCode;
@@ -32,6 +25,14 @@ public class RdBonusPayment implements Serializable {
 
     public void setPeriodCode(String periodCode) {
         this.periodCode = periodCode;
+    }
+
+    public String getmNickName() {
+        return mNickName;
+    }
+
+    public void setmNickName(String mNickName) {
+        this.mNickName = mNickName;
     }
 
     public String getmCode() {
@@ -42,11 +43,11 @@ public class RdBonusPayment implements Serializable {
         this.mCode = mCode;
     }
 
-    public int getBonusSum() {
+    public BigDecimal getBonusSum() {
         return bonusSum;
     }
 
-    public void setBonusSum(int bonusSum) {
+    public void setBonusSum(BigDecimal bonusSum) {
         this.bonusSum = bonusSum;
     }
 
@@ -58,35 +59,35 @@ public class RdBonusPayment implements Serializable {
         this.currencyCode = currencyCode;
     }
 
-    public int getBonusSumMoney() {
+    public BigDecimal getBonusSumMoney() {
         return bonusSumMoney;
     }
 
-    public void setBonusSumMoney(int bonusSumMoney) {
+    public void setBonusSumMoney(BigDecimal bonusSumMoney) {
         this.bonusSumMoney = bonusSumMoney;
     }
 
-    public int getBonusReissue() {
+    public BigDecimal getBonusReissue() {
         return bonusReissue;
     }
 
-    public void setBonusReissue(int bonusReissue) {
+    public void setBonusReissue(BigDecimal bonusReissue) {
         this.bonusReissue = bonusReissue;
     }
 
-    public int getChargeSum() {
+    public BigDecimal getChargeSum() {
         return chargeSum;
     }
 
-    public void setChargeSum(int chargeSum) {
+    public void setChargeSum(BigDecimal chargeSum) {
         this.chargeSum = chargeSum;
     }
 
-    public int getPayableSum() {
+    public BigDecimal getPayableSum() {
         return payableSum;
     }
 
-    public void setPayableSum(int payableSum) {
+    public void setPayableSum(BigDecimal payableSum) {
         this.payableSum = payableSum;
     }
 
@@ -96,22 +97,6 @@ public class RdBonusPayment implements Serializable {
 
     public void setPayStatus(int payStatus) {
         this.payStatus = payStatus;
-    }
-
-    public RdBonusPayment(String periodCode, String mName, String mCode, int bonusSum, String currencyCode, int bonusSumMoney, int bonusReissue, int chargeSum, int payableSum, int payStatus) {
-        this.periodCode = periodCode;
-        this.mName = mName;
-        this.mCode = mCode;
-        this.bonusSum = bonusSum;
-        this.currencyCode = currencyCode;
-        this.bonusSumMoney = bonusSumMoney;
-        this.bonusReissue = bonusReissue;
-        this.chargeSum = chargeSum;
-        this.payableSum = payableSum;
-        this.payStatus = payStatus;
-    }
-
-    public RdBonusPayment() {
     }
 }
 

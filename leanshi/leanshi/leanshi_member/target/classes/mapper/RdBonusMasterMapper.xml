@@ -87,4 +87,25 @@
         SELECT * FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
     </select>
 
+
+    <select id="findCustomerNum" parameterType="string" resultType="int">
+        SELECT count(MM_CODE) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusNewVip" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_NEW_VIP) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusRetail" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_RETAIL) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusDevp" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_DEVP_SUM) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusLd" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_LD_SUM) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
 </mapper>

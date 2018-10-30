@@ -1,10 +1,9 @@
 package cn.leanshi.controller;
 
-import cn.leanshi.model.MemberQualification;
-import cn.leanshi.model.RdBonusMaster;
-import cn.leanshi.model.RdBonusPayment;
+import cn.leanshi.model.*;
 import cn.leanshi.model.http.ResultMsg;
 import cn.leanshi.service.BonusService;
+import com.github.pagehelper.Constant;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -34,9 +34,9 @@ public class BonusController {
     /*
      *查询当期奖金表
      * */
-    @RequestMapping(value = "/findBonus",method = RequestMethod.GET)
+    @RequestMapping(value = "/findBonus",method = RequestMethod.POST)
     public ResultMsg findBonus(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
-                               @RequestParam(required = false,defaultValue = "8",value = "pageSize") int pageSize,
+                               @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
                                @RequestParam(value = "periodCode",required = false) String periodCode){
 
         int size=pageSize;
@@ -53,39 +53,116 @@ public class BonusController {
         return ResultMsg.newInstance(false,"该期奖金未计算或当前周期不存在") ;
     }
     /*
-     *奖金发放明细表
+     *奖金发放明细表查询
      * */
-    @RequestMapping(value = "/searchBonusPayment",method = RequestMethod.GET)
+    @RequestMapping(value = "/searchBonusPayment",method = RequestMethod.POST)
     public ResultMsg searchBonusPayment(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
                                         @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
                                         @RequestParam(value = "periodCodeLeft",required = false) String periodCodeLeft,
                                         @RequestParam(value = "periodCodeRight",required = false) String periodCodeRight,
                                         @RequestParam(value = "mCode",required = false) String mCode,
-                                        @RequestParam(value = "mName",required = false) String mName,
+                                        @RequestParam(value = "mNickName",required = false) String mNickName,
                                         @RequestParam(value = "payStatus",required = false) String payStatus
                             ){
         int size=pageSize;
+        BigDecimal totalBonus = new BigDecimal("0.00");
         List<RdBonusPayment> rdBonusPayments = new ArrayList<>();
         PageHelper.startPage(currentPage,size);
-        //ResultMsg<PageInfo<RdBonusPayment>> resultMsg = new ResultMsg<>();
-        if(mCode!=null&&!"".equals(mCode.trim())&&mName!=null&&!"".equals(mName.trim())){
-            List<RdBonusPayment> list=bonusService.searchBonusPaymentByCodeAndName(mCode,mName);
+        if(mCode!=null&&!"".equals(mCode.trim())&&mNickName!=null&&!"".equals(mNickName.trim())){
+            List<RdBonusPayment> list=bonusService.searchBonusPaymentByCodeAndName(mCode,mNickName);
             if(list!=null&&list.size()>0){
-                System.out.println("姓名和会员号没有冲突");
-                rdBonusPayments=bonusService.searchBonusPayment(periodCodeLeft,periodCodeRight,mCode,mName,payStatus);
+                //System.out.println("姓名和会员号没有冲突");
+                rdBonusPayments=bonusService.searchBonusPayment(periodCodeLeft,periodCodeRight,mCode,mNickName,payStatus);
+                if(rdBonusPayments==null||rdBonusPayments.size()==0){
+                    return ResultMsg.newInstance(false,"没有符合条件的数据");
+                }
+                for (RdBonusPayment rdBonusPayment : rdBonusPayments) {
+                    totalBonus.add(rdBonusPayment.getPayableSum());
+                }
                 ResultMsg<PageInfo<RdBonusPayment>> resultMsg = new ResultMsg<>();
                 PageInfo<RdBonusPayment> pageInfo = new PageInfo<>(rdBonusPayments);
                 resultMsg.setCode(true);
                 resultMsg.setData(pageInfo);
+                resultMsg.setMsg("应付总奖金："+totalBonus);
                 return resultMsg;
             }
             return ResultMsg.newInstance(false,"会员编号和姓名不匹配，请重新输入");
         }
-        rdBonusPayments=bonusService.searchBonusPayment(periodCodeLeft,periodCodeRight,mCode,mName,payStatus);
+        rdBonusPayments=bonusService.searchBonusPayment(periodCodeLeft,periodCodeRight,mCode,mNickName,payStatus);
+        if(rdBonusPayments==null||rdBonusPayments.size()==0){
+            return ResultMsg.newInstance(false,"没有符合条件的数据");
+        }
+        for (RdBonusPayment rdBonusPayment : rdBonusPayments) {
+            totalBonus.add(rdBonusPayment.getPayableSum());
+        }
         ResultMsg<PageInfo<RdBonusPayment>> resultMsg = new ResultMsg<>();
         PageInfo<RdBonusPayment> pageInfo = new PageInfo<>(rdBonusPayments);
         resultMsg.setCode(true);
         resultMsg.setData(pageInfo);
+        resultMsg.setMsg("应付总奖金："+totalBonus);
+        return resultMsg;
+    }
+    @RequestMapping(value = "/searchBounsMaster",method = RequestMethod.POST)
+    public ResultMsg searchBounsMaster(@RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+                                       @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize,
+                                       @RequestParam(value = "periodCodeLeft",required = false) String periodCodeLeft,
+                                       @RequestParam(value = "periodCodeRight",required = false) String periodCodeRight,
+                                       @RequestParam(value = "mCode",required = false) String mCode,
+                                       @RequestParam(value = "mNickName",required = false) String mNickName){
+        int size=pageSize;
+        BigDecimal totalBonus = new BigDecimal("0.00");
+        PageHelper.startPage(currentPage,size);
+        //mCode与mNickName都有
+        if(mCode!=null&&!"".equals(mCode.trim())&&mNickName!=null&&!"".equals(mNickName.trim())){
+            List<Member_basic> list=bonusService.searchMemberByMcodeAndNickName(mCode,mNickName);
+            if(list!=null&&list.size()>0){
+                //System.out.println("姓名和会员号没有冲突");
+                List<RdBonusMaster> rdBonusMasterList=bonusService.searchBonusMasterByCerteria(periodCodeLeft,periodCodeRight,mCode);
+                if(rdBonusMasterList==null||rdBonusMasterList.size()==0){
+                    return ResultMsg.newInstance(false,"没有符合条件的数据");
+                }
+                for (RdBonusMaster rdBonusMaster : rdBonusMasterList) {
+                    totalBonus.add(rdBonusMaster.getBonusSum());
+                }
+                ResultMsg<PageInfo<RdBonusMaster>> resultMsg = new ResultMsg<>();
+                PageInfo<RdBonusMaster> pageInfo = new PageInfo<>(rdBonusMasterList);
+                resultMsg.setCode(true);
+                resultMsg.setData(pageInfo);
+                resultMsg.setMsg("总奖励PV："+totalBonus);
+                return resultMsg;
+            }
+            return ResultMsg.newInstance(false,"会员编号和会员昵称不匹配");
+        }
+        //mNickName存在
+        if(mNickName!=null&&!"".equals(mNickName.trim())){
+            //根据mNickName找到对应的mCode
+            String code=bonusService.findMemberMcodeByNickName(mNickName);
+            List<RdBonusMaster> rdBonusMasterList=bonusService.searchBonusMasterByCerteria(periodCodeLeft,periodCodeRight,code);
+            if(rdBonusMasterList==null||rdBonusMasterList.size()==0){
+                return ResultMsg.newInstance(false,"没有符合条件的数据");
+            }
+            for (RdBonusMaster rdBonusMaster : rdBonusMasterList) {
+                totalBonus.add(rdBonusMaster.getBonusSum());
+            }
+            ResultMsg<PageInfo<RdBonusMaster>> resultMsg = new ResultMsg<>();
+            PageInfo<RdBonusMaster> pageInfo = new PageInfo<>(rdBonusMasterList);
+            resultMsg.setCode(true);
+            resultMsg.setData(pageInfo);
+            resultMsg.setMsg("总奖励PV："+totalBonus);
+            return resultMsg;
+        }
+        List<RdBonusMaster> rdBonusMasterList=bonusService.searchBonusMasterByCerteria(periodCodeLeft,periodCodeRight,mCode);
+        if(rdBonusMasterList==null||rdBonusMasterList.size()==0){
+            return ResultMsg.newInstance(false,"没有符合条件的数据");
+        }
+        for (RdBonusMaster rdBonusMaster : rdBonusMasterList) {
+            totalBonus.add(rdBonusMaster.getBonusSum());
+        }
+        ResultMsg<PageInfo<RdBonusMaster>> resultMsg = new ResultMsg<>();
+        PageInfo<RdBonusMaster> pageInfo = new PageInfo<>(rdBonusMasterList);
+        resultMsg.setCode(true);
+        resultMsg.setData(pageInfo);
+        resultMsg.setMsg("总奖励PV："+totalBonus);
         return resultMsg;
     }
 
@@ -94,7 +171,7 @@ public class BonusController {
      * @param periodCode
      * @return
      */
-    @RequestMapping(value = "countBonusByPeriod",method =RequestMethod.GET )
+    @RequestMapping(value = "/countBonusByPeriod",method =RequestMethod.GET )
     public ResultMsg countBonusByPeriod(@RequestParam(value = "periodCode",required = true)String periodCode){
         //1.由于当前方法不得重复调用，如重复调用，数据库核算数据翻倍，每次调用需要删除该周期中RdBonusMaster
         bonusService.deleteByPeriodCode(periodCode);
@@ -724,4 +801,208 @@ public class BonusController {
             bonusService.updateBonusNewVip(add,memberQualification.getMCode(),memberQualification.getPeriodCode());
         }
     }
+
+    /**
+     * 奖金结果审核
+     */
+    @RequestMapping(value = "/auditBonus",method =RequestMethod.GET )
+    public ResultMsg auditBonus(@RequestParam(required = true,value = "periodCode")String periodCode){
+        //根据周期查询RdBonusAudit是否有当前周期对应的奖金结果审核表，如果没有，根据周期查询业绩表以及奖金表，初始化奖金审核表
+        if(periodCode==null||"".equals(periodCode.trim())){
+            return ResultMsg.newInstance(false,"请选择正确的周期编号");
+        }
+        List<RdBonusAudit> passedList=bonusService.findAuditPassed(periodCode);
+        if(passedList!=null&&passedList.size()>0){
+            List<RdBonusAudit> list=bonusService.findBonusAuditAll(periodCode);
+            ResultMsg<List<RdBonusAudit>> resultMsg = new ResultMsg<>();
+            resultMsg.setCode(false);
+            resultMsg.setData(list);
+            resultMsg.setMsg(periodCode+"周期已经通过奖金审核，请勿重复操作");
+            return resultMsg;
+        }
+        //RdBonusAudit rdBonusAudit=bonusService.findAuditByPeriodCode(periodCode);
+        //查询出对应周期未审核状态的RdBonusAudit数据   如果有未审核的RdBonusAudit数据，不允许再次提交审核
+        List<RdBonusAudit> rdBonusAuditList=bonusService.findAuditByPeriodCodeAndStatus(periodCode);
+        if(rdBonusAuditList!=null&&rdBonusAuditList.size()>0){
+            List<RdBonusAudit> list=bonusService.findBonusAuditAll(periodCode);
+            ResultMsg<List<RdBonusAudit>> resultMsg = new ResultMsg<>();
+            resultMsg.setCode(false);
+            resultMsg.setData(list);
+            resultMsg.setMsg(periodCode+"周期尚有未审核通过的数据，请完成审核后再进行提交审核操作");
+            return resultMsg;
+        }
+            //如果当前周期的rdBonusAudit为空，根据当前周期的奖金表，初始化RdBonusAudit表数据内容
+            int customerNum=bonusService.findCustomerNum(periodCode);
+            BigDecimal performance=bonusService.findPerformance(periodCode);
+            BigDecimal bonusNewVip= bonusService.findBonusNewVip(periodCode);
+            BigDecimal bonusRetail=bonusService.findBonusRetail(periodCode);
+            BigDecimal bonusDevp=bonusService.findBonusDevp(periodCode);
+            BigDecimal bonusLd=bonusService.findBonusLd(periodCode);
+            //总奖金=总业绩*18%   performance*18%
+            BigDecimal bigDecimal = new BigDecimal(Double.toString(0.18));
+            BigDecimal bounsSumPv = performance.multiply(bigDecimal);
+            //拓展奖占比
+            BigDecimal bonusDevpPercentage=bonusDevp.divide(bounsSumPv,2).multiply(new BigDecimal(Integer.toString(100)));
+            //领导奖占比
+            BigDecimal bonusLdPercentage = bonusLd.divide(bounsSumPv, 2).multiply(new BigDecimal(Integer.toString(100)));
+            //特别奖为预留拓展字段 默认设置为0
+            BigDecimal bonusSpecial = new BigDecimal("0.00");
+            BigDecimal bonusSpecialPercentage=bonusSpecial.divide(bounsSumPv, 2).multiply(new BigDecimal(Integer.toString(100)));
+            BigDecimal add = bonusDevp.add(bonusLd).add(new BigDecimal("0.00"));
+            BigDecimal allocatePercentage = add.divide(bounsSumPv, 2).multiply(new BigDecimal("100"));
+            String rate= cn.leanshi.model.util.Constant.PV_CNY_RATE;
+            BigDecimal bigDecimal1 = new BigDecimal(rate);
+            BigDecimal bounsSumCurrency=bounsSumPv.multiply(bigDecimal1);
+            RdBonusAudit rdBonusAuditNew = new RdBonusAudit();
+            rdBonusAuditNew.setPeriodCode(periodCode);
+            rdBonusAuditNew.setCustomerNum(customerNum);
+            //当前总订单数与前台系统交互，预留//TODO
+            rdBonusAuditNew.setOrderNum(0);
+            rdBonusAuditNew.setPerformance(performance);
+            rdBonusAuditNew.setBonusNewVip(bonusNewVip);
+            rdBonusAuditNew.setBonusRetail(bonusRetail);
+            rdBonusAuditNew.setBonusDevp(bonusDevp);
+            rdBonusAuditNew.setBonusDevpPercentage(bonusDevpPercentage);
+            rdBonusAuditNew.setBonusLd(bonusLd);
+            rdBonusAuditNew.setBonusLdPercentage(bonusLdPercentage);
+            rdBonusAuditNew.setBonusSpecial(bonusSpecial);
+            rdBonusAuditNew.setBonusSpecialPercentage(bonusSpecialPercentage);
+            rdBonusAuditNew.setBounsSumPv(bounsSumPv);
+            rdBonusAuditNew.setAllocatePercentage(allocatePercentage);
+            rdBonusAuditNew.setCurrencyCode(cn.leanshi.model.util.Constant.CURRENCY_CODE_CHINA);
+            rdBonusAuditNew.setBounsSumCurrency(bounsSumCurrency);
+            //设置审核人
+
+            rdBonusAuditNew.setStaus(cn.leanshi.model.util.Constant.STATUS_NOT_BEGAIN);
+            rdBonusAuditNew.setAuditTime(null);
+            bonusService.insertRdBonusAudit(rdBonusAuditNew);
+        List<RdBonusAudit> list=bonusService.findBonusAuditAll(periodCode);
+        ResultMsg<List<RdBonusAudit>> resultMsg = new ResultMsg<>();
+        resultMsg.setCode(true);
+        resultMsg.setData(list);
+        return resultMsg;
+    }
+
+    /**
+     * 根据周期，对已经通过奖金发放比例的周期进行会员欠款明细表的记录以及奖金发放表生成
+     * @param periodCode
+     * @return
+     */
+    @RequestMapping(value = "/advanceDeductions",method =RequestMethod.GET)
+    public ResultMsg advanceDeductions(@RequestParam(value = "periodCode",required = true)String periodCode){
+        if(periodCode==null||"".equals(periodCode.trim())){
+            return ResultMsg.newInstance(false,"请选择正确的周期编号");
+        }
+
+        List<RdBonusMaster> list=bonusService.searchByPeriodCode(periodCode);
+        if(list==null||list.size()==0){
+            return ResultMsg.newInstance(false,periodCode+"周期奖金表尚未统计完成");
+        }
+        for (RdBonusMaster rdBonusMaster : list) {
+            String mCode = rdBonusMaster.getmCode();
+            RdReceivableMaster rdReceivableMaster=bonusService.findRdReceivableMaster(mCode);
+            RdReceivableDetail rdReceivableDetail=bonusService.findRdReceivableDetailLast(mCode);
+            if(rdReceivableMaster==null){
+                continue;
+            }
+            if(rdReceivableDetail==null){
+                continue;
+            }
+            String transPeriod = rdReceivableDetail.getTransPeriod();
+            //如果最新一期的会员欠款明细和传入周期一致，说明该会员在该周期的奖金以及欠款表扣款已经完成，不需要再次进行操作欠款表明细表
+            if(transPeriod.equals(periodCode.trim())){
+                continue;
+            }
+            //初始化本期欠款明细表
+            RdReceivableDetail rdReceivableDetail1 = new RdReceivableDetail();
+            //生成交易流水号，根据当前时间精确到秒，再加上一个三位的递增数值
+            rdReceivableDetail1.setTransNumber((int) new Date().getTime());
+            rdReceivableDetail1.setBatchNumber(rdReceivableDetail.getBatchNumber()+1);
+            rdReceivableDetail1.setMCode(rdReceivableDetail.getMCode());
+            rdReceivableDetail1.setTrTypeCode("RR");
+            rdReceivableDetail1.setTrSourceType("SBB");
+            rdReceivableDetail1.setCurrencyCode(cn.leanshi.model.util.Constant.CURRENCY_CODE_CHINA);
+            rdReceivableDetail1.setBlanceBefore(rdReceivableDetail.getBlanceAfter());
+            //交易金额计算，要查询当前用户欠款主表，看其奖金还款比例
+            int bnsDeductPecent = rdReceivableMaster.getBnsDeductPecent();
+            BigDecimal bigDecimal = new BigDecimal(Double.toString(bnsDeductPecent / 100));
+            BigDecimal decimal = rdBonusMaster.getBonusSum().multiply(new BigDecimal(cn.leanshi.model.util.Constant.PV_CNY_RATE)).multiply(bigDecimal);//TODO 奖金主表BonusRetail为拓展字段，无法确定单位是pv还是人民币，在此以人民币计算.add(rdBonusMaster.getBonusRetail())
+            rdReceivableDetail1.setAmount(decimal);
+            rdReceivableDetail1.setBlanceAfter(rdReceivableDetail.getBlanceAfter().subtract(decimal));
+            rdReceivableDetail1.setTransPeriod(rdReceivableDetail.getTransPeriod());
+            rdReceivableDetail1.setStatus(1);
+            rdReceivableDetail1.setCreationTime(new Date());
+            //将初始化欠款明细对象插入数据库中
+            bonusService.insertRdReceivableDetail(rdReceivableDetail1);
+            //根据欠款表以及奖金表数据，计算奖金发放表
+            RdBonusPayment rdBonusPayment = new RdBonusPayment();
+            rdBonusPayment.setPeriodCode(periodCode);
+            rdBonusPayment.setmCode(rdReceivableDetail.getMCode());
+            String nickname=bonusService.findMemberNickNameByMcode(rdReceivableDetail.getMCode());
+            rdBonusPayment.setmNickName(nickname);
+            rdBonusPayment.setBonusSum(rdBonusMaster.getBonusSum());
+            rdBonusPayment.setCurrencyCode(cn.leanshi.model.util.Constant.CURRENCY_CODE_CHINA);
+            rdBonusPayment.setBonusSumMoney(rdBonusMaster.getBonusSum().multiply(new BigDecimal(cn.leanshi.model.util.Constant.PV_CNY_RATE)));
+            rdBonusPayment.setBonusReissue(new BigDecimal("0.00"));
+            rdBonusPayment.setChargeSum(rdReceivableDetail1.getAmount());
+            rdBonusPayment.setPayableSum(rdBonusMaster.getBonusSum().multiply(new BigDecimal(cn.leanshi.model.util.Constant.PV_CNY_RATE)).add(new BigDecimal("0.00")).subtract(rdReceivableDetail1.getAmount()));
+            rdBonusPayment.setPayStatus(0);
+            bonusService.insertRdBonusPayment(rdBonusPayment);
+        }
+        //修改业务周期表CAL_STATUS为2：临时发布核对中
+        bonusService.updateCalStatusByPeriodCode(periodCode);
+        RdBonusPaymentStatistical rdBonusPaymentStatistical = new RdBonusPaymentStatistical();
+        rdBonusPaymentStatistical.setPeriodCode(periodCode);
+        int newNum=bonusService.selectNewMember(periodCode);
+        rdBonusPaymentStatistical.setNewNum(newNum);
+        int customerNum=bonusService.findCountPpvGtZero(periodCode);
+        rdBonusPaymentStatistical.setCustomerNum(customerNum);
+        BigDecimal bounsSumPv=bonusService.findSumBouns(periodCode);
+        rdBonusPaymentStatistical.setBounsSumPv(bounsSumPv);
+        rdBonusPaymentStatistical.setBonusSumMoney(bounsSumPv.multiply(new BigDecimal(cn.leanshi.model.util.Constant.PV_CNY_RATE)));
+        BigDecimal bounsReissue=bonusService.findSumBounsReissue(periodCode);
+        rdBonusPaymentStatistical.setBonusReissue(bounsReissue);
+        BigDecimal chargeSum=bonusService.findSumChargeSum(periodCode);
+        rdBonusPaymentStatistical.setChargeSum(chargeSum);
+        BigDecimal payableSum=bonusService.findSumPayableSum(periodCode);
+        rdBonusPaymentStatistical.setPayableSum(payableSum);
+
+        RdBonusAudit rdBonusAudit=bonusService.findAuditByPeriodCodeAndStatysAndLastTime(periodCode);
+        if(rdBonusAudit==null){
+            System.out.println("奖金主表审核未通过，不存在奖金计算表");
+        }
+        rdBonusPaymentStatistical.setBonusNewVip(rdBonusAudit.getBonusNewVip());
+        rdBonusPaymentStatistical.setBonusRetail(rdBonusAudit.getBonusRetail());
+        rdBonusPaymentStatistical.setBonusDevp(rdBonusAudit.getBonusDevp());
+        rdBonusPaymentStatistical.setBonusDevpPercentage(rdBonusAudit.getBonusDevpPercentage());
+        rdBonusPaymentStatistical.setBonusLD(rdBonusAudit.getBonusLd());
+        rdBonusPaymentStatistical.setBonusLDPercentage(rdBonusAudit.getBonusLdPercentage());
+        rdBonusPaymentStatistical.setBonusSpec(rdBonusAudit.getBonusSpecial());
+        rdBonusPaymentStatistical.setBonusSpecPercentage(rdBonusAudit.getBonusSpecialPercentage());
+        rdBonusPaymentStatistical.setBonusTotalPercentage(rdBonusAudit.getAllocatePercentage());
+        rdBonusPaymentStatistical.setCurrencyCode(rdBonusAudit.getCurrencyCode());
+        rdBonusPaymentStatistical.setPayStatus(0);
+        bonusService.insertRdBonusPaymentStatistical(rdBonusPaymentStatistical);
+        return ResultMsg.newInstance(true,"当前周期会员欠款明细表以及奖金发放表已生成，请等待审核");
+    }
+
+
+    @RequestMapping(value = "/viewBonusPaymentStatistical",method = RequestMethod.POST)
+    public ResultMsg viewBonusPaymentStatistical(@RequestParam(required = false,value = "periodCodeLeft")String periodCodeLeft,
+                                                 @RequestParam(required = false,value = "periodCodeRight")String periodCodeRight,
+                                      @RequestParam(required = false,defaultValue = "1",value = "currentPage")Integer currentPage,
+                                      @RequestParam(required = false,defaultValue = "10",value = "pageSize") int pageSize){
+        int size=pageSize;
+        PageHelper.startPage(currentPage,size);
+        ResultMsg<PageInfo<RdBonusPaymentStatistical>> pageInfoResultMsg = new ResultMsg<>();
+        List<RdBonusPaymentStatistical> list=bonusService.findRdBonusPaymentStatisticalByLR(periodCodeLeft,periodCodeRight);
+        if(list==null||list.size()==0){
+            return ResultMsg.newInstance(false,"没有指定周期区间的历史奖金发放表信息");
+        }
+        PageInfo<RdBonusPaymentStatistical> rdBonusPaymentPageInfo = new PageInfo<>(list);
+        pageInfoResultMsg.setData(rdBonusPaymentPageInfo);
+        pageInfoResultMsg.setCode(true);
+        return pageInfoResultMsg;
+    }
+
 }

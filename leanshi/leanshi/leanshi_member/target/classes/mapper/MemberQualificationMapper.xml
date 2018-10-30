@@ -239,4 +239,7 @@
         PERIOD_CODE = #{periodCode} AND MM_CODE = #{mCode}
     </update>
 
+    <select id="findPerformance" parameterType="string" resultType="int">
+        SELECT sum(PPV) FROM rd_dis_qualification where PERIOD_CODE = #{periodCode}
+    </select>
 </mapper>

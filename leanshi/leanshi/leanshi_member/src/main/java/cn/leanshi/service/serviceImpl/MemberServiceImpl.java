@@ -1337,4 +1337,52 @@ public class MemberServiceImpl implements MemberService {
 		return 0;
 	}
 
+	/**
+	 * 根据mCode和nickName查询会员表
+	 * @param mCode
+	 * @param mNikcName
+	 * @return
+	 */
+	@Override
+	public Member_basic findMemberBasicByMcodeAndNickName(String mCode, String mNikcName) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNikcName",mNikcName);
+		return mapper.findMemberBasicByMcodeAndNickName(map);
+	}
+
+	/**
+	 * 根据昵称查询会员基础信息
+	 * @param mNickName
+	 * @return
+	 */
+	@Override
+	public Member_basic findByNickName(String mNickName) {
+		return mapper.findByNickName(mNickName);
+	}
+
+	/**
+	 * 根据证件类型和证件号码查询会员信息
+	 * @param idType
+	 * @param idCode
+	 * @return
+	 */
+	@Override
+	public Member_basic findMemberBasicByIdTypeAndIdCode(int idType, String idCode) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("idType",idType);
+		map.put("idCode",idCode);
+		return mapper.findMemberBasicByIdTypeAndIdCode(map);
+	}
+
+	/**
+	 * 根据手机号码查询会员信息
+	 * @param mobile
+	 * @return
+	 */
+	@Override
+	public Member_basic findMemberBasicByMobile(String mobile) {
+		return mapper.findMemberBasicByMobile(mobile);
+	}
+
 }

@@ -164,4 +164,12 @@ public interface MemberService {
 	List<RdReceivableMaster> findReceivableAll(String mCode, String mNickname, int status);
 
 	int defBankByOid(Integer oId, String mCode, Integer defaultBank);
+
+    Member_basic findMemberBasicByMcodeAndNickName(String mCode, String mNikcName);
+
+    Member_basic findByNickName(String mNickName);
+
+	Member_basic findMemberBasicByIdTypeAndIdCode(int idType, String idCode);
+
+	Member_basic findMemberBasicByMobile(String mobile);
 }

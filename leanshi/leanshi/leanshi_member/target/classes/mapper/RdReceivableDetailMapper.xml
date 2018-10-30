@@ -27,4 +27,14 @@
         <result column="AUTOHRIZE_TIME" property="autohrizeTime" />
         <result column="AUTOHRIZE_DESC" property="autohrizeDesc" />
     </resultMap>
+    <select id="findRdReceivableDetailLast" parameterType="string" resultMap="RDResultMap">
+        select * from rd_receiveable_detail where MM_CODE = #{mCode} and STATUS = 3 order by CREATION_TIME desc limit 0,1
+    </select>
+
+    <insert id="insertRdReceivableDetail" parameterType="cn.leanshi.model.RdReceivableDetail">
+        insert into rd_receiveable_detail (TRANS_NUMBER,BATCH_NUMBER,MM_CODE,TR_TYPE_CODE,
+        TR_SOURCE_TYPE,CURRENCY_CODE,BLANCE_BEFORE,AMOUNT, BLANCE_AFTER,TRANS_PERIOD,STATUS,CREATION_TIME) values
+        (#{transNumber},#{batchNumber},#{mCode},#{trTypeCode},#{trSourceType},#{currencyCode},
+        #{blanceBefore},#{amount},#{blanceAfter},#{transPeriod},#{status},#{creationTime})
+    </insert>
 </mapper>

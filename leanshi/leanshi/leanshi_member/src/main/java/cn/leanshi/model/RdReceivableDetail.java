@@ -19,7 +19,7 @@ public class RdReceivableDetail {
 	private String trTypeCode;//交易类型代码 NR:新增欠款 RR:归还欠款
 	private String trSourceType;//交易渠道 CMP：公司 OBB：其他会员奖金余额 OWB：其他会员购物积分本人积分账户余额 SWB：本人购物积分余额 BNK：银行（包括第三方支付）CSH：现金'
 	private int trBankOid;//与交易有关的银行账户信息（RD_MM_BANK表）
-	private int currencyCode;//币种
+	private String currencyCode;//币种
 	private BigDecimal blanceBefore;//交易前余额
 	private BigDecimal amount;//交易金额
 	private BigDecimal blanceAfter;//交易后余额

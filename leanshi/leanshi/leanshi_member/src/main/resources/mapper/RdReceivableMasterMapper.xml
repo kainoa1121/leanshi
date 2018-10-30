@@ -27,4 +27,8 @@
         ORDER BY MM_CODE ASC
     </select>
 
+    <select id="findRdReceivableMaster" parameterType="string" resultMap="ReceivableResultMap">
+        SELECT * FROM rd_receivable_master where MM_CODE = #{mCode}
+    </select>
+
 </mapper>

@@ -5,7 +5,7 @@
     <resultMap id="RdBonusPayment" type="cn.leanshi.model.RdBonusPayment">
         <result column="PERIOD_CODE" property="periodCode"/>
         <result column="MM_CODE" property="mCode" />
-        <result column="MM_NAME" property="mName" />
+        <result column="MM_NICK_NAME" property="mNickName" />
         <result column="BONUS_SUM" property="bonusSum" />
         <result column="CURRENCY_CODE" property="currencyCode" />
         <result column="BONUS_SUM_MONEY" property="bonusSumMoney" />
@@ -16,7 +16,7 @@
     </resultMap>
 
     <select id="searchBonusPaymentByCodeAndName" parameterType="map" resultMap="RdBonusPayment">
-        SELECT * FROM rd_bonus_payment WHERE MM_CODE = #{mCode} and MM_NAME = #{mName}
+        SELECT * FROM rd_bonus_payment WHERE MM_CODE = #{mCode} and MM_NICK_NAME = #{mNickName}
     </select>
 
     <!--    <select id="searchBonusPayment" parameterType="map" resultMap="RdBonusPayment">
@@ -82,14 +82,14 @@
     <select id="searchBonusPaymentByCriteria" parameterType="map" resultMap="RdBonusPayment">
         SELECT * FROM rd_bonus_payment WHERE 1=1
         <choose>
-            <when test="mCode !=null and mCode != '' and mName !=null and mName != ''">
+            <when test="mCode !=null and mCode != '' and mNickName !=null and mNickName != ''">
                 AND MM_CODE =#{mCode}
             </when>
-            <when test="mCode !=null and mCode != '' and mName ==null">
+            <when test="mCode !=null and mCode != '' and mNickName ==null">
                 AND MM_CODE =#{mCode}
             </when>
-            <when test="mCode ==null and mName !=null and mName != ''">
-                AND MM_NAME =#{mName}
+            <when test="mCode ==null and mNickName !=null and mNickName != ''">
+                AND MM_NICK_NAME =#{mNickName}
             </when>
             <otherwise>
 
@@ -105,6 +105,31 @@
             AND PAY_STATUS =#{payStatus}
         </if>
         order by PERIOD_CODE desc
+    </select>
+
+    <insert id="insertRdBonusPayment" parameterType="cn.leanshi.model.RdBonusPayment">
+        insert into rd_bonus_payment values(#{periodCode},#{mNickName},#{mCode},#{bonusSum},
+        #{currencyCode},#{bonusSumMoney},#{bonusReissue},#{chargeSum},#{payableSum},#{payStatus})
+    </insert>
+
+    <select id="findSumBouns" parameterType="string" resultType="java.math.BigDecimal">
+        select sum(BONUS_SUM) from rd_bonus_payment where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="findSumBounsReissue" parameterType="string" resultType="java.math.BigDecimal">
+        select sum(BONUS_REISSUE) from rd_bonus_payment where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="findSumChargeSum" parameterType="string" resultType="java.math.BigDecimal">
+        select sum(CHARGE_SUM) from rd_bonus_payment where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="findSumPayableSum" parameterType="string" resultType="java.math.BigDecimal">
+        select sum(PAYABLE_SUM) from rd_bonus_payment where PERIOD_CODE = #{periodCode}
+    </select>
+
+    <select id="findBounsPaymentAll" parameterType="string" resultMap="RdBonusPayment">
+        select * from rd_bonus_payment where PERIOD_CODE = #{periodCode}
     </select>
 
 </mapper>
