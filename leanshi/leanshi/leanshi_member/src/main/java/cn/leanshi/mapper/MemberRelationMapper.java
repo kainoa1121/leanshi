@@ -3,6 +3,7 @@ package cn.leanshi.mapper;
 import cn.leanshi.model.MemberRelation;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 会员状态、级别及关系
@@ -23,4 +24,7 @@ public interface MemberRelationMapper {
 
 	int findRltCountRank2BySponsorCode(String sponsorCode);
 
+	int updateRelaStatus(Map<String, Object> map);
+
+	void updateMPointStatus(Map<String, Object> map);
 }

@@ -12,6 +12,7 @@
         <result column="LOGIN_PWD" property="loginPwd" />
         <result column="PWD_INIT_YN" property="pwdInitYn" />
         <result column="MM_STATUS" property="mStatus" />
+        <result column="MM_POINT_STATUS" property="mPointStatus" />
         <result column="STATUS_PERIOD"  property="statusPeriod" />
         <result column="SPONSOR_CODE" property="sponsorCode" />
         <result column="SPONSOR_NAME" property="sponsorName" />
@@ -72,5 +73,22 @@
         SELECT COUNT(*) FROM rd_mm_relation
         WHERE RANK >= 2 AND SPONSOR_CODE = #{sponsorCode}
     </select>
+
+    <!--修改会员状态-->
+    <update id="updateRelaStatus" parameterType="map">
+        UPDATE rd_mm_relation
+        SET
+        MM_STATUS = #{mStatus}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+    <!--修改会员积分状态-->
+    <update id="updateMPointStatus" parameterType="map">
+        UPDATE rd_mm_relation
+        SET
+        MM_POINT_STATUS = #{Status}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
 
 </mapper>

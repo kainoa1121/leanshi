@@ -17,7 +17,7 @@ public class RdReceivableMaster {
 	private String mNickname;//'昵称'
 	private BigDecimal receivableBlance;//会员欠款余额
 	private String currencyCode;
-	private int status;//状态 0：正常 1：异常
+	private int status;//状态 1：正常 2：异常
 	private int bnsDeductPecent;//自动扣工资的百分比
 
 

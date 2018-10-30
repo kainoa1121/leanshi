@@ -4,31 +4,40 @@ import cn.leanshi.mapper.MemberAccountMapper;
 import cn.leanshi.mapper.MemberAddressMapper;
 import cn.leanshi.mapper.MemberBankMapper;
 import cn.leanshi.mapper.MemberEditReviewMapper;
+import cn.leanshi.mapper.MemberIntegralRuleMapper;
 import cn.leanshi.mapper.MemberMapper;
 import cn.leanshi.mapper.MemberQualificationMapper;
 import cn.leanshi.mapper.MemberRelationMapper;
 import cn.leanshi.mapper.RankMapper;
 import cn.leanshi.mapper.RdBonusMasterMapper;
+import cn.leanshi.mapper.RdMemberAccountLogMapper;
 import cn.leanshi.mapper.RdRaBindingMapper;
+import cn.leanshi.mapper.RdReceivableDetailMapper;
 import cn.leanshi.mapper.RdReceivableMasterMapper;
+import cn.leanshi.mapper.RdStatusDetailMapper;
 import cn.leanshi.mapper.SysPeriodLogMapper;
 import cn.leanshi.mapper.SysPeriodMapper;
 import cn.leanshi.model.MemberAccount;
 import cn.leanshi.model.MemberAddress;
 import cn.leanshi.model.MemberBank;
 import cn.leanshi.model.MemberEditReview;
+import cn.leanshi.model.MemberIntegralRule;
 import cn.leanshi.model.MemberQualification;
 import cn.leanshi.model.MemberRelation;
 import cn.leanshi.model.Member_basic;
 import cn.leanshi.model.Rank;
 import cn.leanshi.model.RdBonusMaster;
+import cn.leanshi.model.RdMemberAccountLog;
 import cn.leanshi.model.RdRaBinding;
+import cn.leanshi.model.RdReceivableDetail;
 import cn.leanshi.model.RdReceivableMaster;
+import cn.leanshi.model.RdStatusDetail;
 import cn.leanshi.model.SysPeriod;
 import cn.leanshi.model.SysPeriodLog;
 import cn.leanshi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,8 +69,11 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberAddressMapper addressMapper;
 	private final MemberAccountMapper accountMapper;
 	private final RdBonusMasterMapper masterMapper;
-	private final RdReceivableMasterMapper receivableMapperr;
-
+	private final RdReceivableMasterMapper receivableMapper;
+	private final RdReceivableDetailMapper receivableDetailMapper;
+	private final RdStatusDetailMapper statusDetailMapper;
+	private final RdMemberAccountLogMapper accountLogMapper;
+	private final MemberIntegralRuleMapper ruleMapper;
 
 	/*
 	 *条件模糊查询
@@ -1301,7 +1313,7 @@ public class MemberServiceImpl implements MemberService {
 		map.put("mCode",mCode);
 		map.put("mNickname",mNickname);
 		map.put("status",status);
-		return receivableMapperr.findReceivableAll(map);
+		return receivableMapper.findReceivableAll(map);
 	}
 
 	@Override
@@ -1383,6 +1395,211 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member_basic findMemberBasicByMobile(String mobile) {
 		return mapper.findMemberBasicByMobile(mobile);
+	}
+
+	@Override
+	public List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, Integer transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("transNumber",transNumber);
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("trTypeCode",trTypeCode);
+		map.put("status",status);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
+		return receivableDetailMapper.findReceivableDetailAll(map);
+	}
+
+	@Override
+	public int updateRD(String mCode, int transNumber, int status) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("transNumber",transNumber);
+		map.put("mCode",mCode);
+		map.put("status",status);
+		return receivableDetailMapper.updateRD(map);
+	}
+
+	@Override
+	public RdReceivableDetail findRD(String mCode, int transNumber) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("transNumber",transNumber);
+		map.put("mCode",mCode);
+		return receivableDetailMapper.findRD(map);
+	}
+
+	@Override
+	public RdReceivableMaster findReceivableByMCode(String mCode) {
+		return receivableMapper.findReceivableByMCode(mCode);
+	}
+
+	@Override
+	public int addReceivableM(RdReceivableMaster master) {
+		return receivableMapper.addReceivableM(master);
+	}
+
+	@Override
+	public int updateRM(String mCode, BigDecimal blanceAfter, int bnsDeductPecent) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("receivableBlance",blanceAfter);
+		map.put("bnsDeductPecent",bnsDeductPecent);
+		return receivableMapper.updateRM(map);
+	}
+
+	@Override
+	public MemberBank findMBankByMCodeAndDefual(String mCode) {
+		return bankMapper.findMBankByMCodeAndDefual(mCode);
+	}
+
+	@Override
+	public int addRDNR(RdReceivableDetail detail) {
+		return receivableDetailMapper.addRDNR(detail);
+	}
+
+	@Override
+	public int addRDRR(RdReceivableDetail detail) {
+		return receivableDetailMapper.addRDRR(detail);
+	}
+
+	@Override
+	public int updateRelaStatus(String mCode, int statusAfter) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mStatus",statusAfter);
+		return relationMapper.updateRelaStatus(map);
+	}
+
+	@Override
+	public int updateAccountStatus(String mCode, int statusAfter) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("Status",statusAfter);
+		relationMapper.updateMPointStatus(map);
+		return accountMapper.updateAccountStatus(map);
+	}
+
+	@Override
+	public int addStatusD(String mCode, String mNickname, String statusType, int statusBefore, int statusAfter, String updateDesc) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("statusType",statusType);
+		map.put("statusBefore",statusBefore);
+		map.put("statusAfter",statusAfter);
+		map.put("updateBy","无名");
+		map.put("updateTime",new Date());
+		map.put("updateDesc",updateDesc);
+		return statusDetailMapper.addStatusD(map);
+	}
+
+	@Override
+	public List<RdStatusDetail> findStatusDetailAll(String statusType, Date timeStar, Date timeEnd, String mCode, String mNickname) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("statusType",statusType);
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
+		return statusDetailMapper.findStatusDetailAll(map);
+	}
+
+	@Override
+	public List<RdMemberAccountLog> findRdAccLog1(Date timeStar, Date timeEnd, String mCode, String mNickname, Integer transNumber, Integer batchNumber, String typeS) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("transNumber",transNumber);
+		map.put("batchNumber",batchNumber);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
+		if (typeS.equals("BOP")){//奖金积分
+			return accountLogMapper.findRdAccLogBOP(map);
+		}
+		if (typeS.equals("SHP")){//购物积分
+			return accountLogMapper.findRdAccLogSHP(map);
+		}
+		if (typeS.equals("PUI")){//换购积分
+			return accountLogMapper.findRdAccLogPUI(map);
+		}
+		return null;
+	}
+
+	@Override
+	public List<RdMemberAccountLog> findRdAccLog2(Date timeStar, Date timeEnd, String mCode, String mNickname, Integer transNumber, Integer batchNumber, String transTypeCode, String typeS) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("transNumber",transNumber);
+		map.put("batchNumber",batchNumber);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
+		if (transTypeCode.equals("INTOALL")){//全部转入
+			if (typeS.equals("BOP")){//奖金积分
+				return accountLogMapper.findRdAccLogBOPINTO(map);
+			}
+			if (typeS.equals("SHP")){//购物积分
+				return accountLogMapper.findRdAccLogSHPINTO(map);
+			}
+			if (typeS.equals("PUI")){//换购积分
+				return accountLogMapper.findRdAccLogPUIINTO(map);
+			}
+		}
+
+		if (transTypeCode.equals("OUTALL")){//全部转出
+			if (typeS.equals("BOP")){//奖金积分
+				return accountLogMapper.findRdAccLogBOPOUT(map);
+			}
+			if (typeS.equals("SHP")){//购物积分
+				return accountLogMapper.findRdAccLogSHPOUT(map);
+			}
+			if (typeS.equals("PUI")){//换购积分
+				return accountLogMapper.findRdAccLogPUIOUT(map);
+			}
+		}
+
+		map.put("transTypeCode",transTypeCode);
+		return accountLogMapper.findRdAccLog2(map);
+	}
+
+	@Override
+	public MemberIntegralRule findRule() {
+		return ruleMapper.findRule();
+	}
+
+	@Override
+	public List<RdMemberAccountLog> findAccountLogWD() {
+		return accountLogMapper.findAccountLogWD();
+	}
+
+	@Override
+	public MemberBank findMBankByOId(Integer oId) {
+		return bankMapper.findMBankByOId(oId);
+	}
+
+	@Override
+	public int updateAccLogWDOne(String mCode, Integer transNumber, int status) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("transNumber",transNumber);
+		map.put("status",status);
+		return accountLogMapper.updateAccLogWDOne(map);
+	}
+
+	@Override
+	public List<RdMemberAccountLog> findAccountLogWDALL(Integer transNumber, Date timeStar, Date timeEnd, String mCode, String mNickname, int status) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mCode",mCode);
+		map.put("mNickname",mNickname);
+		map.put("timeStar",timeStar);
+		map.put("timeEnd",timeEnd);
+		map.put("transNumber",transNumber);
+		map.put("status",status);
+		return accountLogMapper.findAccountLogWDALL(map);
+	}
+
+	@Override
+	public int updateRule(MemberIntegralRule memberIntegralRule) {
+		return ruleMapper.updateRule(memberIntegralRule);
 	}
 
 }

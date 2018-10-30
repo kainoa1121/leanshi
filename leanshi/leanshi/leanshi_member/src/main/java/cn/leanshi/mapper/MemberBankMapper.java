@@ -29,4 +29,8 @@ public interface MemberBankMapper {
 	int selectCount(String mCode);
 
 	int defBankByOid(Map<String, Object> map);
+
+	MemberBank findMBankByMCodeAndDefual(String mCode);
+
+	MemberBank findMBankByOId(Integer oId);
 }

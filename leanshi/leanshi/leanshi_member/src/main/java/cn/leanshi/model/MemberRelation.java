@@ -21,6 +21,7 @@ public class MemberRelation {
 	private String loginPwd; //登录密码:加密保存
 	private int pwdInitYn; //是否初始密码:0，登录时需修改密码 1，不需修改
 	private int mStatus; //会员状态:0正常1冻结2注销
+	private int mPointStatus; //会员积分状态:0正常1冻结2未激活
 	private String statusPeriod; //状态变更业务期：YYYYMM
 	private String sponsorCode; //推荐人编号
 	private String sponsorName; //推荐人姓名

@@ -19,4 +19,10 @@ public interface RdReceivableMasterMapper {
      * @return
      */
     RdReceivableMaster findRdReceivableMaster(String mCode);
+
+	RdReceivableMaster findReceivableByMCode(String mCode);
+
+	int addReceivableM(RdReceivableMaster master);
+
+	int updateRM(Map<String, Object> map);
 }

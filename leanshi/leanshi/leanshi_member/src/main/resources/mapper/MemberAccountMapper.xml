@@ -23,4 +23,15 @@
         SELECT * FROM rd_mm_account_info WHERE MM_CODE = #{mCode}
     </select>
 
+    <!--修改相关状态-->
+    <update id="updateAccountStatus" parameterType="map">
+        UPDATE rd_mm_account_info
+        SET
+        BONUS_STATUS = #{Status},
+        WALLET_STATUS = #{Status},
+        REDEMPTION_STATUS = #{Status}
+        WHERE
+        MM_CODE = #{mCode}
+    </update>
+
 </mapper>

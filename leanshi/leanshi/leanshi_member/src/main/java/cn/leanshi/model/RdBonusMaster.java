@@ -3,6 +3,7 @@ package cn.leanshi.model;
 
 import java.io.Serializable;
 
+
 import cn.leanshi.service.BonusService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Transient;
 import javax.servlet.http.HttpSession;
+
 import java.math.BigDecimal;
 
 /**

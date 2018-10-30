@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdStatusDetailMapper">
+
+    <resultMap id="StatusResultMap" type="cn.leanshi.model.RdStatusDetail">
+        <id column="SID" property="sId" />
+        <result column="MM_CODE" property="mCode" />
+        <result column="MM_NICK_NAME" property="mNickname" />
+        <result column="STATUS_TYPE" property="statusType" />
+        <result column="STATUS_BEFORE" property="statusBefore" />
+        <result column="STATUS_AFTER" property="statusAfter" />
+        <result column="UPDATE_BY" property="updateBy" />
+        <result column="UPDATE_TIME" property="updateTime" />
+        <result column="UPDATE_DESC" property="updateDesc" />
+    </resultMap>
+
+    <!--添加修改状态明细-->
+    <insert id="addStatusD" parameterType="java.util.Map">
+        INSERT INTO rd_mm_status_detail(MM_CODE,MM_NICK_NAME,STATUS_TYPE,STATUS_BEFORE,STATUS_AFTER,
+                                        UPDATE_BY,UPDATE_TIME,UPDATE_DESC)
+              values(#{mCode},#{mNickname},#{statusType},#{statusBefore},#{statusAfter},#{updateBy},
+                    #{updateTime},#{updateDesc})
+    </insert>
+
+    <!--模糊条件查询-->
+    <select id="findStatusDetailAll" parameterType="java.util.Map" resultMap="StatusResultMap">
+        SELECT * FROM rd_mm_status_detail
+        WHERE STATUS_TYPE = #{statusType}
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND UPDATE_TIME BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY UPDATE_TIME ASC
+    </select>
+
+</mapper>

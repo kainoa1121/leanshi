@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdMemberAccountLogMapper">
+
+    <resultMap id="AccLogResultMap" type="cn.leanshi.model.RdMemberAccountLog">
+        <result column="TRANS_NUMBER" property="transNumber" />
+        <result column="BATCH_NUMBER" property="batchNumber" />
+        <result column="MM_CODE" property="mCode" />
+        <result column="MM_NICK_NAME" property="mNickname" />
+        <result column="TRANS_TYPE_CODE" property="transTypeCode" />
+        <result column="ACC_TYPE" property="accType" />
+        <result column="TR_SOURCE_TYPE" property="trSourceType" />
+        <result column="TR_MM_CODE" property="trMmCode" />
+        <result column="TR_BANK_OID" property="trBankOId" />
+        <result column="TR_ORDER_OID" property="trOrderOId" />
+        <result column="CURRENCY_CODE" property="currencyCode" />
+        <result column="BLANCE_BEFORE" property="blanceBefore" />
+        <result column="AMOUNT" property="amount" />
+        <result column="BLANCE_AFTER" property="blanceAfter" />
+        <result column="TRANS_DATE" property="transDate" />
+        <result column="TRANS_PERIOD" property="transPeriod" />
+        <result column="TRANS_DESC" property="transDesc" />
+        <result column="STATUS" property="status" />
+        <result column="WASHED_YN" property="washedYn" />
+        <result column="ORIGN_TRANS_NUMBER" property="orignTransNumber" />
+        <result column="CREATION_BY" property="creationBy" />
+        <result column="CREATION_TIME" property="creationTime" />
+        <result column="UPDATE_BY" property="updateBy" />
+        <result column="UPDATE_TIME" property="updateTime" />
+        <result column="AUTOHRIZE_BY" property="autohrizeBy" />
+        <result column="AUTOHRIZE_TIME" property="autohrizeTime" />
+        <result column="AUTOHRIZE_DESC" property="autohrizeDesc" />
+    </resultMap>
+
+    <!--模糊条件查询-->
+    <select id="findRdAccLog2" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE 1=1
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="transTypeCode !=null and transTypeCode != ''">
+            AND TRANS_TYPE_CODE = #{transTypeCode}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--查所有奖金积分相关信息-->
+    <select id="findRdAccLogBOP" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('BA','RC','RB','WD','SP','RR')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--查所有购物积分相关信息-->
+    <select id="findRdAccLogSHP" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('BT','TF','OT','OP','TT')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--查所有换购积分相关信息-->
+    <select id="findRdAccLogPUI" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('PC','EG')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--奖金积分全部转入-->
+    <select id="findRdAccLogBOPINTO" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('BA','RC','RB')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--购物积分全部转入-->
+    <select id="findRdAccLogSHPINTO" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('BT','TF','OT')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--换购积分全部转入-->
+    <select id="findRdAccLogPUIINTO" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('PC')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--奖金积分全部转出-->
+    <select id="findRdAccLogBOPOUT" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('WD','SP','RR')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--购物积分全部转出-->
+    <select id="findRdAccLogSHPOUT" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('OP','TT')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--换购积分全部转出-->
+    <select id="findRdAccLogPUIOUT" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE IN ('EG')
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="batchNumber !=null and batchNumber != ''">
+            AND BATCH_NUMBER = #{batchNumber}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--查看所有待提现会员账户交易日志-->
+    <select id="findAccountLogWD" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log WHERE TRANS_TYPE_CODE ='WD' AND STATUS =2 ORDER BY TRANS_NUMBER ASC
+    </select>
+
+    <!--审核提现-->
+    <update id="updateAccLogWDOne" parameterType="java.util.Map">
+        UPDATE rd_mm_account_log
+        SET
+        STATUS = #{status}
+        WHERE MM_CODE = #{mCode} AND TRANS_NUMBER = #{transNumber}
+    </update>
+
+    <!--查看会员积分提现记录(模糊条件查询)-->
+    <select id="findAccountLogWDALL" parameterType="java.util.Map" resultMap="AccLogResultMap">
+        SELECT * FROM rd_mm_account_log
+        WHERE TRANS_TYPE_CODE ='WD'
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE LIKE "%"#{mCode}"%"
+        </if>
+        <if test="mNickname !=null and mNickname != ''">
+            AND MM_NICK_NAME LIKE "%"#{mNickname}"%"
+        </if>
+        <if test="transNumber !=null and transNumber != ''">
+            AND TRANS_NUMBER = #{transNumber}
+        </if>
+        <if test="status !=0">
+            AND STATUS = #{status}
+        </if>
+        <if test="timeStar !=null and timeEnd !=null">
+            AND TRANS_DATE BETWEEN #{timeStar} AND #{timeEnd}
+        </if>
+        ORDER BY TRANS_NUMBER ASC
+    </select>
+
+</mapper>
