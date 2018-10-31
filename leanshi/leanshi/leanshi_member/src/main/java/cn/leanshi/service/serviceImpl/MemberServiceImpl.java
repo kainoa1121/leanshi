@@ -1655,5 +1655,14 @@ public class MemberServiceImpl implements MemberService {
 		return accountLogMapper.updateAccLogWDAll(transNumber);
 	}
 
+	/**
+	 * 初始化信息修改记录信息
+	 * @param memberEditReview
+	 */
+	@Override
+	public void addMemEditReview(MemberEditReview memberEditReview) {
+		editReviewMapper.saveEdit(memberEditReview);
+	}
+
 
 }

@@ -233,4 +233,5 @@ public interface MemberService {
 
 	int updateAccLogWDAll(String transNumber);
 
+	void addMemEditReview(MemberEditReview memberEditReview);
 }

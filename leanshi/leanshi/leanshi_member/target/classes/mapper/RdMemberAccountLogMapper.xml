@@ -290,4 +290,12 @@
         ORDER BY TRANS_NUMBER ASC
     </select>
 
+    <!--根据流水号审核通过-->
+    <update id="updateAccLogWDAll" parameterType="string">
+        UPDATE rd_mm_account_log
+          SET
+              STATUS = 3
+          WHERE TRANS_NUMBER = #{transNumber}
+    </update>
+
 </mapper>
