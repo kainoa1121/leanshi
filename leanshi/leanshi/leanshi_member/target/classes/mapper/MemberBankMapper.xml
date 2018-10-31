@@ -73,4 +73,9 @@
         SELECT * FROM rd_mm_bank WHERE MM_CODE = #{mCode} AND DEFAULTBANK = 1
     </select>
 
+    <!--根据oid查询该会员银行卡-->
+    <select id="findMBankByOId" parameterType="java.lang.Integer" resultMap="BankResultMap">
+        SELECT * FROM rd_mm_bank WHERE OID = #{oId}
+    </select>
+
 </mapper>

@@ -78,4 +78,8 @@
         SELECT * FROM rd_mm_bank WHERE OID = #{oId}
     </select>
 
+    <insert id="addMemBank" parameterType="cn.leanshi.model.MemberBank">
+        INSERT INTO rd_mm_bank values(#{oId},#{mCode},#{accType},#{currency},#{accCode},#{accName},#{bankCode},#{bankDetail},
+        #{validThru},#{cvv2},#{defaultBank},#{paymentDefault},#{withdrawDefault},#{rechargeDefault})
+    </insert>
 </mapper>

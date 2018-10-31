@@ -148,4 +148,15 @@
     <select id="findMemberBasicByMobile" parameterType="string" resultMap="BaseResultMap">
         select * from rd_mem_basic_info where MOBILE = #{mobile}
     </select>
+
+    <select id="findLastMemberMcode" resultType="string">
+        select MM_CODE from rd_mem_basic_info order by MM_CODE desc limit 0,1
+    </select>
+
+    <insert id="addMember" parameterType="cn.leanshi.model.Member_basic">
+        insert into rd_mem_basic_info values(#{mId},#{mCode},#{mName},#{mNickname},#{idType},#{idCode},#{gender},
+        #{birthdate},#{email},#{nationId},#{province},#{city},#{country},#{town},#{detial},#{addPost},#{mobile},
+        #{weChat},#{qq},#{facebook},#{phone},#{creationSource},#{creationIp},#{creationData},#{creationer},#{creationPeriod},
+        #{updateSource},#{updateIp},#{updateDate},#{updateBy},#{updatePeriod})
+    </insert>
 </mapper>

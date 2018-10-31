@@ -22,7 +22,7 @@ public class MemberAccount {
 	private String redemptionCurrency;//换购积分币种
 	private int redemptionBlance;//换购积分账户余额
 	private String weChatAcc;//微信账户
-	private String alipayAcc;//支付宝账记有
+	private String alipayAcc;//支付宝账户
 	private String paymentPhone;//支付绑定手机:忘记密码后找回的验证码手机
 	private String paymentPWD;//支付密码:加密保存
 

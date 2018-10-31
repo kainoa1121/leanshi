@@ -1602,9 +1602,58 @@ public class MemberServiceImpl implements MemberService {
 		return ruleMapper.updateRule(memberIntegralRule);
 	}
 
+
+	/**
+	 * 查找最新注册用户的会员编号
+	 * @return
+	 */
+	@Override
+	public String findLastMemberMcode() {
+		return mapper.findLastMemberMcode();
+	}
+
+	/**
+	 * 添加用户
+	 * @param memberBasic
+	 */
+	@Override
+	public int addMember(Member_basic memberBasic) {
+		return mapper.addMember(memberBasic);
+	}
+
+	/**
+	 * 添加会员关系表
+	 * @param memberRelation
+	 */
+	@Override
+	public void addMemberRelation(MemberRelation memberRelation) {
+		relationMapper.addMemberRelation(memberRelation);
+	}
+
+	/**
+	 * 生成会员账户信息
+	 * @param memberAccount
+	 */
+	@Override
+	public void addMemAccount(MemberAccount memberAccount) {
+		accountMapper.addMemAccount(memberAccount);
+	}
+
+	/**
+	 * 添加银行卡信息
+	 * @param memberBank
+	 */
+	@Override
+	public void addMemBank(MemberBank memberBank) {
+		bankMapper.addMemBank(memberBank);
+	}
+
+
+
 	@Override
 	public int updateAccLogWDAll(String transNumber) {
 		return accountLogMapper.updateAccLogWDAll(transNumber);
 	}
+
 
 }

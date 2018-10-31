@@ -33,4 +33,6 @@ public interface MemberBankMapper {
 	MemberBank findMBankByMCodeAndDefual(String mCode);
 
 	MemberBank findMBankByOId(Integer oId);
+
+    void addMemBank(MemberBank memberBank);
 }

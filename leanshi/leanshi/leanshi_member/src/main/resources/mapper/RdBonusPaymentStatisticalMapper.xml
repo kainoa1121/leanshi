@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdBonusPaymentMapper">
+
+    <resultMap id="RdBonusPaymentStatistical" type="cn.leanshi.model.RdBonusPaymentStatistical">
+        <result column="PERIOD_CODE" property="periodCode"/>
+        <result column="NEW_NUM" property="newNum" />
+        <result column="CUSTOMER_NUM" property="customerNum" />
+        <result column="BONUS_SUM_PV" property="bounsSumPv" />
+        <result column="BONUS_SUM_MONEY" property="bonusSumMoney" />
+        <result column="BONUS_REISSUE" property="bonusReissue" />
+        <result column="CHARGE_SUM" property="chargeSum" />
+        <result column="PAYABLE_SUM" property="payableSum" />
+
+        <result column="ORDER_NUM" property="orderNum" />
+        <result column="TOTAL_PERFORMANCE" property="totalPerformance" />
+        <result column="BONUS_NEW_VIP" property="bonusNewVip" />
+        <result column="BONUS_RETAIL" property="bonusRetail" />
+        <result column="BONUS_DEVP" property="bonusDevp" />
+        <result column="BONUS_DEVP_PERCENTAGE" property="bonusDevpPercentage" />
+        <result column="BONUS_LD" property="bonusLD" />
+        <result column="BONUS_LD_PERCENTAGE" property="bonusLDPercentage" />
+        <result column="BONUS_SPEC" property="bonusSpec" />
+        <result column="BONUS_SPEC_PERCENTAGE" property="bonusSpecPercentage" />
+        <result column="BONUS_TOTAL_PERCENTAGE" property="bonusTotalPercentage" />
+        <result column="CURRENCY_CODE" property="currencyCode" />
+        <result column="PAY_STATUS" property="payStatus" />
+        <result column="PAY_PEOPLE" property="payPeople" />
+        <result column="PAY_TIME" property="payTime" />
+    </resultMap>
+    <insert id="insertRdBonusPaymentStatistical" parameterType="cn.leanshi.model.RdBonusPaymentStatistical">
+        insert into rd_bonus_payment_statistical(PERIOD_CODE,NEW_NUM,CUSTOMER_NUM,BONUS_SUM_PV,BONUS_SUM_MONEY,BONUS_REISSUE,CHARGE_SUM,PAYABLE_SUM,BONUS_NEW_VIP,
+        BONUS_RETAIL,BONUS_DEVP,BONUS_DEVP_PERCENTAGE,BONUS_LD,BONUS_LD_PERCENTAGE,BONUS_SPEC,BONUS_SPEC_PERCENTAGE,BONUS_TOTAL_PERCENTAGE,CURRENCY_CODE,PAY_STATUS)
+        values(#{periodCode},#{newNum},#{customerNum},#{bounsSumPv},#{bonusSumMoney},#{bonusReissue},#{chargeSum},#{payableSum},#{bonusNewVip},#{bonusRetail},#{bonusDevp},
+        #{bonusDevpPercentage},#{bonusLD},#{bonusLDPercentage},#{bonusSpec},#{bonusSpecPercentage},#{bonusTotalPercentage},#{currencyCode},#{payStatus})
+    </insert>
+
+    <select id="findRdBonusPaymentStatisticalByLR" parameterType="map" resultMap="RdBonusPaymentStatistical">
+        select * from rd_bonus_payment_statistical where 1=1
+        <if test="periodCodeLeft!=null and periodCodeLeft!= ''">
+            and PERIOD_CODE >= #{periodCodeLeft}
+        </if>
+        <if test="periodCodeRight!=null and periodCodeRight!= ''">
+            and PERIOD_CODE &lt;= #{periodCodeRight}
+        </if>
+    </select>
+</mapper>

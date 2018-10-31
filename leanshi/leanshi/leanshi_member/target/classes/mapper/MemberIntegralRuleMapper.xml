@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.MemberIntegralRuleMapper">
+
+    <resultMap id="RuleResultMap" type="cn.leanshi.model.MemberIntegralRule">
+        <result column="RID" property="rId" />
+        <result column="RS_COUNT_BONUS_POINT" property="rsCountBonusPoint" />
+        <result column="BONUS_POINT_WD_LIMIT" property="bonusPointWdLimit" />
+        <result column="BONUS_POINT_WD" property="bonusPointWd" />
+        <result column="BONUS_POINT_SHOPPING" property="bonusPointShopping" />
+        <result column="SHOPPING_POINT_SR" property="shoppingPointSr" />
+        <result column="TRANKS_SHOPPING_POINT" property="tranksShoppingPoint" />
+    </resultMap>
+
+    <select id="findRule" resultMap="RuleResultMap">
+        select * from rd_mm_integral_rule
+    </select>
+
+    <!--updateRule-->
+    <update id="updateRule" parameterType="cn.leanshi.model.MemberIntegralRule">
+        UPDATE rd_mm_integral_rule
+        SET
+        RS_COUNT_BONUS_POINT = #{rsCountBonusPoint},
+        BONUS_POINT_WD_LIMIT = #{bonusPointWdLimit},
+        BONUS_POINT_WD = #{bonusPointWd},
+        BONUS_POINT_SHOPPING = #{bonusPointShopping},
+        SHOPPING_POINT_SR = #{shoppingPointSr},
+        TRANKS_SHOPPING_POINT = #{tranksShoppingPoint}
+        WHERE
+        RID = 1
+    </update>
+
+</mapper>
