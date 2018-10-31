@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.leanshi.mapper.RdBonusAuditMapper">
+
+    <resultMap id="RdBonusAudit" type="cn.leanshi.model.RdBonusAudit">
+        <result column="PERIOD_CODE" property="periodCode"/>
+        <result column="CUSTOMER_NUM" property="customerNum" />
+        <result column="ORDER_NUM" property="orderNum" />
+        <result column="PERFORMANCE" property="performance" />
+        <result column="BONUS_NEW_VIP" property="bonusNewVip" />
+        <result column="BONUS_RETAIL" property="bonusRetail" />
+        <result column="BONUS_DEVP" property="bonusDevp" />
+        <result column="BONUS_DEVP_PERCENTAGE" property="bonusDevpPercentage" />
+        <result column="BONUS_LD" property="bonusLd" />
+        <result column="BONUS_LD_PERCENTAGE" property="bonusLdPercentage" />
+        <result column="BONUS_SPECIAL" property="bonusSpecial" />
+        <result column="BONUS_SPECIAL_PERCENTAGE" property="bonusSpecialPercentage" />
+        <result column="BOUNS_SUM_PV" property="bounsSumPv" />
+        <result column="ALLOCATE_PERCENTAGE" property="allocatePercentage" />
+        <result column="CURRENCY_CODE" property="currencyCode" />
+        <result column="BOUNS_SUM_CURRENCY" property="bounsSumCurrency" />
+        <result column="REVIEWER" property="reviewer" />
+        <result column="STATUS" property="staus" />
+        <result column="AUDIT_TIME" property="auditTime" />
+    </resultMap>
+
+    <select id="findAuditByPeriodCode" parameterType="string" resultMap="RdBonusAudit">
+        select * from rd_bonus_audit where period_code = #{periodCode}
+    </select>
+
+    <insert id="insertRdBonusAudit" parameterType="cn.leanshi.model.RdBonusAudit">
+        insert into rd_bonus_audit values(#{periodCode},#{customerNum},#{orderNum},#{performance},#{bonusNewVip},
+        #{bonusRetail},#{bonusDevp},#{bonusDevpPercentage},#{bonusLd},#{bonusLdPercentage},#{bonusSpecial},#{bonusSpecialPercentage},
+        #{bounsSumPv},#{allocatePercentage},#{currencyCode},#{bounsSumCurrency},#{reviewer},#{staus},#{auditTime})
+    </insert>
+
+    <select id="findAuditByPeriodCodeAndStatus" parameterType="string" resultMap="RdBonusAudit">
+        select * from rd_bonus_audit where period_code = #{periodCode} and status = 0
+    </select>
+
+    <select id="findAuditPassed" parameterType="string" resultMap="RdBonusAudit">
+        select * from rd_bonus_audit where period_code = #{periodCode} and status = 1
+    </select>
+
+    <select id="findAuditByPeriodCodeAndStatysAndLastTime" parameterType="string" resultMap="RdBonusAudit">
+        select * from rd_bonus_audit where period_code = #{periodCode} and status = 1 order by AUDIT_TIME desc limit 0,1
+    </select>
+
+</mapper>

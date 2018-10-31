@@ -74,4 +74,16 @@ public interface MemberMapper {
 	 * @return
 	 */
 	Member_basic findMemberBasicByMobile(String mobile);
+
+	/**
+	 * 查找最新注册用户的会员编号
+	 * @return
+	 */
+    String findLastMemberMcode();
+
+	/**
+	 * 添加用户
+	 * @param memberBasic
+	 */
+	int addMember(Member_basic memberBasic);
 }

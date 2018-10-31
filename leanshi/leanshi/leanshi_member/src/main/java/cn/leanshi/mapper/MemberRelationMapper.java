@@ -27,4 +27,6 @@ public interface MemberRelationMapper {
 	int updateRelaStatus(Map<String, Object> map);
 
 	void updateMPointStatus(Map<String, Object> map);
+
+    void addMemberRelation(MemberRelation memberRelation);
 }

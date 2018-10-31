@@ -19,7 +19,7 @@ public class Member_basic {
 	private String mNickname;//会员昵称
 	private int idType;//证件类型 1.身份证2.护照3.军官证4.回乡证
 	private String idCode;//证件号码
-	private int gender;//性别0.男 1.女
+	private int gender;//性别0.男 1.女   -1保密
 	private Date birthdate;//生日
 	private String email;//电子邮件
 	private String nationId;//国家地区:国际标准简写
@@ -36,7 +36,7 @@ public class Member_basic {
 	private String phone;//电话
 	private String creationSource;//录入来源
 	private String creationIp;//来源IP地址
-	private String creationData;//录入时间
+	private Date creationData;//录入时间
 	private String creationer;//录入人
 	private String creationPeriod;//录入业务周期:YYYYMM
 	private String updateSource;//最后更新来源

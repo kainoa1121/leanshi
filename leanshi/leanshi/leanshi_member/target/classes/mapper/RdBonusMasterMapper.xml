@@ -108,4 +108,17 @@
         SELECT sum(BONUS_LD_SUM) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
     </select>
 
+    <select id="searchBonusMasterByCerteria" parameterType="map" resultMap="RdBonusMaster">
+        select * from rd_bonus_master where 1 = 1
+        <if test="periodCodeLeft !=null and periodCodeLeft!=''">
+            and PERIOD_CODE >= #{periodCodeLeft}
+        </if>
+        <if test="periodCodeRight !=null and periodCodeRight!=''">
+            and PERIOD_CODE &lt;= #{periodCodeRight}
+        </if>
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE =#{mCode}
+        </if>
+    </select>
+
 </mapper>
