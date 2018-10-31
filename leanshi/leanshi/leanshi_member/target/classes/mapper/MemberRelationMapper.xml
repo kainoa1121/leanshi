@@ -91,4 +91,8 @@
         MM_CODE = #{mCode}
     </update>
 
+    <insert id="addMemberRelation" parameterType="cn.leanshi.model.MemberRelation">
+        insert into rd_mm_relation(MM_CODE,RANK,A_RETAIL,LOGIN_PWD,PWD_INIT_YN,MM_STATUS,MM_POINT_STATUS,SPONSOR_CODE,SPONSOR_NAME)
+        values(#{mCode},#{rank},#{reTail},#{loginPwd},#{pwdInitYn},#{mStatus},#{mPointStatus},#{sponsorCode},#{sponsorName})
+    </insert>
 </mapper>

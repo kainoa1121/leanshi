@@ -242,4 +242,8 @@
     <select id="findPerformance" parameterType="string" resultType="int">
         SELECT sum(PPV) FROM rd_dis_qualification where PERIOD_CODE = #{periodCode}
     </select>
+
+    <select id="findCountPpvGtZero" parameterType="string" resultType="int">
+        select count(1) from rd_dis_qualification where PPV > 0 and PERIOD_CODE = #{periodCode}
+    </select>
 </mapper>

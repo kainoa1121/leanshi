@@ -219,4 +219,14 @@ public interface MemberService {
 	List<RdMemberAccountLog> findAccountLogWDALL(Integer transNumber, Date timeStar, Date timeEnd, String mCode, String mNickname, int status);
 
 	int updateRule(MemberIntegralRule memberIntegralRule);
+
+	String findLastMemberMcode();
+
+	int addMember(Member_basic memberBasic);
+
+	void addMemberRelation(MemberRelation memberRelation);
+
+	void addMemAccount(MemberAccount memberAccount);
+
+	void addMemBank(MemberBank memberBank);
 }

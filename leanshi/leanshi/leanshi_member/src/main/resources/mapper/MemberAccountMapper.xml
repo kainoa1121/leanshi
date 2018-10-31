@@ -34,4 +34,8 @@
         MM_CODE = #{mCode}
     </update>
 
+    <insert id="addMemAccount" parameterType="cn.leanshi.model.MemberAccount">
+        insert into rd_mm_account_info values(#{mCode},#{bonusStatus},#{bonusCurrency},#{bonusBlance},#{walletStatus},#{walletCurrency},#{walletCurrency},
+        #{redemptionStatus},#{redemptionCurrency},#{redemptionBlance},#{weChatAcc},#{alipayAcc},#{paymentPhone},#{paymentPWD})
+    </insert>
 </mapper>

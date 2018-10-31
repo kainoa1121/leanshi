@@ -13,4 +13,6 @@ public interface MemberAccountMapper {
 	MemberAccount findMemAccountByMCode(String mCode);
 
 	int updateAccountStatus(Map<String, Object> map);
+
+    void addMemAccount(MemberAccount memberAccount);
 }

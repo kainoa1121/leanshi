@@ -29,7 +29,7 @@
         <result column="AUTOHRIZE_TIME" property="autohrizeTime" />
         <result column="AUTOHRIZE_DESC" property="autohrizeDesc" />
     </resultMap>
-<<<<<<< HEAD
+
     <select id="findRdReceivableDetailLast" parameterType="string" resultMap="RDResultMap">
         select * from rd_receiveable_detail where MM_CODE = #{mCode} and STATUS = 3 order by CREATION_TIME desc limit 0,1
     </select>
@@ -40,7 +40,7 @@
         (#{transNumber},#{batchNumber},#{mCode},#{trTypeCode},#{trSourceType},#{currencyCode},
         #{blanceBefore},#{amount},#{blanceAfter},#{transPeriod},#{status},#{creationTime})
     </insert>
-=======
+
 
     <!--创建欠款明细表-->
     <insert id="addRDNR" parameterType="cn.leanshi.model.RdReceivableDetail">
@@ -93,7 +93,7 @@
         UPDATE rd_receiveable_detail
         SET
         STATUS = #{status}
-        WHERE MM_CODE = #{mCode}
+        WHERE MM_CODE = #{mCode} AND TRANS_NUMBER = #{transNumber}
     </update>
 
     <!--根据编号和流水号查欠款明细-->
@@ -101,6 +101,4 @@
         SELECT * FROM rd_receiveable_detail WHERE MM_CODE = #{mCode} AND TRANS_NUMBER = #{transNumber}
     </select>
 
-
->>>>>>> a5e07af72178f8c9f206d2a74eec3d9172b3c8eb
 </mapper>
