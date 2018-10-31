@@ -36,4 +36,6 @@ public interface RdMemberAccountLogMapper {
 	int updateAccLogWDOne(Map<String, Object> map);
 
 	List<RdMemberAccountLog> findAccountLogWDALL(Map<String, Object> map);
+
+	int updateAccLogWDAll(String transNumber);
 }

@@ -2637,5 +2637,25 @@ public class MemberController {
 		return resultMsg;
 	}
 
+	/*
+	 * 批量通过
+	 * */
+	@RequestMapping(value = "/updateAccLogWDAll",method = RequestMethod.POST)
+	public ResultMsg updateAccLogWDAll(@RequestParam(value = "transS",required = false) String transS) {
+
+		String[] tS = transS.split("/");
+		int i=0;
+		for (String transNumber : tS) {
+			i=memberService.updateAccLogWDAll(transNumber);
+		}
+
+		if (i==1){
+			return ResultMsg.newInstance(true,"审核成功！");
+		}else{
+			return ResultMsg.newInstance(false,"审核失败！");
+		}
+	}
+
+
 
 }

@@ -1554,4 +1554,9 @@ public class MemberServiceImpl implements MemberService {
 		return ruleMapper.updateRule(memberIntegralRule);
 	}
 
+	@Override
+	public int updateAccLogWDAll(String transNumber) {
+		return accountLogMapper.updateAccLogWDAll(transNumber);
+	}
+
 }

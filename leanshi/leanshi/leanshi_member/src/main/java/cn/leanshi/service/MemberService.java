@@ -211,4 +211,6 @@ public interface MemberService {
 	List<RdMemberAccountLog> findAccountLogWDALL(Integer transNumber, Date timeStar, Date timeEnd, String mCode, String mNickname, int status);
 
 	int updateRule(MemberIntegralRule memberIntegralRule);
+
+	int updateAccLogWDAll(String transNumber);
 }
