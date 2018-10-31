@@ -2,6 +2,16 @@ package cn.leanshi.model;
 
 
 import java.io.Serializable;
+
+
+import cn.leanshi.service.BonusService;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+import javax.persistence.Transient;
+import javax.servlet.http.HttpSession;
+
 import java.math.BigDecimal;
 
 /**
@@ -9,6 +19,10 @@ import java.math.BigDecimal;
  * @author :zc
  */
 public class RdBonusMaster implements Serializable {
+
+
+
+
     private String periodCode;//业务周期
     private String mCode;//会员编号
     private BigDecimal bonusRetail;//当期全部零售产生的奖励

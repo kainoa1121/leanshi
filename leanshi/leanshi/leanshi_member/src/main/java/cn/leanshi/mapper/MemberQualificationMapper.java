@@ -87,4 +87,7 @@ public interface MemberQualificationMapper {
 
 	int delQulfPV(MemberQualification qualification);
 
+    int findPerformance(String periodCode);
+
+    int findCountPpvGtZero(String periodCode);
 }

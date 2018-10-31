@@ -13,6 +13,13 @@ import java.util.Map;
 public interface RdReceivableMasterMapper {
 	List<RdReceivableMaster> findReceivableAll(Map<String, Object> map);
 
+    /**
+     * autor  zc 根据会员编号查询会员欠款主表
+     * @param mCode
+     * @return
+     */
+    RdReceivableMaster findRdReceivableMaster(String mCode);
+
 	RdReceivableMaster findReceivableByMCode(String mCode);
 
 	int addReceivableM(RdReceivableMaster master);

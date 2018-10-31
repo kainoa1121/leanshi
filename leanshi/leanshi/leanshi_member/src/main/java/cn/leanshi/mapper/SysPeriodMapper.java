@@ -30,4 +30,6 @@ public interface SysPeriodMapper {
 	int updatePeriod(Map<String, Object> map);
 
 	void updatePeriodAddNext(Map<String, Object> map);
+
+	void updateCalStatusByPeriodCode(String periodCode);
 }

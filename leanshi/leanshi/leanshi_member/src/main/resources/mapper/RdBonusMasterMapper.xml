@@ -87,4 +87,38 @@
         SELECT * FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
     </select>
 
+
+    <select id="findCustomerNum" parameterType="string" resultType="int">
+        SELECT count(MM_CODE) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusNewVip" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_NEW_VIP) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusRetail" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_RETAIL) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusDevp" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_DEVP_SUM) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="findBonusLd" parameterType="string" resultType="java.math.BigDecimal">
+        SELECT sum(BONUS_LD_SUM) FROM rd_bonus_master WHERE PERIOD_CODE =#{periodCode}
+    </select>
+
+    <select id="searchBonusMasterByCerteria" parameterType="map" resultMap="RdBonusMaster">
+        select * from rd_bonus_master where 1 = 1
+        <if test="periodCodeLeft !=null and periodCodeLeft!=''">
+            and PERIOD_CODE >= #{periodCodeLeft}
+        </if>
+        <if test="periodCodeRight !=null and periodCodeRight!=''">
+            and PERIOD_CODE &lt;= #{periodCodeRight}
+        </if>
+        <if test="mCode !=null and mCode != ''">
+            AND MM_CODE =#{mCode}
+        </if>
+    </select>
+
 </mapper>

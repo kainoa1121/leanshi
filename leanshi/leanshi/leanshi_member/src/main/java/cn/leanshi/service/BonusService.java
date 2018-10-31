@@ -1,8 +1,6 @@
 package cn.leanshi.service;
 
-import cn.leanshi.model.MemberQualification;
-import cn.leanshi.model.RdBonusMaster;
-import cn.leanshi.model.RdBonusPayment;
+import cn.leanshi.model.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,7 +8,7 @@ import java.util.List;
 public interface BonusService {
     List<RdBonusMaster> searchByPeriodCode(String periodCode);
 
-    List<RdBonusPayment> searchBonusPaymentByCodeAndName(String mCode, String mName);
+    List<RdBonusPayment> searchBonusPaymentByCodeAndName(String mCode, String mNickName);
 
     List<RdBonusPayment> searchBonusPayment(String periodCodeLeft, String periodCodeRight, String mCode, String mName, String payStatus);
 
@@ -58,4 +56,66 @@ public interface BonusService {
     void updateBonusLDIndirect(BigDecimal bonusLDIndirect, String periodCode, String mCode);
 
     void updateBonusLDSupport(BigDecimal i, String periodCode, String mCode);
+
+    /*RdBonusAudit findAuditByPeriodCode(String periodCode);*/
+
+    int findCustomerNum(String periodCode);
+
+    BigDecimal findPerformance(String periodCode);
+
+    BigDecimal findBonusNewVip(String periodCode);
+
+    BigDecimal findBonusRetail(String periodCode);
+
+    BigDecimal findBonusDevp(String periodCode);
+
+    BigDecimal findBonusLd(String periodCode);
+
+    void insertRdBonusAudit(RdBonusAudit rdBonusAuditNew);
+
+    List<RdBonusAudit> findAuditByPeriodCodeAndStatus(String periodCode);
+
+    List<RdBonusAudit> findBonusAuditAll(String periodCode);
+
+    List<RdBonusAudit> findAuditPassed(String periodCode);
+
+    RdReceivableMaster findRdReceivableMaster(String mCode);
+
+    RdReceivableDetail findRdReceivableDetailLast(String mCode);
+
+    void insertRdReceivableDetail(RdReceivableDetail rdReceivableDetail1);
+
+    void updateCalStatusByPeriodCode(String periodCode);
+
+    String findMemberNickNameByMcode(String mCode);
+
+    void insertRdBonusPayment(RdBonusPayment rdBonusPayment);
+
+    int selectNewMember(String periodCode);
+
+    int findCountPpvGtZero(String periodCode);
+
+    BigDecimal findSumBouns(String periodCode);
+
+    BigDecimal findSumBounsReissue(String periodCode);
+
+    BigDecimal findSumChargeSum(String periodCode);
+
+    BigDecimal findSumPayableSum(String periodCode);
+
+    void insertRdBonusPaymentStatistical(RdBonusPaymentStatistical rdBonusPaymentStatistical);
+
+    List<RdBonusPayment> findBounsPaymentAll(String periodCode);
+
+    BigDecimal findSumBonusNewVip(String periodCode);
+
+    RdBonusAudit findAuditByPeriodCodeAndStatysAndLastTime(String periodCode);
+
+    List<RdBonusPaymentStatistical> findRdBonusPaymentStatisticalByLR(String periodCodeLeft, String periodCodeRight);
+
+    List<Member_basic> searchMemberByMcodeAndNickName(String mCode, String mNickName);
+
+    List<RdBonusMaster> searchBonusMasterByCerteria(String periodCodeLeft, String periodCodeRight, String mCode);
+
+    String findMemberMcodeByNickName(String mNickName);
 }

@@ -27,6 +27,12 @@
         ORDER BY MM_CODE ASC
     </select>
 
+
+    <select id="findRdReceivableMaster" parameterType="string" resultMap="ReceivableResultMap">
+        SELECT * FROM rd_receivable_master where MM_CODE = #{mCode}
+    </select>
+
+
     <!--根据编号查找会员欠款-->
     <select id="findReceivableByMCode" parameterType="string" resultMap="ReceivableResultMap">
         SELECT * FROM rd_receivable_master WHERE MM_CODE = #{mCode}

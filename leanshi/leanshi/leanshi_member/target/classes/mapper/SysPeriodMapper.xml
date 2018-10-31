@@ -85,4 +85,12 @@
     <delete id="delPeriod" parameterType="string">
         DELETE FROM rd_sys_period WHERE PERIOD_CODE = #{periodCode}
     </delete>
+
+    <update id="updateCalStatusByPeriodCode">
+        UPDATE rd_sys_period
+        SET
+        SALES_STATUS = 2
+        WHERE
+        PERIOD_CODE = #{periodCode}
+    </update>
 </mapper>

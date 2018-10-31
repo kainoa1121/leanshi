@@ -1,8 +1,10 @@
 package cn.leanshi.mapper;
 
 import cn.leanshi.model.RdBonusMaster;
+import cn.leanshi.model.RdBonusPayment;
 
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,4 +65,15 @@ public interface RdBonusMasterMapper {
 
     List<RdBonusMaster> findMasterByPeriod(String periodCode);
 
+    int findCustomerNum(String periodCode);
+
+    BigDecimal findBonusNewVip(String periodCode);
+
+    BigDecimal findBonusRetail(String periodCode);
+
+    BigDecimal findBonusDevp(String periodCode);
+
+    BigDecimal findBonusLd(String periodCode);
+
+    List<RdBonusMaster> searchBonusMasterByCerteria(HashMap<String,Object> map);
 }

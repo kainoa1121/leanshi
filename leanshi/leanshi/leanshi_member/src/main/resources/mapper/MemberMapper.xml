@@ -116,4 +116,36 @@
     <select id="findMemAll" resultMap="BaseResultMap">
         select MM_CODE,MM_NAME from rd_mem_basic_info
     </select>
+
+    <select id="findMemberNickNameByMcode" parameterType="string" resultType="string">
+        select MM_NICK_NAME from rd_mem_basic_info where MM_CODE = #{mCode}
+    </select>
+
+    <select id="selectNewMember" parameterType="string" resultType="int">
+        select count(1) from rd_mem_basic_info where CREATION_PERIOD = #{periodCode}
+    </select>
+
+    <select id="searchMemberByMcodeAndNickName" parameterType="map" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info where MM_CODE = #{mCode} and MM_NICK_NAME = #{mNickname}
+    </select>
+
+    <select id="findMemberMcodeByNickName" parameterType="string" resultType="string">
+        select MM_CODE from rd_mem_basic_info where MM_NICK_NAME = #{mNickname}
+    </select>
+
+    <select id="findMemberBasicByMcodeAndNickName" parameterType="map" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info where MM_CODE = #{mCode} and MM_NICK_NAME = #{mNickname}
+    </select>
+
+    <select id="findByNickName" parameterType="string" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info where  MM_NICK_NAME = #{mNickname}
+    </select>
+
+    <select id="findMemberBasicByIdTypeAndIdCode" parameterType="map" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info where ID_TYPE = #{idType} and ID_CODE = #{idCode}
+    </select>
+
+    <select id="findMemberBasicByMobile" parameterType="string" resultMap="BaseResultMap">
+        select * from rd_mem_basic_info where MOBILE = #{mobile}
+    </select>
 </mapper>

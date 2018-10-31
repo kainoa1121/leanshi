@@ -170,6 +170,14 @@ public interface MemberService {
 
 	int defBankByOid(Integer oId, String mCode, Integer defaultBank);
 
+    Member_basic findMemberBasicByMcodeAndNickName(String mCode, String mNikcName);
+
+    Member_basic findByNickName(String mNickName);
+
+	Member_basic findMemberBasicByIdTypeAndIdCode(int idType, String idCode);
+
+	Member_basic findMemberBasicByMobile(String mobile);
+
 	List<RdReceivableDetail> findReceivableDetailAll(String mCode, String mNickname, Integer transNumber, String trTypeCode, int status, Date timeStar, Date timeEnd);
 
 	int updateRD(String mCode, int transNumber, int status);
