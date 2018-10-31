@@ -213,4 +213,7 @@ public interface MemberService {
 	int updateRule(MemberIntegralRule memberIntegralRule);
 
 	int updateAccLogWDAll(String transNumber);
+
+	void addMemEditReview(MemberEditReview memberEditReview);
+
 }

@@ -374,6 +374,29 @@ public class MemberAddController {
         memberEditReview.setWeChat(memberBasic.getWeChat());
         memberEditReview.setEmail(memberBasic.getEmail());
         memberEditReview.setAddPost(memberBasic.getAddPost());
-        return null;
+        memberEditReview.setProvince(memberBasic.getProvince());
+        memberEditReview.setCity(memberBasic.getCity());
+        memberEditReview.setCountry(memberBasic.getCountry());
+        memberEditReview.setDetial(memberBasic.getDetial());
+        memberEditReview.setSponsorCode(referrerCode);
+        memberEditReview.setSponsorName(referrerName);
+        memberEditReview.setRank(memberRelation.getRank());
+        memberEditReview.setUpdateType(0);
+        memberEditReview.setUpdateTime(new Date());
+        memberEditReview.setReviewStatus(3);
+        memberService.addMemEditReview(memberEditReview);
+        //7.会员注册订单生成
+        Order order = new Order();
+        order.setmCode(memberBasic.getMCode());
+        order.setGoodsCode(goodsCode);
+        order.setGoodsName(goodsName);
+        order.setNumber(number);
+        order.setPriceRetail(priceRetail);
+        order.setPriceVip(priceVip);
+        order.setTotalMoney(priceRetail.multiply(new BigDecimal(Integer.toString(number))));
+        order.setPvPrice(pvPrice);
+        order.setTotalPv(pvPrice.multiply(new BigDecimal(Integer.toString(number))));
+
+        return ResultMsg.newInstance(true,"信息录入成功，请完成订单支付激活用户");
     }
 }

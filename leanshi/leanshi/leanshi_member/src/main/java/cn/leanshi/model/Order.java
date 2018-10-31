@@ -7,6 +7,7 @@ import java.math.BigDecimal;
  * 订单实体类，默认一个订单只有一种商品，临时测试使用，不牵扯订单项
  */
 public class Order implements Serializable {
+    private String mCode;//订单所属会员编号
     private String goodsCode;
     private String goodsName;
     private int number;
@@ -16,6 +17,15 @@ public class Order implements Serializable {
     private BigDecimal pvPrice;
     private BigDecimal totalPv;
     private int deliveryMethod;//0自提  1快递（快递费用固定10块）
+    private BigDecimal payMoney;//最终支付金额
+
+    public String getmCode() {
+        return mCode;
+    }
+
+    public void setmCode(String mCode) {
+        this.mCode = mCode;
+    }
 
     public int getDeliveryMethod() {
         return deliveryMethod;
