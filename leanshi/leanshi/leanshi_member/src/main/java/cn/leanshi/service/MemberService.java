@@ -220,6 +220,7 @@ public interface MemberService {
 
 	int updateRule(MemberIntegralRule memberIntegralRule);
 
+
 	String findLastMemberMcode();
 
 	int addMember(Member_basic memberBasic);
@@ -229,4 +230,7 @@ public interface MemberService {
 	void addMemAccount(MemberAccount memberAccount);
 
 	void addMemBank(MemberBank memberBank);
+
+	int updateAccLogWDAll(String transNumber);
+
 }

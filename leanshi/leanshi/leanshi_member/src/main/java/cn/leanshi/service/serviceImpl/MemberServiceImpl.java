@@ -1602,6 +1602,7 @@ public class MemberServiceImpl implements MemberService {
 		return ruleMapper.updateRule(memberIntegralRule);
 	}
 
+
 	/**
 	 * 查找最新注册用户的会员编号
 	 * @return
@@ -1645,6 +1646,13 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void addMemBank(MemberBank memberBank) {
 		bankMapper.addMemBank(memberBank);
+	}
+
+
+
+	@Override
+	public int updateAccLogWDAll(String transNumber) {
+		return accountLogMapper.updateAccLogWDAll(transNumber);
 	}
 
 
