@@ -17,6 +17,7 @@ public class Order implements Serializable {
     private BigDecimal pvPrice;
     private BigDecimal totalPv;
     private int deliveryMethod;//0自提  1快递（快递费用固定10块）
+    private BigDecimal payMoney;//最终支付金额
 
     public String getmCode() {
         return mCode;

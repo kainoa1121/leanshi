@@ -391,6 +391,11 @@ public class MemberAddController {
         order.setGoodsCode(goodsCode);
         order.setGoodsName(goodsName);
         order.setNumber(number);
+        order.setPriceRetail(priceRetail);
+        order.setPriceVip(priceVip);
+        order.setTotalMoney(priceRetail.multiply(new BigDecimal(Integer.toString(number))));
+        order.setPvPrice(pvPrice);
+        order.setTotalPv(pvPrice.multiply(new BigDecimal(Integer.toString(number))));
 
         return ResultMsg.newInstance(true,"信息录入成功，请完成订单支付激活用户");
     }
